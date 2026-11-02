@@ -1,0 +1,942 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Lộ trình học theo ngày</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600&display=swap">
+<style>
+/* Layout: một cột đọc rộng 820px, thanh tab buổi học dính trên cùng; hình minh họa luôn nằm trên nền sáng cố định để đọc được ở cả hai giao diện. */
+:root{
+  --bg:#F3F6FC; --surface:#FFFFFF; --ink:#14213D; --muted:#56627F; --line:#D8DFEE;
+  --accent:#1F4FD8; --accent-ink:#FFFFFF; --accent-soft:#E6EDFF;
+  --lvl:#C75A1B; --tile:#EAF1FF;
+  --good:#17703F; --good-bg:#E1F3E8; --bad:#A8231B; --bad-bg:#FBE4E1; --note:#8A4F00; --note-bg:#FCEFD3;
+  --font-display:'Fredoka','Trebuchet MS',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible','Segoe UI',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1526; --surface:#172036; --ink:#E7ECF8; --muted:#9AA6C3; --line:#2A3654;
+    --accent:#7EA0FF; --accent-ink:#0E1526; --accent-soft:#22305A; --lvl:#F08A4B;
+    --good:#6FDBA3; --good-bg:#16372A; --bad:#FF9B93; --bad-bg:#401B19; --note:#F2BC68; --note-bg:#3B2D12; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1526; --surface:#172036; --ink:#E7ECF8; --muted:#9AA6C3; --line:#2A3654;
+  --accent:#7EA0FF; --accent-ink:#0E1526; --accent-soft:#22305A; --lvl:#F08A4B;
+  --good:#6FDBA3; --good-bg:#16372A; --bad:#FF9B93; --bad-bg:#401B19; --note:#F2BC68; --note-bg:#3B2D12; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.55;
+  padding-block:0 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--bg)}
+.wrap{max-width:820px;margin:0 auto}
+h1,h2,h3{font-family:var(--font-display);font-weight:600;line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:1.9rem} h2{font-size:1.4rem} h3{font-size:1.15rem}
+p{margin:0}
+.muted{color:var(--muted)}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+
+.top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding-block:18px 10px}
+.brand{display:grid;gap:2px;min-width:0}
+.brand b{font-family:var(--font-display);font-weight:600;font-size:1.05rem}
+.brand span{font-size:.9rem;color:var(--muted)}
+.seg{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px}
+.seg button{border:0;background:transparent;color:var(--muted);padding:7px 14px;border-radius:7px;font-weight:700}
+.seg button[aria-pressed="true"],.seg button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+.weeks{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding-block:4px 6px}
+
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:10px;margin-top:6px}
+.hero .kicker{font-size:.85rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--lvl)}
+.hero ul{margin:0;padding-left:20px;display:grid;gap:4px}
+
+.secbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--bg);padding-block:10px 10px}
+.secs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
+.sec{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 12px;font-weight:700;color:var(--muted);white-space:nowrap}
+.sec[aria-selected="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.sec.tch{border-style:dashed}
+
+.sechead{display:grid;gap:2px;padding-block:6px 4px}
+.sechead .mins{color:var(--muted);font-size:.95rem}
+.stack{display:grid;gap:16px}
+.blk{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px;min-width:0}
+.blk>h3{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.textblk{padding:2px 4px}
+.textblk ul{margin:6px 0 0;padding-left:22px;display:grid;gap:3px}
+
+.tile{background:var(--tile);border-radius:14px;display:flex;gap:6px;align-items:center;justify-content:center;padding:8px;min-height:92px}
+.tile .ico{width:92px;height:92px;flex:none}
+.tile.sm .ico{width:74px;height:74px}
+.scenebox{background:var(--tile);border-radius:14px;padding:8px;display:flex;justify-content:center}
+.scene{width:100%;max-width:520px;height:auto;display:block}
+.scenebox.sm .scene{max-width:170px}
+
+.play{flex:none;display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);background:var(--accent-soft);color:var(--accent)}
+.play svg{width:20px;height:20px}
+.play.on{background:var(--accent);color:var(--accent-ink)}
+.playlong{display:inline-flex;gap:8px;align-items:center;border:2px solid var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:6px 14px 6px 8px;font-weight:700}
+.playlong svg{width:22px;height:22px}
+
+.vgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:700px){.vgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:480px){.vgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.vcard{border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:8px;display:grid;gap:4px;text-align:center;justify-items:center;min-width:0}
+.vcard:hover{border-color:var(--accent)}
+.vcard.on{border-color:var(--accent);background:var(--accent-soft)}
+.vcard .w{font-family:var(--font-display);font-weight:600;font-size:1.2rem}
+.vcard .vi{font-size:.85rem;color:var(--muted);overflow-wrap:anywhere}
+
+.pics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.pic{display:grid;gap:6px;justify-items:center;text-align:center;min-width:0}
+.pic .cap{display:flex;gap:8px;align-items:center;font-weight:700;overflow-wrap:anywhere;justify-content:center}
+.pic .tile{width:100%}
+.pic .scenebox{width:100%}
+.pic .scene{max-width:130px}
+
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:480px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--font-display);font-weight:600;background:var(--bg)}
+td .row{display:flex;gap:10px;align-items:center}
+.key{font-family:var(--font-display);font-weight:600;color:var(--accent)}
+.note{padding:12px 14px;border-radius:10px;background:var(--note-bg);color:var(--note);font-size:.97rem}
+.tip{padding:12px 14px;border-radius:10px;background:var(--accent-soft);font-size:.97rem}
+
+.passage{display:grid;gap:8px;padding:14px 16px;border-left:5px solid var(--lvl);background:var(--bg);border-radius:0 12px 12px 0}
+.q{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:12px;min-width:0}
+.q.ok{border-color:var(--good);background:var(--good-bg)}
+.q.bad{border-color:var(--bad);background:var(--bad-bg)}
+.qh{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.qn{flex:none;min-width:2rem;height:2rem;border-radius:8px;background:var(--lvl);color:#fff;display:grid;place-items:center;font-family:var(--font-display);font-weight:600;padding:0 6px}
+:root[data-theme="dark"] .qn{color:#0E1526}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .qn{color:#0E1526}}
+.qt{font-weight:700;overflow-wrap:anywhere;min-width:0}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.opts.pic{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
+.opt{position:relative;display:block;min-width:0}
+.opt input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.opt .ot{display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 12px;border-radius:12px;border:2px solid var(--line);background:var(--bg);font-weight:700;overflow-wrap:anywhere}
+.opt .ot::before{content:"";flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--muted)}
+.opts.pic .ot{flex-direction:column;justify-content:center;text-align:center}
+.opts.pic .ot::before{order:2}
+.opt input:checked + .ot{border-color:var(--accent);background:var(--accent-soft)}
+.opt input:checked + .ot::before{border-color:var(--accent);background:radial-gradient(circle,var(--accent) 0 45%,transparent 50%)}
+.opt input:focus-visible + .ot{outline:3px solid var(--accent);outline-offset:2px}
+.optpic{display:block;width:100%}
+.optpic .ico{width:64px;height:64px;display:block;margin:0 auto}
+.optpic .scene{width:92px;max-width:100%;margin:0 auto}
+.opt .optpic{background:var(--tile);border-radius:10px;padding:6px}
+.gapq .line{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:1.1rem;font-weight:700}
+.gap{font:inherit;font-weight:700;width:6.5rem;padding:6px 10px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);min-width:0}
+.gap:focus-visible{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.q.ok .gap{border-color:var(--good)} .q.bad .gap{border-color:var(--bad)}
+.bank{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{padding:3px 12px;border-radius:999px;border:2px solid var(--accent);color:var(--accent);font-weight:700}
+.fb{font-size:.95rem;min-height:0}
+.fb:empty{display:none}
+.q.ok .fb{color:var(--good);font-weight:700}
+.q.bad .fb{color:var(--bad)}
+.tkey{font-size:.88rem;color:var(--note);background:var(--note-bg);padding:6px 10px;border-radius:8px;overflow-wrap:anywhere}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{border:0;border-radius:10px;padding:11px 20px;font-weight:700;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn.sm{padding:7px 14px;font-size:.92rem}
+.score{font-weight:700}
+.score.full{color:var(--good)}
+
+.frames{margin:0;padding-left:22px;display:grid;gap:4px}
+.prompt{font-family:var(--font-display);font-weight:600;font-size:1.25rem}
+details{border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+details summary{cursor:pointer;font-weight:700}
+details[open] summary{margin-bottom:8px}
+.checks{display:grid;gap:6px}
+.checks label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.checks input{width:20px;height:20px;margin-top:3px;flex:none;accent-color:var(--accent)}
+.shadow{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.shadow li{display:flex;gap:12px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:12px;font-size:1.1rem}
+.shadow li b{color:var(--accent);text-decoration:underline;text-decoration-thickness:2px}
+.teacher{border:2px dashed var(--note);background:var(--note-bg);color:var(--ink);border-radius:12px;padding:12px 14px;font-size:.96rem}
+.teacher>b:first-child{color:var(--note)}
+.script{display:grid;gap:8px}
+.script .it{display:grid;gap:3px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:.92rem;min-width:0}
+.script code{font-size:.82rem;color:var(--muted);overflow-wrap:anywhere}
+.foot{padding:20px 4px;color:var(--muted);font-size:.9rem}
+@media (prefers-reduced-motion:no-preference){.blk{animation:rise .25s ease both}@keyframes rise{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}}
+
+
+.row2{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+label.f{display:grid;gap:6px;font-weight:700}
+.login{max-width:480px;margin:40px auto 0}
+.login input[type=text]{font:inherit;padding:12px 14px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);width:100%;min-width:0}
+.login input[type=text]:focus-visible{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.pbar{height:12px;border-radius:6px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--accent)}
+.days{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.day{display:grid;gap:3px;text-align:left;padding:12px;border-radius:12px;border:2px solid var(--line);background:var(--surface)}
+.day:hover:not(:disabled){border-color:var(--accent)}
+.day .dn{font-family:var(--font-display);font-weight:600;color:var(--lvl)}
+.day .dt{font-weight:700;overflow-wrap:anywhere}
+.day .dm{font-size:.88rem;color:var(--muted)}
+.day .ds{font-size:.85rem;font-weight:700;min-height:1.2em}
+.day.done{border-color:var(--good);background:var(--good-bg)}
+.day.done .ds{color:var(--good)}
+.day.now{border-color:var(--accent);background:var(--accent-soft)}
+.day.now .ds{color:var(--accent)}
+.day:disabled{opacity:.55;cursor:not-allowed}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;border:2px solid var(--muted);color:var(--muted);font-size:.8rem;font-weight:700}
+.wk.lk{opacity:.85}
+.nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+</style>
+<div id="app"></div>
+<script>
+/* Dùng chung cho trang và cho công cụ tạo âm thanh. Không đụng tới DOM ở đây. */
+function hash(s){var h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))|0;}return (h>>>0).toString(36);}
+/* Một câu đọc: A("It is a cat.") hoặc A("It is a cat.","m",1) = giọng nam, đọc chậm */
+function A(t,v,s){return {segs:[{v:v||'f',t:t}],s:s?1:0};}
+/* Hội thoại nhiều giọng: D([["m","Hello"],["f","Hi"]]) */
+function D(lines,s){return {segs:lines.map(function(l){return {v:l[0],t:l[1]};}),s:s?1:0};}
+function aid(au){
+  var key=JSON.stringify(au);
+  var slug=au.segs[0].t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,26);
+  return slug+'-'+hash(key);
+}
+function auText(au){return au.segs.map(function(s){return s.t;}).join(' ');}
+
+/* Hình minh họa vẽ bằng SVG. Mỗi hàm trả về phần ruột của khung 100x100. */
+var K={red:'#E0523C',blue:'#2F6FDE',yellow:'#F2C14E',green:'#4CA76B',orange:'#F0A04B',brown:'#A9744A',pink:'#F2A0B8',skin:'#F5CBA7',ink:'#1B2A4A',gray:'#7B8499',sky:'#9ED0F5',white:'#FFFFFF',purple:'#7A5BD6'};
+function KC(c){return K[c]||c||K.red;}
+var ICON={
+ball:function(c){c=KC(c);return '<circle cx="50" cy="52" r="32" fill="'+c+'"/><path d="M20 44 Q50 62 80 44" fill="none" stroke="#fff" stroke-width="5"/><path d="M22 66 Q50 50 78 66" fill="none" stroke="#fff" stroke-width="5"/><circle cx="50" cy="52" r="32" fill="none"/>';},
+big:function(c){c=KC(c||'blue');return '<circle cx="50" cy="50" r="42" fill="'+c+'"/><path d="M10 40 Q50 62 90 40" fill="none" stroke="#fff" stroke-width="6"/><path d="M12 66 Q50 48 88 66" fill="none" stroke="#fff" stroke-width="6"/><circle cx="50" cy="50" r="42" fill="none"/>';},
+small:function(c){c=KC(c||'blue');return '<circle cx="50" cy="62" r="22" fill="'+c+'"/><path d="M30 56 Q50 68 70 56" fill="none" stroke="#fff" stroke-width="3.5"/><circle cx="50" cy="62" r="22" fill="none"/>';},
+bag:function(c){c=KC(c||'red');return '<path d="M38 30 Q38 14 50 14 Q62 14 62 30" fill="none" stroke-width="4"/><rect x="24" y="28" width="52" height="58" rx="14" fill="'+c+'"/><rect x="33" y="56" width="34" height="24" rx="7" fill="#000" fill-opacity=".16"/><path d="M33 46 H67" fill="none"/>';},
+book:function(c){c=KC(c||'blue');return '<rect x="22" y="24" width="58" height="56" rx="5" fill="'+c+'"/><rect x="22" y="24" width="10" height="56" rx="3" fill="#000" fill-opacity=".2"/><rect x="40" y="36" width="30" height="16" rx="3" fill="#fff"/><path d="M45 44 H65" fill="none"/>';},
+pencil:function(c){c=KC(c||'yellow');return '<g transform="rotate(45 50 50)"><rect x="40" y="12" width="20" height="9" rx="3" fill="#F2A0B8"/><rect x="40" y="21" width="20" height="8" fill="#B8C0CC"/><rect x="40" y="29" width="20" height="41" fill="'+c+'"/><path d="M40 70 L60 70 L50 90Z" fill="#F5CBA7"/><path d="M46 81 L54 81 L50 90Z" fill="#1B2A4A"/></g>';},
+ruler:function(c){c=KC(c||'yellow');return '<g transform="rotate(-25 50 50)"><rect x="8" y="38" width="84" height="26" rx="3" fill="'+c+'"/><path d="M18 38 v8 M28 38 v12 M38 38 v8 M48 38 v12 M58 38 v8 M68 38 v12 M78 38 v8" fill="none"/></g>';},
+apple:function(c){c=KC(c||'red');return '<path d="M50 36 C42 26 18 30 18 58 C18 78 34 90 50 84 C66 90 82 78 82 58 C82 30 58 26 50 36Z" fill="'+c+'"/><path d="M50 36 C50 28 52 22 56 18" fill="none" stroke="#6B4423" stroke-width="3.5"/><path d="M54 26 C62 14 76 16 76 16 C74 28 62 32 54 26Z" fill="#4CA76B"/><path d="M29 52 Q27 62 33 70" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="4"/>';},
+cat:function(c){c=KC(c||'orange');return '<ellipse cx="50" cy="84" rx="22" ry="12" fill="'+c+'"/><path d="M26 44 L24 16 L44 30Z" fill="'+c+'"/><path d="M74 44 L76 16 L56 30Z" fill="'+c+'"/><path d="M28 36 L28 25 L37 31Z" fill="#F2A0B8" stroke="none"/><path d="M72 36 L72 25 L63 31Z" fill="#F2A0B8" stroke="none"/><circle cx="50" cy="54" r="26" fill="'+c+'"/><circle cx="40" cy="50" r="3.5" fill="#1B2A4A" stroke="none"/><circle cx="60" cy="50" r="3.5" fill="#1B2A4A" stroke="none"/><path d="M46 59 L54 59 L50 64Z" fill="#E87B96"/><path d="M50 64 Q45 70 40 67 M50 64 Q55 70 60 67" fill="none" stroke-width="2"/><path d="M20 57 L36 59 M20 65 L36 63 M80 57 L64 59 M80 65 L64 63" fill="none" stroke-width="1.8"/>';},
+dog:function(c){c=KC(c||'#C98F5A');return '<ellipse cx="25" cy="46" rx="10" ry="20" fill="#7A4E2D" transform="rotate(15 25 46)"/><ellipse cx="75" cy="46" rx="10" ry="20" fill="#7A4E2D" transform="rotate(-15 75 46)"/><circle cx="50" cy="52" r="26" fill="'+c+'"/><ellipse cx="50" cy="64" rx="14" ry="11" fill="#F5E1C8"/><circle cx="40" cy="45" r="3.5" fill="#1B2A4A" stroke="none"/><circle cx="60" cy="45" r="3.5" fill="#1B2A4A" stroke="none"/><ellipse cx="50" cy="58" rx="5.5" ry="3.8" fill="#1B2A4A"/><path d="M46 70 Q50 82 54 70Z" fill="#E87B96"/><path d="M50 62 V68 M50 68 Q44 72 40 68 M50 68 Q56 72 60 68" fill="none" stroke-width="2"/>';},
+boy:function(c){c=KC(c||'blue');return '<path d="M20 98 Q20 66 50 66 Q80 66 80 98Z" fill="'+c+'"/><circle cx="50" cy="42" r="22" fill="#F5CBA7"/><path d="M28 40 Q28 17 50 17 Q72 17 72 40 Q62 29 50 31 Q38 29 28 40Z" fill="#3B2A20"/><circle cx="42" cy="45" r="2.8" fill="#1B2A4A" stroke="none"/><circle cx="58" cy="45" r="2.8" fill="#1B2A4A" stroke="none"/><path d="M42 53 Q50 60 58 53" fill="none" stroke-width="2.2"/>';},
+girl:function(c){c=KC(c||'red');return '<circle cx="23" cy="47" r="9" fill="#3B2A20"/><circle cx="77" cy="47" r="9" fill="#3B2A20"/><path d="M28 98 L37 66 Q50 61 63 66 L72 98Z" fill="'+c+'"/><circle cx="50" cy="42" r="22" fill="#F5CBA7"/><path d="M28 42 Q28 17 50 17 Q72 17 72 42 Q64 28 50 30 Q36 28 28 42Z" fill="#3B2A20"/><circle cx="42" cy="45" r="2.8" fill="#1B2A4A" stroke="none"/><circle cx="58" cy="45" r="2.8" fill="#1B2A4A" stroke="none"/><path d="M42 53 Q50 60 58 53" fill="none" stroke-width="2.2"/>';},
+bed:function(c){c=KC(c||'blue');return '<rect x="10" y="56" width="80" height="24" rx="3" fill="#A9744A"/><rect x="8" y="28" width="11" height="56" rx="3" fill="#A9744A"/><rect x="82" y="46" width="9" height="38" rx="3" fill="#A9744A"/><rect x="19" y="44" width="63" height="16" rx="4" fill="#fff"/><path d="M42 44 H82 V60 H42Z" fill="'+c+'"/><rect x="22" y="38" width="24" height="12" rx="6" fill="#E8EEF8"/><rect x="12" y="82" width="6" height="8" fill="#A9744A"/><rect x="82" y="82" width="6" height="8" fill="#A9744A"/>';},
+table:function(c){c=KC(c||'brown');return '<rect x="10" y="38" width="80" height="10" rx="3" fill="'+c+'"/><rect x="18" y="48" width="8" height="40" fill="'+c+'"/><rect x="74" y="48" width="8" height="40" fill="'+c+'"/>';},
+chair:function(c){c=KC(c||'green');return '<rect x="30" y="10" width="40" height="36" rx="5" fill="'+c+'"/><path d="M40 16 V40 M50 16 V40 M60 16 V40" fill="none" stroke-opacity=".5"/><rect x="24" y="46" width="52" height="11" rx="3" fill="'+c+'"/><rect x="29" y="57" width="8" height="32" fill="'+c+'"/><rect x="63" y="57" width="8" height="32" fill="'+c+'"/>';},
+lamp:function(c){c=KC(c||'yellow');return '<path d="M32 18 H68 L80 52 H20Z" fill="'+c+'"/><rect x="46" y="52" width="8" height="30" fill="#7B8499"/><ellipse cx="50" cy="86" rx="20" ry="7" fill="#7B8499"/>';},
+window:function(c){return '<rect x="14" y="10" width="72" height="76" rx="4" fill="#9ED0F5"/><circle cx="33" cy="30" r="8" fill="#F2C14E" stroke="none"/><path d="M50 10 V86 M14 48 H86" fill="none" stroke-width="4"/><rect x="14" y="10" width="72" height="76" rx="4" fill="none" stroke-width="3.5"/><rect x="8" y="86" width="84" height="8" rx="2" fill="#A9744A"/>';},
+door:function(c){c=KC(c||'brown');return '<rect x="26" y="8" width="48" height="86" rx="4" fill="'+c+'"/><rect x="33" y="15" width="34" height="30" rx="3" fill="#000" fill-opacity=".15"/><rect x="33" y="52" width="34" height="34" rx="3" fill="#000" fill-opacity=".15"/><circle cx="65" cy="58" r="3.6" fill="#F2C14E"/>';},
+box:function(c){c=KC(c||'#C79A63');return '<rect x="16" y="42" width="68" height="46" rx="3" fill="'+c+'"/><rect x="43" y="42" width="14" height="46" fill="#E8D3A8" stroke="none"/><rect x="12" y="34" width="76" height="12" rx="3" fill="#D8B07F"/>';},
+bird:function(c){c=KC(c||'#4A90D9');return '<path d="M22 54 L6 46 L9 63Z" fill="'+c+'"/><ellipse cx="46" cy="58" rx="26" ry="20" fill="'+c+'"/><ellipse cx="52" cy="67" rx="16" ry="9" fill="#fff" fill-opacity=".75" stroke="none"/><path d="M30 55 Q42 41 56 57 Q42 68 30 55Z" fill="#2F6FDE"/><circle cx="68" cy="40" r="14" fill="'+c+'"/><path d="M80 37 L93 41 L80 46Z" fill="#F2A03B"/><circle cx="71" cy="37" r="2.6" fill="#1B2A4A" stroke="none"/><path d="M42 78 V90 M52 78 V90" fill="none" stroke-width="3"/>';},
+fish:function(c){c=KC(c||'#F29A3C');return '<path d="M24 50 L4 32 V68Z" fill="'+c+'"/><ellipse cx="54" cy="50" rx="32" ry="22" fill="'+c+'"/><path d="M44 31 Q56 14 68 31Z" fill="#E0523C"/><circle cx="72" cy="44" r="4.5" fill="#fff"/><circle cx="73" cy="44" r="2" fill="#1B2A4A" stroke="none"/><path d="M85 53 Q81 55 78 52" fill="none" stroke-width="2"/><path d="M44 42 Q50 50 44 58 M56 40 Q62 50 56 60" fill="none" stroke-opacity=".5" stroke-width="2"/>';},
+flower:function(c){c=KC(c||'pink');return '<path d="M50 46 V92" fill="none" stroke="#4CA76B" stroke-width="4.5"/><path d="M50 76 Q66 62 76 70 Q66 84 50 82Z" fill="#4CA76B"/><circle cx="50" cy="27" r="11" fill="'+c+'"/><circle cx="66" cy="38" r="11" fill="'+c+'"/><circle cx="60" cy="58" r="11" fill="'+c+'"/><circle cx="40" cy="58" r="11" fill="'+c+'"/><circle cx="34" cy="38" r="11" fill="'+c+'"/><circle cx="50" cy="44" r="9" fill="#F2C14E"/>';},
+tree:function(c){c=KC(c||'green');return '<rect x="44" y="56" width="12" height="36" rx="3" fill="#A9744A"/><circle cx="32" cy="50" r="17" fill="'+c+'"/><circle cx="68" cy="50" r="17" fill="'+c+'"/><circle cx="50" cy="34" r="25" fill="'+c+'"/>';},
+clock:function(c){return '<circle cx="50" cy="50" r="38" fill="#fff"/><path d="M50 17 V24 M83 50 H76 M50 83 V76 M17 50 H24" fill="none" stroke-width="3.5"/><path d="M50 50 V30 M50 50 L64 58" fill="none" stroke-width="4.5"/><circle cx="50" cy="50" r="3.5" fill="#1B2A4A"/>';}
+};
+function iconG(name,c){var f=ICON[name];return f?f(c):'';}
+var STY='stroke="#1B2A4A" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"';
+function iconSvg(name,c,cls){return '<svg class="'+(cls||'ico')+'" viewBox="0 0 100 100" role="img" aria-label="'+name+'" '+STY+'>'+iconG(name,c)+'</svg>';}
+function nest(name,x,y,s,c){return '<svg x="'+x+'" y="'+y+'" width="'+s+'" height="'+s+'" viewBox="0 0 100 100" overflow="visible" '+STY+'>'+iconG(name,c)+'</svg>';}
+function sceneWrap(w,h,inner,label){return '<svg class="scene" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+label+'" '+STY+'>'+inner+'</svg>';}
+var SCENE={
+park:function(){var s='<rect width="400" height="240" fill="#CFE8FF" stroke="none"/><circle cx="350" cy="40" r="22" fill="#F2C14E" stroke="none"/><rect y="150" width="400" height="90" fill="#8FD19E" stroke="none"/>';
+ s+=nest('tree',300,50,90,'green');
+ s+=nest('girl',22,62,120,'red')+nest('bag',122,120,62,'red')+nest('dog',182,128,68,'#C98F5A')+nest('big',250,120,70,'blue')+nest('boy',305,70,115,'blue')+nest('apple',225,185,36,'red')+nest('small',160,170,34,'yellow');
+ return sceneWrap(400,240,s,'Công viên: bé gái, bé trai, chó, bóng, cặp, táo');},
+room:function(){var s='<rect width="480" height="300" fill="#FBEFD5" stroke="none"/><rect y="222" width="480" height="78" fill="#D9B88F" stroke="none"/><path d="M0 222 H480" fill="none"/>';
+ s+=nest('window',26,24,100,'sky')+nest('flower',38,88,36,'pink')+nest('flower',84,88,36,'orange');
+ s+=nest('clock',196,22,56);
+ s+=nest('door',372,70,150);
+ s+=nest('box',36,238,52,'#C79A63')+nest('bed',8,148,140,'blue');
+ s+=nest('cat',234,244,48,'orange')+nest('table',198,190,112,'brown');
+ s+=nest('lamp',216,180,60,'yellow')+nest('book',262,206,36,'red')+nest('book',276,206,36,'green');
+ s+=nest('chair',146,196,86,'green')+nest('chair',296,196,86,'green')+nest('bird',322,176,44,'#4A90D9');
+ return sceneWrap(480,300,s,'Phòng ngủ: giường, bàn, hai ghế, đèn, hai quyển sách, mèo, chim, hộp, đồng hồ, cửa sổ, hai bông hoa');},
+inn:function(){var s='<rect width="100" height="100" fill="#EAF1FF" stroke="none"/>'+nest('ball',25,18,50,'red')+nest('box',0,10,100,'#C79A63');return sceneWrap(100,100,s,'quả bóng trong hộp');},
+on:function(){var s='<rect width="100" height="100" fill="#EAF1FF" stroke="none"/>'+nest('table',0,22,100,'brown')+nest('ball',30,26,40,'red');return sceneWrap(100,100,s,'quả bóng trên bàn');},
+under:function(){var s='<rect width="100" height="100" fill="#EAF1FF" stroke="none"/>'+nest('ball',34,60,32,'red')+nest('table',0,0,100,'brown');return sceneWrap(100,100,s,'quả bóng dưới bàn');}
+};
+
+/* Nội dung giai đoạn 1: tuần 1 và tuần 2. Giọng: f = nữ Anh, m = nam Anh, f2 và m2 = giọng phụ. */
+function V(w,icon,vi,c){return {w:w,icon:icon,c:c,vi:vi,au:A(w)};}
+function Q(q,opts,ans,why,x){var o={q:q,opts:opts,ans:ans,why:why||''};if(x){for(var k in x){o[k]=x[k];}}return o;}
+function G(pre,ans,post,x){var o={pre:pre,ans:ans,post:post};if(x){for(var k in x){o[k]=x[k];}}return o;}
+function S(h,au){return {h:h,au:au};}
+var TF=['True','False'];
+
+var WEEKS=[
+
+/* ============================== TUẦN 1 ============================== */
+{id:1,title:'Tuần 1',topic:'I am, he is, they are',
+ sub:'Động từ to be và âm cuối -s của danh từ số nhiều',
+ goals:['Nói và viết đúng I am, he/she/it is, we/you/they are','Dùng am/is/are trước tính từ: She is happy','Nghe được và nói được âm cuối -s: cat và cats'],
+ plan:'2 buổi (25 phút) và 4 bài về nhà (15 đến 20 phút)',
+ sections:[
+
+ {id:'b1',tab:'Buổi 1',title:'Ngữ pháp và Nói',mins:25,blocks:[
+  {t:'text',html:'<b>Hôm nay em học:</b><ul><li>12 từ mới: đồ dùng, con vật và hai tính từ big, small.</li><li>Cách dùng <b>am, is, are</b>.</li><li>Nói 3 câu để tả một bức tranh.</li></ul>'},
+  {t:'vocab',title:'12 từ mới',instr:'Bấm vào thẻ để nghe cô đọc, rồi đọc theo to và rõ. Chú ý âm cuối của từ.',items:[
+    V('bag','bag','cặp, ba lô','red'),V('book','book','quyển sách','blue'),V('pencil','pencil','bút chì','yellow'),V('ruler','ruler','cây thước','yellow'),
+    V('ball','ball','quả bóng','red'),V('cat','cat','con mèo'),V('dog','dog','con chó'),V('apple','apple','quả táo','red'),
+    V('boy','boy','bạn nam'),V('girl','girl','bạn nữ'),V('big','big','to, lớn','blue'),V('small','small','nhỏ, bé','blue')]},
+  {t:'rule',title:'am – is – are',
+   pics:[{icon:'boy',cap:'He is Tom.',au:A('He is Tom.')},{icon:'girl',cap:'She is Mia.',au:A('She is Mia.')},{icon:'cat',cap:'It is a cat.',au:A('It is a cat.')},{icon:['dog','dog'],cap:'They are dogs.',au:A('They are dogs.')}],
+   head:['Chủ ngữ','Dùng','Ví dụ'],
+   rows:[['I','am','I am Tom.',A('I am Tom.')],['He','is','He is a boy.',A('He is a boy.')],['She','is','She is a girl.',A('She is a girl.')],['It','is','It is a small cat.',A('It is a small cat.')],['We','are','We are friends.',A('We are friends.')],['You','are','You are my friend.',A('You are my friend.')],['They','are','They are big dogs.',A('They are big dogs.')]],
+   note:'<b>Mẹo nhớ:</b> <b>I</b> đi với <b>am</b>. <b>He, she, it</b> (một người hoặc một vật) đi với <b>is</b>. Còn lại (<b>we, you, they</b>) đi với <b>are</b>.<br><b>Lưu ý:</b> tiếng Việt có thể nói "Cô ấy rất vui" mà không cần "là". Tiếng Anh thì luôn cần am/is/are trước tính từ: <b>She is happy</b> (không nói <i>She happy</i>).'},
+  {t:'gap',title:'Điền am, is hoặc are',instr:'Gõ một từ vào chỗ trống rồi bấm Kiểm tra.',bank:['am','is','are'],qs:[
+    G('I ',['am'],' Tom.',{icon:'boy'}),G('She ',['is'],' a girl.',{icon:'girl'}),G('The cat ',['is'],' small.',{icon:'cat'}),G('They ',['are'],' dogs.',{icon:['dog','dog']}),
+    G('We ',['are'],' friends.',{icon:['boy','girl']}),G('The ball ',['is'],' big.',{icon:'big'}),G('You ',['are'],' my friend.'),G('He ',['is'],' happy.',{icon:'boy'})]},
+  {t:'mcq',title:'Chọn câu đúng',instr:'Chọn một đáp án cho mỗi câu.',qs:[
+    Q('Which sentence is correct?',['He am a boy.','He is a boy.','He are a boy.'],1,'He là một người nên dùng is.'),
+    Q('Which sentence is correct?',['She very happy.','She is very happy.','She are very happy.'],1,'Trước tính từ happy cần có is.'),
+    Q('The pencils ___ red.',['is','am','are'],2,'The pencils là nhiều cái, giống they, nên dùng are.'),
+    Q('I ___ nine.',['is','am','are'],1,'I luôn đi với am.'),
+    Q('My cat and my dog ___ big.',['is','are','am'],1,'Hai con (cat và dog) là they nên dùng are.')]},
+  {t:'speak',title:'Nói 3 câu về bức tranh',scene:'park',prompt:'Look at the picture. Tell me about it.',
+   frames:['This is a ___.','It is ___. (big, small, red, blue)','He is ___. / She is ___.','They are ___.'],
+   modelTitle:'Bài nói mẫu của cô',model:A('This is a park. The girl is happy. The bag is red. The dog is small. The ball is big and blue. The boy is happy too.'),
+   check:['Nói ít nhất 3 câu','Dùng đúng am, is, are','Có ít nhất 1 tính từ (big, small, red, blue)','Đọc rõ âm cuối: ball, bag, book']},
+  {t:'teacher',html:'<b>Phân bổ 25 phút:</b> 0–3 chào hỏi, ôn từ cũ · 3–9 từ mới (giáo viên đọc, trẻ chỉ tranh, rồi đọc theo) · 9–15 quy tắc am/is/are bằng 4 nhân vật · 15–20 bài điền từ · 20–25 nói về tranh.<br><b>Lỗi hay gặp của Simon:</b> bỏ am/is/are trước tính từ, dùng is cho they, nuốt âm cuối -s và -t.<br><b>Cách sửa:</b> không ngắt lời. Sau khi bé nói xong, nhắc lại câu đúng chậm, rồi cho bé nói lại một lần. Mục tiêu cuối buổi: 3 câu liên tiếp đúng.'}
+ ]},
+
+ {id:'b2',tab:'Buổi 2',title:'Nghe, Đọc và Âm cuối',mins:25,blocks:[
+  {t:'mcq',title:'Nghe và chọn tranh',instr:'Bấm nút nghe (nghe được nhiều lần) rồi chọn bức tranh đúng.',qs:[
+    Q('Listen. Which picture?',[{icon:'big',c:'blue'},{icon:'small',c:'blue'},{icon:'bag',c:'red'}],0,'',{au:A('It is a big ball.')}),
+    Q('Listen. Which picture?',[{icon:'apple',c:'red'},{icon:'apple',c:'green'},{icon:'book',c:'red'}],0,'',{au:A('The apple is red.')}),
+    Q('Listen. Which picture?',[{icon:'boy'},{icon:'girl'},{icon:'cat'}],1,'',{au:A('She is a girl.')}),
+    Q('Listen. Which picture?',[{icon:'book',c:'red'},{icon:'book',c:'blue'},{icon:'bag',c:'blue'}],1,'',{au:A('The book is blue.')})]},
+  {t:'gap',title:'Nghe và điền từ còn thiếu',instr:'Nghe cả câu rồi gõ từ còn thiếu (am, is hoặc are).',qs:[
+    G('They ',['are'],' friends.',{au:A('They are friends.')}),G('She ',['is'],' my teacher.',{au:A('She is my teacher.')}),G('I ',['am'],' nine.',{au:A('I am nine.')}),
+    G('The cat ',['is'],' small.',{au:A('The cat is small.')}),G('We ',['are'],' happy.',{au:A('We are happy.')})]},
+  {t:'sounds',title:'Âm cuối -s',instr:'Nghe từng cặp. Từ bên phải có thêm âm -s ở cuối. Hãy đọc to cả hai từ, đừng bỏ âm -s.',
+   head:['Một vật','Nhiều vật'],pairs:[['cat','cats'],['book','books'],['pen','pens'],['dog','dogs'],['bag','bags'],['ball','balls']],
+   tip:'<b>Mẹo phát âm:</b> khi đọc xong cat, hãy đặt đầu lưỡi sau răng cửa trên và đẩy hơi ra để tạo âm /s/. Đừng dừng ngay sau chữ t.'},
+  {t:'mcq',title:'Nghe: một vật hay nhiều vật?',instr:'Nghe một từ rồi chọn.',qs:[
+    Q('Em nghe thấy gì?',['Một vật','Nhiều vật'],1,'Từ là cats, có âm -s.',{au:A('cats')}),
+    Q('Em nghe thấy gì?',['Một vật','Nhiều vật'],0,'Từ là book.',{au:A('book')}),
+    Q('Em nghe thấy gì?',['Một vật','Nhiều vật'],1,'Từ là pens.',{au:A('pens')}),
+    Q('Em nghe thấy gì?',['Một vật','Nhiều vật'],0,'Từ là dog.',{au:A('dog')}),
+    Q('Em nghe thấy gì?',['Một vật','Nhiều vật'],1,'Từ là bags.',{au:A('bags')}),
+    Q('Em nghe thấy gì?',['Một vật','Nhiều vật'],0,'Từ là ball.',{au:A('ball')})]},
+  {t:'mcq',title:'Đọc hiểu: Tom and Mia',instr:'Nghe hoặc đọc đoạn văn, rồi trả lời.',
+   passage:'Tom and Mia are friends. Tom is nine and Mia is eight. They are in the park. Tom\'s dog is big and brown. Mia\'s cat is small and white. The dog and the cat are happy. They are friends too.',
+   passageAu:A('Tom and Mia are friends. Tom is nine and Mia is eight. They are in the park. Tom\'s dog is big and brown. Mia\'s cat is small and white. The dog and the cat are happy. They are friends too.'),
+   qs:[Q('How old is Mia?',['Seven','Eight','Nine'],1,'Mia is eight.'),
+       Q('Where are Tom and Mia?',['At school','At home','In the park'],2,'They are in the park.'),
+       Q('The cat is ___.',['big and brown','small and white','small and black'],1,'Mia\'s cat is small and white.'),
+       Q('The dog and the cat are friends.',TF,0,'Câu cuối: They are friends too.')]},
+  {t:'teacher',html:'<b>Phân bổ 25 phút:</b> 0–5 ôn từ mới và am/is/are · 5–12 nghe chọn tranh và nghe điền từ · 12–18 âm cuối -s (cho bé đặt tay trước miệng để cảm nhận hơi ra) · 18–25 đọc hiểu.<br><b>Kiểm tra nhanh cuối buổi:</b> hỏi miệng 3 câu: "What is it?" "Is the cat big?" "Are they friends?" Bé trả lời bằng câu đầy đủ.<br><b>Nếu bé sai nhiều ở nghe điền từ:</b> bé chưa nghe được am/is/are khi đọc nhanh. Cho nghe lại và gạch chân từ đó trên giấy.'}
+ ]},
+
+ {id:'h1',tab:'Về nhà 1',title:'Viết 3 đến 5 câu tả tranh',mins:20,blocks:[
+  {t:'text',html:'<b>Dạng bài: Viết.</b> Làm trong 15 đến 20 phút. Em làm phần khởi động trước, rồi viết vào vở.'},
+  {t:'gap',title:'Khởi động',instr:'Điền am, is hoặc are.',bank:['am','is','are'],qs:[G('The dog ',['is'],' small.'),G('Mia and Tom ',['are'],' happy.'),G('I ',['am'],' in the park.'),G('The girl ',['is'],' nine.')]},
+  {t:'scene',name:'park',cap:'Look at the picture.'},
+  {t:'text',html:'<b>Việc cần làm:</b> viết vào vở 3 đến 5 câu về bức tranh. Dùng các khung câu:<ul><li>The girl is ___.</li><li>The ball is ___.</li><li>The dog and the boy are ___.</li></ul>'},
+  {t:'model',title:'Xem bài mẫu sau khi viết xong',text:'The girl is happy. The bag is red. The dog is small. The ball is big and blue. The girl and the boy are in the park.',au:A('The girl is happy. The bag is red. The dog is small. The ball is big and blue. The girl and the boy are in the park.')},
+  {t:'check',title:'Phụ huynh kiểm tra cùng em',items:['Có ít nhất 3 câu','Mỗi câu bắt đầu bằng chữ hoa và kết thúc bằng dấu chấm','Dùng đúng am, is, are','Có ít nhất 1 tính từ']}
+ ]},
+
+ {id:'h2',tab:'Về nhà 2',title:'Nghe và nhắc lại',mins:15,blocks:[
+  {t:'text',html:'<b>Dạng bài: Nghe và nói theo (shadowing).</b> Nghe một câu, bấm dừng, nhắc lại thật to. Chú ý các chữ <b>in đậm</b>, đó là âm cuối em hay bỏ sót. Làm 2 lượt.'},
+  {t:'shadow',title:'8 câu nghe và nhắc lại',items:[
+    S('I am nine.',A('I am nine.')),S('He is a <b>boy</b>.',A('He is a boy.')),S('She is my <b>friend</b>.',A('She is my friend.')),S('The cat is <b>small</b>.',A('The cat is small.')),
+    S('The <b>books</b> are red.',A('The books are red.')),S('We are <b>happy</b>.',A('We are happy.')),S('They are big <b>dogs</b>.',A('They are big dogs.')),S('The <b>ball</b> and the <b>bag</b> are blue.',A('The ball and the bag are blue.'))]},
+  {t:'check',title:'Em tự kiểm tra',items:['Lượt 1: em nhắc lại đủ 8 câu','Lượt 2: em đọc rõ âm cuối -s, -l, -g, -d','Em đọc to và không nhìn vào chữ ở ít nhất 3 câu']}
+ ]},
+
+ {id:'h3',tab:'Về nhà 3',title:'Nói và ghi âm 1 phút',mins:20,blocks:[
+  {t:'text',html:'<b>Dạng bài: Nói.</b> Ghi âm giọng em nói 1 phút bằng điện thoại của ba mẹ rồi gửi cho cô qua Zalo. Nói chậm, rõ từng chữ.'},
+  {t:'speak',title:'Tell me about your friend',prompt:'Tell me about your best friend.',frames:['My friend is ___.','He is ___. / She is ___.','He is nine. / She is eight.','We are in class ___.','We are happy.'],
+   modelTitle:'Bài nói mẫu của cô',model:A('My friend is Nam. He is nine. He is tall and he is funny. We are in class four. We are happy at school.'),
+   check:['Nói đủ ít nhất 5 câu','Dùng đúng am, is, are','Nói chậm và rõ âm cuối','Không dùng tiếng Việt']},
+  {t:'check',title:'Phụ huynh kiểm tra',items:['Đã ghi âm xong và nghe lại một lần','Đã gửi file cho cô']}
+ ]},
+
+ {id:'h4',tab:'Về nhà 4',title:'Từ vựng và đọc ngắn',mins:20,blocks:[
+  {t:'text',html:'<b>Dạng bài: Từ vựng và đọc.</b> Ôn lại 12 từ mới và đọc một đoạn ngắn.'},
+  {t:'mcq',title:'What is it?',instr:'Nhìn hình và chọn từ đúng.',qs:[
+    Q('What is it?',['bag','book','ball'],0,'',{icon:'bag',c:'red'}),Q('What is it?',['pencil','ruler','apple'],1,'',{icon:'ruler'}),
+    Q('What is it?',['dog','cat','girl'],1,'',{icon:'cat'}),Q('What is it?',['boy','girl','book'],0,'',{icon:'boy'}),
+    Q('What is it?',['apple','ball','bag'],0,'',{icon:'apple'}),Q('The ball is ___.',['small','big'],1,'Quả bóng rất to nên dùng big.',{icon:'big',c:'blue'}),
+    Q('What is it?',['pencil','ruler','book'],0,'',{icon:'pencil'}),Q('What is it?',['dog','cat','boy'],0,'',{icon:'dog'})]},
+  {t:'mcq',title:'Read and answer',instr:'Đọc đoạn văn rồi trả lời.',
+   passage:'This is my bag. It is red. It is big. My book is in my bag. My ruler and my pencil are in my bag too. I am happy with my bag.',
+   passageAu:A('This is my bag. It is red. It is big. My book is in my bag. My ruler and my pencil are in my bag too. I am happy with my bag.'),
+   qs:[Q('What colour is the bag?',['Red','Blue','Green'],0,'It is red.'),Q('The bag is small.',TF,1,'Túi is big, không phải small.'),Q('What is in the bag?',['A book, a ruler and a pencil','A cat and a dog','A ball and an apple'],0,'My book, my ruler and my pencil are in my bag.')]}
+ ]}
+]},
+
+/* ============================== TUẦN 2 ============================== */
+{id:2,title:'Tuần 2',topic:'have, has và there is, there are',
+ sub:'Nói về đồ vật trong phòng: in, on, under, và âm cuối -es',
+ goals:['Dùng đúng have và has: I have, she has','Dùng there is và there are để nói có gì trong phòng','Dùng in, on, under để nói vị trí và nghe được âm cuối -es'],
+ plan:'2 buổi (25 phút) và 4 bài về nhà (15 đến 20 phút)',
+ sections:[
+
+ {id:'b1',tab:'Buổi 1',title:'Ngữ pháp và Nói',mins:25,blocks:[
+  {t:'text',html:'<b>Hôm nay em học:</b><ul><li>12 từ mới về căn phòng.</li><li><b>have</b> và <b>has</b>.</li><li><b>There is</b> và <b>there are</b>, cùng in, on, under.</li><li>Nói về căn phòng bằng 4 đến 5 câu.</li></ul>'},
+  {t:'vocab',title:'12 từ mới',instr:'Bấm vào thẻ để nghe, rồi đọc theo.',items:[
+    V('bed','bed','cái giường','blue'),V('table','table','cái bàn'),V('chair','chair','cái ghế','green'),V('lamp','lamp','cái đèn'),
+    V('window','window','cửa sổ'),V('door','door','cửa ra vào'),V('box','box','cái hộp'),V('bird','bird','con chim'),
+    V('fish','fish','con cá'),V('flower','flower','bông hoa'),V('tree','tree','cái cây'),V('clock','clock','đồng hồ')]},
+  {t:'rule',title:'have – has',
+   pics:[{icon:'cat',cap:'I have a cat.',au:A('I have a cat.')},{icon:['girl','bag'],cap:'She has a bag.',au:A('She has a bag.')},{icon:['boy','ball'],cap:'He has a ball.',au:A('He has a ball.')},{icon:['dog','dog'],cap:'They have two dogs.',au:A('They have two dogs.')}],
+   head:['Chủ ngữ','Dùng','Ví dụ'],
+   rows:[['I','have','I have a book.',A('I have a book.')],['You','have','You have a pencil.',A('You have a pencil.')],['We','have','We have a big box.',A('We have a big box.')],['They','have','They have two cats.',A('They have two cats.')],['He','has','He has a ball.',A('He has a ball.')],['She','has','She has a red bag.',A('She has a red bag.')],['It','has','It has a blue ball.',A('It has a blue ball.')]],
+   note:'<b>Mẹo nhớ:</b> <b>he, she, it</b> đi với <b>has</b>. Tất cả các chủ ngữ còn lại đi với <b>have</b>. Giống như is: he, she, it luôn là nhóm riêng.'},
+  {t:'rule',title:'There is – There are',
+   pics:[{icon:'bed',cap:'There is a bed.',au:A('There is a bed.')},{icon:['chair','chair'],cap:'There are two chairs.',au:A('There are two chairs.')}],
+   head:['Mẫu câu','Khi nào dùng','Ví dụ'],
+   rows:[['There is','một vật','There is a lamp on the table.',A('There is a lamp on the table.')],['There are','từ hai vật trở lên','There are two books on the table.',A('There are two books on the table.')],['Is there ...?','hỏi có một vật không','Is there a fish? No, there isn\'t.',A('Is there a fish? No, there isn\'t.')]],
+   note:'<b>Mẹo nhớ:</b> nhìn vào vật đứng sau: một vật thì <b>is</b>, nhiều vật thì <b>are</b> (There are <b>two</b> chairs).'},
+  {t:'pics',title:'in – on – under',items:[{scene:'inn',cap:'in the box',au:A('The ball is in the box.')},{scene:'on',cap:'on the table',au:A('The ball is on the table.')},{scene:'under',cap:'under the table',au:A('The ball is under the table.')}],
+   note:'<b>in</b> = bên trong · <b>on</b> = ở trên, chạm vào mặt · <b>under</b> = ở dưới.'},
+  {t:'gap',title:'Điền have hoặc has',instr:'Gõ một từ rồi bấm Kiểm tra.',bank:['have','has'],qs:[
+    G('I ',['have'],' a book.',{icon:'book'}),G('She ',['has'],' a cat.',{icon:['girl','cat']}),G('They ',['have'],' two dogs.',{icon:['dog','dog']}),
+    G('My brother ',['has'],' a ball.',{icon:['boy','ball']}),G('We ',['have'],' a big box.',{icon:'box'}),G('The dog ',['has'],' a big ball.',{icon:['dog','big']})]},
+  {t:'gap',title:'Điền is hoặc are',instr:'Điền is hoặc are sau There.',bank:['is','are'],qs:[
+    G('There ',['is'],' a bed in the room.',{icon:'bed'}),G('There ',['are'],' two chairs.',{icon:['chair','chair']}),G('There ',['is'],' a cat under the table.',{icon:'cat'}),
+    G('There ',['are'],' two flowers on the window.',{icon:['flower','flower']}),G('There ',['is'],' a clock on the wall.',{icon:'clock'}),G('There ',['are'],' two books.',{icon:['book','book']})]},
+  {t:'mcq',title:'Nhìn phòng và trả lời',instr:'Nhìn kỹ bức tranh rồi chọn đáp án.',scene:'room',qs:[
+    Q('How many chairs are there?',['One','Two','Three'],1,'Có hai cái ghế.'),
+    Q('Where is the cat?',['On the bed','Under the table','In the box'],1,'Con mèo ở dưới cái bàn.'),
+    Q('What is on the table?',['A lamp and two books','A fish and a bird','A cat'],0,'Trên bàn có đèn và hai quyển sách.'),
+    Q('Is there a fish in the room?',['Yes, there is.','No, there isn\'t.'],1,'Trong phòng không có con cá nào.'),
+    Q('Where is the box?',['Under the bed','On the table','In the tree'],0,'Cái hộp ở dưới giường.'),
+    Q('Where is the bird?',['On the chair','In the box','Under the bed'],0,'Con chim đậu trên ghế.')]},
+  {t:'speak',title:'Tả căn phòng',scene:'room',prompt:'Look at the room. What can you see?',
+   frames:['There is a ___ in the room.','There are two ___.','There is a ___ on / under / in the ___.'],
+   modelTitle:'Bài nói mẫu của cô',model:A('There is a bed in the room. There are two chairs. There is a lamp on the table. There are two books on the table. There is a cat under the table. There is a bird on the chair.'),
+   check:['Nói ít nhất 4 câu','Dùng đúng There is và There are','Có ít nhất 2 từ chỉ vị trí (in, on, under)','Đọc rõ âm cuối -s: chairs, books']},
+  {t:'teacher',html:'<b>Phân bổ 25 phút:</b> 0–3 ôn tuần 1 (hỏi nhanh am/is/are) · 3–9 từ mới · 9–13 have và has · 13–18 there is, there are, in, on, under · 18–22 bài điền từ và nhìn phòng trả lời · 22–25 tả phòng.<br><b>Lỗi hay gặp:</b> dùng has với I, have với he, nói There is two chairs, quên a trước danh từ số ít.<br><b>Cách sửa:</b> gạch chân chủ ngữ trên bảng, khoanh he, she, it bằng một màu. Với there is và there are, cho bé đếm số vật thật bằng ngón tay rồi mới chọn.'}
+ ]},
+
+ {id:'b2',tab:'Buổi 2',title:'Nghe, Đọc và Âm cuối',mins:25,blocks:[
+  {t:'mcq',title:'Nghe và chọn tranh',instr:'Nghe câu rồi chọn tranh đúng.',qs:[
+    Q('Listen. Where is the ball?',[{scene:'inn'},{scene:'on'},{scene:'under'}],1,'',{au:A('The ball is on the table.')}),
+    Q('Listen. Where is the ball?',[{scene:'inn'},{scene:'on'},{scene:'under'}],2,'',{au:A('The ball is under the table.')}),
+    Q('Listen. Where is the ball?',[{scene:'inn'},{scene:'on'},{scene:'under'}],0,'',{au:A('The ball is in the box.')}),
+    Q('Listen. Which picture?',[{icon:'bird'},{icon:'fish'},{icon:'cat'}],1,'',{au:A('There is a fish.')})]},
+  {t:'mcq',title:'Nghe hội thoại',instr:'Nghe cuộc nói chuyện rồi chọn đáp án.',qs:[
+    Q('Where is the book?',['On the table','In the box','Under the bed'],0,'',{au:D([['m','Mum, where is my book?'],['f','It is on the table, Tom.']])}),
+    Q('Where is the cat?',['Under the chair','In the box','On the bed'],1,'',{au:D([['f2','Dad, where is my cat?'],['m','It is in the box, Mia.']])}),
+    Q('Where is the ball?',['In the box','Under the chair','Under the bed'],2,'',{au:D([['m','Is the ball under the chair?'],['f2','No, it is under the bed.']])}),
+    Q('How many chairs are there?',['Three','Four','Five'],1,'',{au:D([['f','How many chairs are there?'],['m','There are four chairs.']])})]},
+  {t:'sounds',title:'Âm cuối -es (hai âm tiết)',instr:'Nghe từng cặp. Từ bên phải dài hơn vì có thêm âm tiết /ɪz/ ở cuối: box là 1 âm tiết, boxes là 2 âm tiết.',
+   head:['Một vật','Nhiều vật'],pairs:[['box','boxes'],['bus','buses'],['class','classes'],['watch','watches']],
+   tip:'<b>Mẹo phát âm:</b> sau box, hãy đọc thêm một nhịp "iz": box – bo-xiz. Vỗ tay một nhịp cho box và hai nhịp cho boxes.'},
+  {t:'mcq',title:'Nghe: một nhịp hay hai nhịp?',instr:'Nghe một từ rồi chọn số âm tiết.',qs:[
+    Q('Từ em nghe có mấy âm tiết?',['1','2'],1,'Từ là boxes: box-es.',{au:A('boxes')}),
+    Q('Từ em nghe có mấy âm tiết?',['1','2'],0,'Từ là bus.',{au:A('bus')}),
+    Q('Từ em nghe có mấy âm tiết?',['1','2'],1,'Từ là watches.',{au:A('watches')}),
+    Q('Từ em nghe có mấy âm tiết?',['1','2'],0,'Từ là class.',{au:A('class')}),
+    Q('Từ em nghe có mấy âm tiết?',['1','2'],1,'Từ là buses.',{au:A('buses')}),
+    Q('Từ em nghe có mấy âm tiết?',['1','2'],0,'Từ là watch.',{au:A('watch')})]},
+  {t:'mcq',title:'Đọc hiểu: Mia\'s room',instr:'Nghe hoặc đọc đoạn văn, rồi trả lời.',
+   passage:'This is Mia\'s room. There is a small bed and a blue lamp. There are two chairs and a table. Mia has a cat. The cat is under the table. Mia has two books. They are on the table. Mia is happy in her room.',
+   passageAu:A('This is Mia\'s room. There is a small bed and a blue lamp. There are two chairs and a table. Mia has a cat. The cat is under the table. Mia has two books. They are on the table. Mia is happy in her room.'),
+   qs:[Q('What colour is the lamp?',['Blue','Red','Yellow'],0,'There is a blue lamp.'),Q('How many chairs are there?',['One','Two','Three'],1,'There are two chairs.'),
+       Q('Where is the cat?',['On the bed','In the box','Under the table'],2,'The cat is under the table.'),Q('Mia has three books.',TF,1,'Mia has two books, không phải ba.')]},
+  {t:'teacher',html:'<b>Phân bổ 25 phút:</b> 0–5 ôn have/has, there is/are · 5–12 nghe chọn tranh và nghe hội thoại · 12–18 âm cuối -es · 18–25 đọc hiểu.<br><b>Nghe hội thoại:</b> bé chỉ cần bắt từ khóa vị trí (on, in, under) và số lượng. Nếu bé sai, cho nghe lại và bảo bé gạch chân từ vị trí.<br><b>Kiểm tra nhanh cuối buổi:</b> chỉ vào đồ vật thật trong phòng hoặc trong tranh và hỏi: "Where is the ...?" "How many ... are there?"'}
+ ]},
+
+ {id:'h1',tab:'Về nhà 1',title:'Viết 4 đến 5 câu tả phòng',mins:20,blocks:[
+  {t:'text',html:'<b>Dạng bài: Viết.</b> Làm khởi động trước, rồi viết vào vở.'},
+  {t:'gap',title:'Khởi động',instr:'Điền have, has, is hoặc are.',bank:['have','has','is','are'],qs:[G('She ',['has'],' a red bag.'),G('There ',['are'],' two chairs.'),G('I ',['have'],' a big box.'),G('There ',['is'],' a clock on the wall.')]},
+  {t:'scene',name:'room',cap:'Look at the room.'},
+  {t:'text',html:'<b>Việc cần làm:</b> viết vào vở 4 đến 5 câu về căn phòng. Dùng các khung câu:<ul><li>There is a ___ in the room.</li><li>There are two ___.</li><li>The ___ is on / under / in the ___.</li></ul>'},
+  {t:'model',title:'Xem bài mẫu sau khi viết xong',text:'There is a bed in the room. There are two chairs. There is a lamp on the table. The cat is under the table. The box is under the bed.',au:A('There is a bed in the room. There are two chairs. There is a lamp on the table. The cat is under the table. The box is under the bed.')},
+  {t:'check',title:'Phụ huynh kiểm tra cùng em',items:['Có ít nhất 4 câu','Dùng đúng There is và There are','Có ít nhất 2 từ in, on hoặc under','Mỗi câu bắt đầu bằng chữ hoa và kết thúc bằng dấu chấm']}
+ ]},
+
+ {id:'h2',tab:'Về nhà 2',title:'Nghe và nhắc lại',mins:15,blocks:[
+  {t:'text',html:'<b>Dạng bài: Nghe và nói theo.</b> Nghe một câu, bấm dừng, nhắc lại thật to. Chú ý các chữ <b>in đậm</b>. Làm 2 lượt.'},
+  {t:'shadow',title:'8 câu nghe và nhắc lại',items:[
+    S('I <b>have</b> a <b>box</b>.',A('I have a box.')),S('She <b>has</b> a cat.',A('She has a cat.')),S('There is a <b>bed</b> in the room.',A('There is a bed in the room.')),S('There are two <b>chairs</b>.',A('There are two chairs.')),
+    S('The <b>ball</b> is <b>on</b> the table.',A('The ball is on the table.')),S('The cat is <b>under</b> the table.',A('The cat is under the table.')),S('There are two <b>boxes</b> under the bed.',A('There are two boxes under the bed.')),S('The <b>bird</b> is on the <b>chair</b>.',A('The bird is on the chair.'))]},
+  {t:'check',title:'Em tự kiểm tra',items:['Lượt 1: em nhắc lại đủ 8 câu','Lượt 2: em đọc rõ âm cuối -s, -d, -r','Em nói đúng nhịp hai âm tiết ở boxes']}
+ ]},
+
+ {id:'h3',tab:'Về nhà 3',title:'Nói và ghi âm 1 phút',mins:20,blocks:[
+  {t:'text',html:'<b>Dạng bài: Nói.</b> Ghi âm giọng em nói 1 phút bằng điện thoại của ba mẹ rồi gửi cho cô qua Zalo.'},
+  {t:'speak',title:'Tell me about your bedroom',prompt:'Tell me about your bedroom.',frames:['There is a ___ in my room.','There are two ___.','I have a ___.','My ___ is on / under / in the ___.'],
+   modelTitle:'Bài nói mẫu của cô',model:A('There is a bed in my room. There is a small table. There are two chairs. I have a blue lamp. My books are on the table. I am happy in my room.'),
+   check:['Nói đủ ít nhất 5 câu','Dùng đúng there is, there are, have','Có từ chỉ vị trí in, on, under','Nói chậm và rõ âm cuối']},
+  {t:'check',title:'Phụ huynh kiểm tra',items:['Đã ghi âm xong và nghe lại một lần','Đã gửi file cho cô']}
+ ]},
+
+ {id:'h4',tab:'Về nhà 4',title:'Từ vựng và đọc ngắn',mins:20,blocks:[
+  {t:'text',html:'<b>Dạng bài: Từ vựng và đọc.</b> Ôn từ vựng về căn phòng và đọc một đoạn ngắn.'},
+  {t:'mcq',title:'What is it?',instr:'Nhìn hình và chọn từ đúng.',qs:[
+    Q('What is it?',['bed','box','door'],0,'',{icon:'bed'}),Q('What is it?',['chair','table','lamp'],1,'',{icon:'table'}),Q('What is it?',['window','door','clock'],1,'',{icon:'door'}),
+    Q('What is it?',['bird','fish','flower'],2,'',{icon:'flower'}),Q('What is it?',['tree','flower','lamp'],0,'',{icon:'tree'}),Q('What is it?',['clock','window','lamp'],0,'',{icon:'clock'}),
+    Q('What is it?',['bird','fish','cat'],1,'',{icon:'fish'}),Q('What is it?',['lamp','chair','box'],0,'',{icon:'lamp'})]},
+  {t:'mcq',title:'Read and answer',instr:'Đọc đoạn văn rồi trả lời.',
+   passage:'Tom has a box. There is a ball in the box. There are two pencils in the box too. The box is on the chair. Tom has a cat. The cat is under the chair.',
+   passageAu:A('Tom has a box. There is a ball in the box. There are two pencils in the box too. The box is on the chair. Tom has a cat. The cat is under the chair.'),
+   qs:[Q('What is in the box?',['A ball and two pencils','A cat','Two balls'],0,'There is a ball and two pencils in the box.'),Q('Where is the box?',['On the chair','Under the chair','On the table'],0,'The box is on the chair.'),Q('The cat is on the chair.',TF,1,'The cat is under the chair, không phải on.')]}
+ ]}
+]}
+
+];
+
+/* Âm thanh cho từng từ trong bảng cặp từ */
+WEEKS.forEach(function(w){w.sections.forEach(function(s){s.blocks.forEach(function(b){
+  if(b.t==='sounds'){b.aus=b.pairs.map(function(p){return [A(p[0]),A(p[1])];});}
+});});});
+
+(function(){
+"use strict";
+var STORE='yle-stage1-v1';
+var ST={week:1,sec:'b1',teacher:false,view:'map',user:null};
+var API_URL='';/* Dán địa chỉ Web App của Google Apps Script vào đây. Để trống = chế độ thử, chỉ lưu trên máy. */
+var SESSION='yle-session';
+var P={};
+var saveTimer=null;
+function userKey(){return ST.user?(ST.user.name+'|'+ST.user.code):'guest';}
+function setSync(t){var el=document.getElementById('syncMsg');if(el){el.textContent=t;}}
+function api(payload){
+  return fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)}).then(function(r){return r.json();});
+}
+function pushRemote(){
+  if(!API_URL||!ST.user){return;}
+  api({action:'lr_save',name:ST.user.name,code:ST.user.code,progress:P})
+  .then(function(j){setSync(j.ok?'Đã lưu lên Google Sheet':'Lỗi lưu: '+(j.error||''));})
+  .catch(function(){setSync('Chưa lưu được lên Google Sheet');});
+}
+function save(){
+  try{localStorage.setItem(STORE+':'+userKey(),JSON.stringify(P));}catch(e){}
+  if(API_URL&&ST.user){setSync('Đang lưu...');clearTimeout(saveTimer);saveTimer=setTimeout(pushRemote,1200);}
+}
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function norm(s){return String(s||'').toLowerCase().replace(/[‘’]/g,"'").replace(/\s+/g,' ').trim();}
+var VOICE_NAME={f:'Giọng nữ',m:'Giọng nam',f2:'Giọng nữ 2',m2:'Giọng nam 2'};
+
+/* ---------- âm thanh ---------- */
+var AUTXT={}, AUEL={}, curBtn=null, curAudio=null;
+var SPK='<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8.500a5 5 0 0 1 0 7M18.500 6a8.500 8.500 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+function auBtn(au,label){
+  var id=aid(au);AUTXT[id]=auText(au);
+  if(label){return '<button type="button" class="playlong" data-au="'+id+'">'+SPK+esc(label)+'</button>';}
+  return '<button type="button" class="play" data-au="'+id+'" aria-label="Nghe">'+SPK+'</button>';
+}
+function stopAll(){
+  try{if(window.speechSynthesis){window.speechSynthesis.cancel();}}catch(e){}
+  if(curAudio){try{curAudio.pause();}catch(e){}}
+  if(curBtn){curBtn.classList.remove('on');curBtn=null;}
+}
+function speakFallback(text,btn){
+  try{
+    var syn=window.speechSynthesis;if(!syn||typeof SpeechSynthesisUtterance==='undefined'){return;}
+    var u=new SpeechSynthesisUtterance(text);u.lang='en-GB';u.rate=0.8;
+    var vs=syn.getVoices();var gb=vs.filter(function(x){return /^en[-_]GB/i.test(x.lang);});
+    var pref=/daniel|serena|kate|libby|sonia|oliver|martha|google uk/i;
+    var v=gb.filter(function(x){return pref.test(x.name);})[0]||gb[0]||vs.filter(function(x){return /^en/i.test(x.lang);})[0];
+    if(v){u.voice=v;u.lang=v.lang;}
+    u.onend=function(){if(btn){btn.classList.remove('on');}};
+    syn.speak(u);
+  }catch(e){}
+}
+function playAu(btn){
+  var id=btn.getAttribute('data-au');
+  var same=(curBtn===btn);
+  stopAll();
+  if(same){return;}
+  curBtn=btn;btn.classList.add('on');
+  var a=AUEL[id];
+  if(!a){a=new Audio('audio/'+id+'.mp3');a.preload='auto';AUEL[id]=a;a.addEventListener('ended',function(){if(curBtn===btn){btn.classList.remove('on');curBtn=null;}});}
+  curAudio=a;
+  try{a.currentTime=0;}catch(e){}
+  var p=a.play();
+  if(p&&p.catch){p.catch(function(){speakFallback(AUTXT[id],btn);});}
+}
+
+/* ---------- hình ---------- */
+function pics(icon,c){
+  if(Array.isArray(icon)){return icon.map(function(n){return iconSvg(n,c);}).join('');}
+  return iconSvg(icon,c);
+}
+function one(x){
+  if(x.scene){return '<span class="optpic">'+SCENE[x.scene]()+'</span>';}
+  return '<span class="optpic">'+iconSvg(x.icon,x.c)+'</span>';
+}
+function optHtml(o){
+  if(typeof o==='string'){return esc(o);}
+  return one(o)+(o.l?'<span>'+esc(o.l)+'</span>':'');
+}
+
+/* ---------- khối nội dung ---------- */
+function bid(b){return 'w'+ST.week+'.'+ST.sec+'.'+b;}
+function actions(){return '<div class="actions"><button type="button" class="btn" data-act="check">Kiểm tra</button><button type="button" class="btn ghost" data-act="reset">Làm lại</button><span class="score" aria-live="polite"></span></div>';}
+function tkeyMcq(q){
+  var o=q.opts[q.ans];var t=typeof o==='string'?o:(o.l||('hình '+(q.ans+1)));
+  var s='Đáp án: '+esc(t);
+  if(q.au){s+=' · Lời nghe: "'+esc(auText(q.au))+'"';}
+  return '<div class="tkey">'+s+'</div>';
+}
+function rText(b){return '<section class="textblk">'+b.html+'</section>';}
+function rTeacher(b){return ST.teacher?'<aside class="teacher"><b>Dành cho giáo viên.</b> '+b.html+'</aside>':'';}
+function rScene(b){return '<section class="blk"><div class="scenebox">'+SCENE[b.name]()+'</div>'+(b.cap?'<p class="muted">'+esc(b.cap)+'</p>':'')+'</section>';}
+function rVocab(b){
+  var h='<section class="blk"><h3>'+esc(b.title)+'</h3><p class="muted">'+esc(b.instr)+'</p><div class="vgrid">';
+  b.items.forEach(function(it){var id=aid(it.au);AUTXT[id]=it.w;
+    h+='<button type="button" class="vcard" data-au="'+id+'"><div class="tile sm">'+iconSvg(it.icon,it.c)+'</div><span class="w">'+esc(it.w)+'</span><span class="vi">'+esc(it.vi)+'</span></button>';});
+  return h+'</div></section>';
+}
+function rRule(b){
+  var h='<section class="blk"><h3>'+esc(b.title)+'</h3>';
+  if(b.pics){h+='<div class="pics">';b.pics.forEach(function(p){h+='<div class="pic"><div class="tile">'+pics(p.icon)+'</div><div class="cap">'+esc(p.cap)+auBtn(p.au)+'</div></div>';});h+='</div>';}
+  h+='<div class="tblwrap"><table><thead><tr>'+b.head.map(function(x){return '<th>'+esc(x)+'</th>';}).join('')+'</tr></thead><tbody>';
+  b.rows.forEach(function(r){h+='<tr><td><b>'+esc(r[0])+'</b></td><td class="key">'+esc(r[1])+'</td><td><div class="row">'+esc(r[2])+auBtn(r[3])+'</div></td></tr>';});
+  h+='</tbody></table></div>';
+  if(b.note){h+='<div class="note">'+b.note+'</div>';}
+  return h+'</section>';
+}
+function rPics(b){
+  var h='<section class="blk"><h3>'+esc(b.title)+'</h3><div class="pics">';
+  b.items.forEach(function(p){h+='<div class="pic">'+(p.scene?'<div class="scenebox">'+SCENE[p.scene]()+'</div>':'<div class="tile">'+pics(p.icon)+'</div>')+'<div class="cap">'+esc(p.cap)+auBtn(p.au)+'</div></div>';});
+  h+='</div>';if(b.note){h+='<div class="note">'+b.note+'</div>';}
+  return h+'</section>';
+}
+function rMcq(b,id){
+  var s=P[id]||{};var a=s.a||[];
+  var h='<section class="blk" data-b="'+id+'" data-t="mcq"><h3>'+esc(b.title)+'</h3>';
+  if(b.instr){h+='<p class="muted">'+esc(b.instr)+'</p>';}
+  if(b.scene){h+='<div class="scenebox">'+SCENE[b.scene]()+'</div>';}
+  if(b.passage){h+='<div class="passage">'+(b.passageAu?'<div>'+auBtn(b.passageAu,'Nghe cả đoạn')+'</div>':'')+'<p>'+esc(b.passage)+'</p></div>';}
+  b.qs.forEach(function(q,i){
+    var picOpts=q.opts.some(function(o){return typeof o!=='string';});
+    h+='<div class="q" data-i="'+i+'"><div class="qh"><span class="qn">'+(i+1)+'</span>'+(q.au?auBtn(q.au):'')+'<span class="qt">'+esc(q.q)+'</span></div>';
+    if(q.icon){h+='<div class="tile">'+pics(q.icon,q.c)+'</div>';}
+    h+='<div class="opts'+(picOpts?' pic':'')+'" role="radiogroup" aria-label="Câu '+(i+1)+'">';
+    q.opts.forEach(function(o,k){var oid=id+'-'+i+'-'+k;
+      h+='<label class="opt" for="'+oid+'"><input type="radio" id="'+oid+'" name="'+id+'-'+i+'" value="'+k+'"'+(a[i]===k?' checked':'')+'><span class="ot">'+optHtml(o)+'</span></label>';});
+    h+='</div><div class="fb"></div>'+(ST.teacher?tkeyMcq(q):'')+'</div>';
+  });
+  return h+actions()+'</section>';
+}
+function rGap(b,id){
+  var s=P[id]||{};var a=s.a||[];
+  var h='<section class="blk" data-b="'+id+'" data-t="gap"><h3>'+esc(b.title)+'</h3><p class="muted">'+esc(b.instr)+'</p>';
+  if(b.bank){h+='<div class="bank">'+b.bank.map(function(x){return '<span class="chip">'+esc(x)+'</span>';}).join('')+'</div>';}
+  b.qs.forEach(function(q,i){
+    h+='<div class="q gapq" data-i="'+i+'"><div class="qh"><span class="qn">'+(i+1)+'</span>'+(q.au?auBtn(q.au):'')+(q.icon?'<div class="tile sm">'+pics(q.icon)+'</div>':'')+'</div>';
+    h+='<div class="line"><span>'+esc(q.pre)+'</span><input type="text" class="gap" id="'+id+'-'+i+'" value="'+esc(a[i]||'')+'" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Câu '+(i+1)+'"><span>'+esc(q.post)+'</span></div>';
+    h+='<div class="fb"></div>'+(ST.teacher?'<div class="tkey">Đáp án: '+esc(q.ans.join(' / '))+(q.au?' · Lời nghe: "'+esc(auText(q.au))+'"':'')+'</div>':'')+'</div>';
+  });
+  return h+actions()+'</section>';
+}
+function rSounds(b){
+  var h='<section class="blk"><h3>'+esc(b.title)+'</h3><p class="muted">'+esc(b.instr)+'</p><div class="tblwrap"><table><thead><tr>'+b.head.map(function(x){return '<th>'+esc(x)+'</th>';}).join('')+'</tr></thead><tbody>';
+  b.pairs.forEach(function(p,i){h+='<tr><td><div class="row"><b>'+esc(p[0])+'</b>'+auBtn(b.aus[i][0])+'</div></td><td><div class="row"><b class="key">'+esc(p[1])+'</b>'+auBtn(b.aus[i][1])+'</div></td></tr>';});
+  h+='</tbody></table></div>';if(b.tip){h+='<div class="tip">'+b.tip+'</div>';}
+  return h+'</section>';
+}
+function rSpeak(b,id){
+  var s=P[id]||{};var a=s.a||[];
+  var h='<section class="blk" data-b="'+id+'" data-t="check"><h3>'+esc(b.title)+'</h3>';
+  if(b.scene){h+='<div class="scenebox">'+SCENE[b.scene]()+'</div>';}
+  h+='<p class="prompt">'+esc(b.prompt)+'</p><div><b>Khung câu gợi ý</b><ul class="frames">'+b.frames.map(function(f){return '<li>'+esc(f)+'</li>';}).join('')+'</ul></div>';
+  h+='<details><summary>'+esc(b.modelTitle)+'</summary><div style="display:grid;gap:8px">'+auBtn(b.model,'Nghe bài mẫu')+'<p>'+esc(auText(b.model))+'</p></div></details>';
+  h+='<div><b>Em tự kiểm tra</b><div class="checks">'+b.check.map(function(c,i){return '<label><input type="checkbox" data-i="'+i+'"'+(a[i]?' checked':'')+'><span>'+esc(c)+'</span></label>';}).join('')+'</div></div>';
+  return h+'</section>';
+}
+function rShadow(b){
+  var h='<section class="blk"><h3>'+esc(b.title)+'</h3><ol class="shadow">';
+  b.items.forEach(function(it,i){h+='<li>'+auBtn(it.au)+'<span>'+it.h+'</span></li>';});
+  return h+'</ol></section>';
+}
+function rModel(b){
+  return '<section class="blk"><details><summary>'+esc(b.title)+'</summary><div style="display:grid;gap:8px">'+auBtn(b.au,'Nghe bài mẫu')+'<p>'+esc(b.text)+'</p></div></details></section>';
+}
+function rCheck(b,id){
+  var s=P[id]||{};var a=s.a||[];
+  return '<section class="blk" data-b="'+id+'" data-t="check"><h3>'+esc(b.title)+'</h3><div class="checks">'+b.items.map(function(c,i){return '<label><input type="checkbox" data-i="'+i+'"'+(a[i]?' checked':'')+'><span>'+esc(c)+'</span></label>';}).join('')+'</div></section>';
+}
+function collectAudio(node,out){
+  if(!node||typeof node!=='object'){return;}
+  if(Array.isArray(node)){node.forEach(function(x){collectAudio(x,out);});return;}
+  if(node.segs&&Array.isArray(node.segs)){var id=aid(node);if(!out.map[id]){out.map[id]=1;out.list.push({id:id,au:node});}return;}
+  for(var k in node){collectAudio(node[k],out);}
+}
+function rScript(w){
+  var out={map:{},list:[]};collectAudio(w.sections,out);
+  var h='<section class="blk"><h3>Kịch bản thu âm</h3><p class="muted">Có '+out.list.length+' file âm thanh. Hiện đang dùng giọng Anh-Anh do máy tạo. Nếu thu giọng thật, hãy lưu đúng tên file bên dưới (dạng mp3) rồi gửi lại để thay vào trang.</p>';
+  h+='<div class="actions"><button type="button" class="btn sm" data-act="copyscript">Sao chép kịch bản</button><span class="score" id="scriptMsg" aria-live="polite"></span></div><div class="script">';
+  out.list.forEach(function(x,i){
+    var lines=x.au.segs.map(function(s){return '<div><b>'+esc(VOICE_NAME[s.v]||s.v)+':</b> '+esc(s.t)+'</div>';}).join('');
+    h+='<div class="it"><code>audio/'+esc(x.id)+'.mp3'+(x.au.s?' · đọc chậm':'')+'</code>'+lines+'</div>';
+  });
+  return h+'</div></section>';
+}
+function scriptText(w){
+  var out={map:{},list:[]};collectAudio(w.sections,out);
+  return out.list.map(function(x){return 'audio/'+x.id+'.mp3'+(x.au.s?' (đọc chậm)':'')+'\n'+x.au.segs.map(function(s){return (VOICE_NAME[s.v]||s.v)+': '+s.t;}).join('\n');}).join('\n\n');
+}
+
+/* ---------- lộ trình theo ngày ---------- */
+var DAYMAP=[{s:'b1',k:'Bài học'},{s:'h1',k:'Bài tập'},{s:'h2',k:'Bài tập'},{s:'b2',k:'Bài học'},{s:'h3',k:'Bài tập'},{s:'h4',k:'Bài tập'}];
+var CLASS_ROWS=null,CLASS_ERR='';
+function weekById(id){return WEEKS.filter(function(w){return w.id===id;})[0];}
+function weekObj(){return weekById(ST.week);}
+function secById(w,s){return w.sections.filter(function(x){return x.id===s;})[0];}
+function secObj(w){return secById(w,ST.sec);}
+function doneMap(){if(!P._done){P._done={};}return P._done;}
+function isDone(wid,s){return !!doneMap()['w'+wid+'.'+s];}
+function unlockWeek(){return (ST.user&&ST.user.unlockWeek)||1;}
+function isLocked(wid){return !ST.teacher&&wid>unlockWeek();}
+function dayNo(wid,idx){return (wid-1)*6+idx+1;}
+function dayIdx(s){for(var i=0;i<DAYMAP.length;i++){if(DAYMAP[i].s===s){return i;}}return -1;}
+function flatDays(){var a=[];WEEKS.forEach(function(w){DAYMAP.forEach(function(m,j){a.push({w:w.id,s:m.s,idx:j});});});return a;}
+function nextTodo(){
+  var a=flatDays();
+  for(var i=0;i<a.length;i++){if(!isLocked(a[i].w)&&!isDone(a[i].w,a[i].s)){return a[i];}}
+  return null;
+}
+function counts(){var t=0,d=0;flatDays().forEach(function(x){if(isLocked(x.w)){return;}t++;if(isDone(x.w,x.s)){d++;}});return {t:t,d:d};}
+
+function topbar(){
+  var u=ST.user;
+  var h='<header class="top"><div class="brand"><b>Lộ trình học tiếng Anh</b><span>'+esc(u.name)+(u.role==='teacher'?' · Giáo viên':'')+' · <span id="syncMsg"></span></span></div><div class="row2">';
+  if(u.role==='teacher'){h+='<div class="seg" role="group" aria-label="Chế độ"><button type="button" data-mode="s" aria-pressed="'+(!ST.teacher)+'">Học sinh</button><button type="button" data-mode="t" aria-pressed="'+ST.teacher+'">Giáo viên</button></div>';}
+  h+='<button type="button" class="btn ghost sm" data-act="logout">Đăng xuất</button></div></header>';
+  if(!API_URL){h+='<div class="note">Chế độ thử: chưa kết nối Google Sheet, tiến độ chỉ lưu trên máy này.</div>';}
+  return h;
+}
+
+function renderLogin(msg){
+  stopAll();
+  $('app').innerHTML='<div class="wrap"><section class="login blk"><h1>Chào mừng em quay lại</h1><p class="muted">Nhập tên và mã lớp cô đã gửi để xem lộ trình riêng của em.</p>'
+   +'<form id="loginForm" class="stack"><label class="f">Tên của em<input type="text" id="lgName" autocomplete="username" required></label>'
+   +'<label class="f">Mã lớp<input type="text" id="lgCode" autocomplete="off" autocapitalize="off" spellcheck="false" required></label>'
+   +'<div class="actions"><button class="btn" type="submit">Vào học</button><span class="score" id="lgMsg" role="status" aria-live="polite">'+esc(msg||'')+'</span></div></form>'
+   +(API_URL?'':'<div class="note">Chế độ thử: nhập tên và mã bất kỳ. Nhập mã "gv" để vào bằng tài khoản giáo viên.</div>')+'</section></div>';
+}
+
+function renderMap(){
+  stopAll();
+  var c=counts(),pct=c.t?Math.round(c.d/c.t*100):0,nt=nextTodo();
+  var h='<div class="wrap">'+topbar();
+  h+='<section class="hero"><div class="kicker">Lộ trình của '+esc(ST.user.name)+'</div><h1>'+(nt?'Hôm nay học gì?':'Em đã xong hết các ngày học đã mở')+'</h1>';
+  h+='<div class="pbar" role="img" aria-label="Đã xong '+c.d+' trên '+c.t+' ngày"><i style="width:'+pct+'%"></i></div><p class="muted">Đã xong '+c.d+'/'+c.t+' ngày học đã mở.</p>';
+  if(nt){var sc=secById(weekById(nt.w),nt.s);h+='<div class="actions"><button type="button" class="btn" data-open="w'+nt.w+'-'+nt.s+'">Học Ngày '+dayNo(nt.w,nt.idx)+': '+esc(sc.title)+'</button></div>';}
+  h+='</section>';
+  if(ST.teacher){h+='<div class="actions"><button type="button" class="btn ghost sm" data-act="class">Xem cả lớp</button></div>';}
+  h+='<main class="stack">';
+  WEEKS.forEach(function(w){
+    var lk=isLocked(w.id);
+    h+='<section class="blk wk'+(lk?' lk':'')+'"><h3>'+esc(w.title)+': '+esc(w.topic)+(lk?' <span class="pill">Chưa mở</span>':'')+'</h3><p class="muted">'+esc(w.sub)+'</p><div class="days">';
+    DAYMAP.forEach(function(m,j){
+      var sc=secById(w,m.s),dn=isDone(w.id,m.s),isNt=nt&&nt.w===w.id&&nt.s===m.s;
+      h+='<button type="button" class="day'+(dn?' done':'')+(isNt?' now':'')+'" data-open="w'+w.id+'-'+m.s+'"'+(lk?' disabled':'')+'><span class="dn">Ngày '+dayNo(w.id,j)+'</span><span class="dt">'+esc(sc.title)+'</span><span class="dm">'+m.k+' · '+sc.mins+' phút</span><span class="ds">'+(dn?'Đã xong':(isNt?'Hôm nay':(lk?'Chưa mở':'')))+'</span></button>';
+    });
+    h+='</div>';
+    if(ST.teacher){h+='<div class="actions"><button type="button" class="btn ghost sm" data-open="w'+w.id+'-script">Kịch bản thu âm</button></div>';}
+    h+='</section>';
+  });
+  h+='</main><p class="foot">Tiến độ được lưu theo tên của em.</p></div>';
+  $('app').innerHTML=h;
+}
+
+function renderDay(){
+  var w=weekObj();
+  if(!w){ST.view='map';render();return;}
+  var h='<div class="wrap">'+topbar();
+  if(ST.sec==='script'){
+    if(!ST.teacher){ST.view='map';render();return;}
+    h+='<div class="secbar"><div class="actions"><button type="button" class="btn ghost sm" data-act="back">← Lộ trình</button><b>'+esc(w.title)+' · Kịch bản thu âm</b></div></div><main class="stack">'+rScript(w)+'</main></div>';
+    stopAll();$('app').innerHTML=h;return;
+  }
+  var sec=secObj(w),idx=dayIdx(ST.sec);
+  if(!sec){ST.view='map';render();return;}
+  h+='<div class="secbar"><div class="actions"><button type="button" class="btn ghost sm" data-act="back">← Lộ trình</button><b>Ngày '+dayNo(w.id,idx)+' · '+esc(w.title)+'</b></div></div>';
+  h+='<main class="stack"><div class="sechead"><h2>'+esc(sec.title)+'</h2><span class="mins">'+DAYMAP[idx].k+' · khoảng '+sec.mins+' phút</span></div>';
+  sec.blocks.forEach(function(b,i){var id=bid(i);
+    switch(b.t){
+      case 'text':h+=rText(b);break;case 'teacher':h+=rTeacher(b);break;case 'scene':h+=rScene(b);break;
+      case 'vocab':h+=rVocab(b);break;case 'rule':h+=rRule(b);break;case 'pics':h+=rPics(b);break;
+      case 'mcq':h+=rMcq(b,id);break;case 'gap':h+=rGap(b,id);break;case 'sounds':h+=rSounds(b);break;
+      case 'speak':h+=rSpeak(b,id);break;case 'shadow':h+=rShadow(b);break;case 'model':h+=rModel(b);break;case 'check':h+=rCheck(b,id);break;
+    }
+  });
+  var dn=isDone(w.id,ST.sec);
+  h+='<section class="blk"><div class="actions"><button type="button" class="btn" data-act="done" id="doneBtn">'+(dn?'Bỏ đánh dấu đã xong':'Hoàn thành ngày học')+'</button><span class="score full" id="doneMsg" aria-live="polite">'+(dn?'Em đã hoàn thành ngày này.':'')+'</span></div></section>';
+  var fl=flatDays(),pos=-1;
+  fl.forEach(function(x,i){if(x.w===w.id&&x.s===ST.sec){pos=i;}});
+  var pv=pos>0?fl[pos-1]:null,nx=pos<fl.length-1?fl[pos+1]:null;
+  if(nx&&isLocked(nx.w)){nx=null;}
+  h+='<div class="nav">'+(pv?'<button type="button" class="btn ghost sm" data-open="w'+pv.w+'-'+pv.s+'">← Ngày '+dayNo(pv.w,pv.idx)+'</button>':'<span></span>')+(nx?'<button type="button" class="btn ghost sm" data-open="w'+nx.w+'-'+nx.s+'">Ngày '+dayNo(nx.w,nx.idx)+' →</button>':'<span></span>')+'</div>';
+  h+='</main></div>';
+  stopAll();
+  $('app').innerHTML=h;
+  document.querySelectorAll('[data-t="mcq"],[data-t="gap"]').forEach(function(el){if((P[el.getAttribute('data-b')]||{}).c){grade(el,false);}});
+}
+
+function renderClass(){
+  var h='<div class="wrap">'+topbar()+'<div class="secbar"><div class="actions"><button type="button" class="btn ghost sm" data-act="back">← Lộ trình</button><b>Cả lớp</b><button type="button" class="btn sm" data-act="refreshclass">Tải lại</button></div></div><main class="stack"><section class="blk">';
+  if(CLASS_ERR){h+='<div class="note">'+esc(CLASS_ERR)+'</div>';}
+  else if(CLASS_ROWS===null){h+='<p class="muted">Đang tải danh sách...</p>';}
+  else if(!CLASS_ROWS.length){h+='<p class="muted">'+(API_URL?'Chưa có học sinh nào trong Google Sheet.':'Chế độ thử không có danh sách cả lớp. Hãy kết nối Google Sheet.')+'</p>';}
+  else{
+    h+='<div class="tblwrap"><table><thead><tr><th>Họ tên</th><th>Tuần đã mở</th><th>Ngày đã xong</th><th>Cập nhật</th></tr></thead><tbody>';
+    CLASS_ROWS.forEach(function(r){h+='<tr><td><b>'+esc(r.name)+'</b></td><td>'+esc(r.unlockWeek)+'</td><td>'+esc(r.doneCount)+'</td><td>'+esc(r.updatedAt||'')+'</td></tr>';});
+    h+='</tbody></table></div>';
+  }
+  h+='</section></main></div>';
+  $('app').innerHTML=h;
+}
+function loadClass(){
+  CLASS_ROWS=null;CLASS_ERR='';render();
+  if(!API_URL){CLASS_ROWS=[];render();return;}
+  api({action:'lr_list',name:ST.user.name,code:ST.user.code}).then(function(j){
+    if(j.ok){CLASS_ROWS=j.students;}else{CLASS_ERR=j.error||'Không tải được danh sách.';}
+    render();
+  }).catch(function(){CLASS_ERR='Chưa kết nối được Google Sheet.';render();});
+}
+
+function render(){
+  if(!ST.user){renderLogin();return;}
+  if(ST.view==='day'){renderDay();}
+  else if(ST.view==='class'){renderClass();}
+  else{renderMap();}
+}
+
+/* ---------- đăng nhập ---------- */
+function applyStudent(s,code){
+  ST.user={name:s.name,code:code,role:s.role||'student',unlockWeek:parseInt(s.unlockWeek,10)||1};
+  ST.teacher=(ST.user.role==='teacher');
+  var local={};
+  try{local=JSON.parse(localStorage.getItem(STORE+':'+userKey())||'{}')||{};}catch(e){local={};}
+  P=(s.progress&&typeof s.progress==='object'&&Object.keys(s.progress).length)?s.progress:local;
+  try{localStorage.setItem(SESSION,JSON.stringify({name:s.name,code:code}));}catch(e){}
+}
+function setMsg(t){var m=$('lgMsg');if(m){m.textContent=t;}}
+function afterLogin(){ST.view='map';readHash();render();window.scrollTo(0,0);}
+function doLogin(name,code,silent){
+  name=String(name||'').trim();code=String(code||'').trim();
+  if(!name||!code){if(silent){renderLogin();}return;}
+  if(!API_URL){applyStudent({name:name,role:code.toLowerCase()==='gv'?'teacher':'student',unlockWeek:2},code);afterLogin();return;}
+  setMsg('Đang kiểm tra...');
+  api({action:'lr_login',name:name,code:code}).then(function(j){
+    if(j.ok){applyStudent(j.student,code);afterLogin();}
+    else{if(silent){try{localStorage.removeItem(SESSION);}catch(e){}renderLogin();}else{setMsg(j.error||'Tên hoặc mã lớp chưa đúng.');}}
+  }).catch(function(){if(silent){renderLogin('Chưa kết nối được. Hãy thử lại.');}else{setMsg('Chưa kết nối được. Hãy thử lại.');}});
+}
+function logout(){
+  try{localStorage.removeItem(SESSION);}catch(e){}
+  ST.user=null;ST.teacher=false;ST.view='map';P={};
+  try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+  render();
+}
+
+/* ---------- chấm ---------- */
+function findBlock(id){
+  var p=id.split('.');var w=weekById(parseInt(p[0].slice(1),10));
+  var s=secById(w,p[1]);return s.blocks[parseInt(p[2],10)];
+}
+function grade(el,store){
+  var id=el.getAttribute('data-b');var b=findBlock(id);var type=el.getAttribute('data-t');
+  var answers=[],ok=0;
+  b.qs.forEach(function(q,i){
+    var qel=el.querySelector('.q[data-i="'+i+'"]');var fb=qel.querySelector('.fb');var good=false,val=null,msg='';
+    if(type==='mcq'){
+      var r=qel.querySelector('input[type=radio]:checked');val=r?parseInt(r.value,10):null;good=(val===q.ans);
+      var o=q.opts[q.ans];var t=typeof o==='string'?o:(o.l||('hình '+(q.ans+1)));
+      msg=val===null?'Em chưa chọn. Đáp án: '+t:(good?'Đúng rồi!':'Chưa đúng. Đáp án: '+t);
+      if(!good&&q.why){msg+='. '+q.why;}
+    }else{
+      var inp=qel.querySelector('input.gap');val=inp.value;var n=norm(val);
+      good=q.ans.some(function(x){return norm(x)===n;});
+      msg=!n?'Em chưa điền. Đáp án: '+q.ans[0]:(good?'Đúng rồi!':'Chưa đúng. Đáp án: '+q.ans[0]);
+    }
+    answers.push(val);if(good){ok++;}
+    qel.classList.toggle('ok',good);qel.classList.toggle('bad',!good);fb.textContent=msg;
+  });
+  var sc=el.querySelector('.score');sc.textContent=ok+'/'+b.qs.length+(ok===b.qs.length?' · Tuyệt vời!':'');sc.classList.toggle('full',ok===b.qs.length);
+  if(store){P[id]={a:answers,c:1,s:ok,n:b.qs.length};save();}
+}
+function resetBlock(el){
+  var id=el.getAttribute('data-b');
+  el.querySelectorAll('.q').forEach(function(q){q.classList.remove('ok','bad');q.querySelector('.fb').textContent='';});
+  el.querySelectorAll('input[type=radio]').forEach(function(r){r.checked=false;});
+  el.querySelectorAll('input.gap').forEach(function(r){r.value='';});
+  var sc=el.querySelector('.score');sc.textContent='';sc.classList.remove('full');
+  delete P[id];save();
+}
+
+/* ---------- đường dẫn ---------- */
+function setHash(){
+  try{
+    if(ST.view==='day'){history.replaceState(null,'','#w'+ST.week+'-'+ST.sec);}
+    else{history.replaceState(null,'',location.pathname+location.search);}
+  }catch(e){}
+}
+function readHash(){
+  var m=/^#w(\d+)-([a-z0-9]+)$/.exec(location.hash||'');
+  if(!m||!ST.user){return;}
+  var wid=parseInt(m[1],10),w=weekById(wid);
+  if(!w||isLocked(wid)){return;}
+  if(m[2]==='script'){if(!ST.teacher){return;}}
+  else if(!secById(w,m[2])){return;}
+  ST.week=wid;ST.sec=m[2];ST.view='day';
+}
+
+document.addEventListener('submit',function(e){
+  if(e.target&&e.target.id==='loginForm'){e.preventDefault();doLogin($('lgName').value,$('lgCode').value,false);}
+});
+document.addEventListener('click',function(e){
+  var t=e.target;if(!t.closest){return;}
+  var au=t.closest('[data-au]');if(au){playAu(au);return;}
+  var op=t.closest('[data-open]');if(op){
+    var m=/^w(\d+)-([a-z0-9]+)$/.exec(op.getAttribute('data-open'));
+    if(m&&!isLocked(parseInt(m[1],10))){ST.week=parseInt(m[1],10);ST.sec=m[2];ST.view='day';setHash();render();window.scrollTo(0,0);}
+    return;
+  }
+  var md=t.closest('[data-mode]');if(md){ST.teacher=(md.getAttribute('data-mode')==='t');render();return;}
+  var ac=t.closest('[data-act]');if(!ac){return;}
+  var act=ac.getAttribute('data-act');var blk=ac.closest('[data-b]');
+  if(act==='check'&&blk){grade(blk,true);}
+  else if(act==='reset'&&blk){resetBlock(blk);}
+  else if(act==='back'){ST.view='map';setHash();render();window.scrollTo(0,0);}
+  else if(act==='logout'){logout();}
+  else if(act==='class'){ST.view='class';loadClass();window.scrollTo(0,0);}
+  else if(act==='refreshclass'){loadClass();}
+  else if(act==='done'){
+    var key='w'+ST.week+'.'+ST.sec,dm=doneMap(),btn=$('doneBtn'),msg=$('doneMsg');
+    if(dm[key]){delete dm[key];btn.textContent='Hoàn thành ngày học';msg.textContent='';}
+    else{dm[key]=Date.now();btn.textContent='Bỏ đánh dấu đã xong';msg.textContent='Giỏi lắm! Em đã hoàn thành ngày này.';}
+    save();
+  }
+  else if(act==='copyscript'){
+    var txt=scriptText(weekObj());var sm=$('scriptMsg');
+    try{navigator.clipboard.writeText(txt).then(function(){sm.textContent='Đã sao chép';},function(){sm.textContent='Không sao chép được. Hãy chọn và sao chép thủ công.';});}
+    catch(err){sm.textContent='Không sao chép được. Hãy chọn và sao chép thủ công.';}
+  }
+});
+document.addEventListener('change',function(e){
+  var t=e.target;
+  if(t&&t.type==='checkbox'){
+    var blk=t.closest('[data-b]');if(!blk){return;}
+    var id=blk.getAttribute('data-b');var arr=[];
+    blk.querySelectorAll('input[type=checkbox]').forEach(function(c){arr.push(c.checked?1:0);});
+    P[id]={a:arr};save();
+  }
+});
+window.addEventListener('hashchange',function(){if(ST.user){ST.view='map';readHash();render();}});
+
+/* ---------- khởi động ---------- */
+(function(){
+  var s=null;
+  try{s=JSON.parse(localStorage.getItem(SESSION)||'null');}catch(e){s=null;}
+  if(s&&s.name&&s.code){
+    if(API_URL){$('app').innerHTML='<div class="wrap"><p class="muted" style="padding:40px 4px">Đang vào lớp...</p></div>';}
+    doLogin(s.name,s.code,true);
+  }else{renderLogin();}
+})();
+})();
+
+</script>
+
+</body></html>
