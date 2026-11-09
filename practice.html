@@ -7,19 +7,19 @@
 :root{--bg:#EEF3FF;--card:#fff;--ink:#16213E;--mut:#5A6584;--line:#CBD5F0;--blue:#2F5BEA;--blued:#2447BF;--ok:#17803F;--okbg:#DDF4E6;--no:#C23636;--nobg:#FBE3E3;--fd:'Fredoka','Trebuchet MS',system-ui,sans-serif;--fb:'Atkinson Hyperlegible','Segoe UI',system-ui,sans-serif}
 @media(prefers-color-scheme:dark){:root{--bg:#0E1526;--card:#172036;--ink:#E7ECF8;--mut:#9AA6C3;--line:#2A3654;--okbg:#16372A;--nobg:#401B19;--ok:#6FDBA3;--no:#FF9B93}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 var(--fb);padding:0 max(14px,env(safe-area-inset-right)) 48px max(14px,env(safe-area-inset-left));padding-top:env(safe-area-inset-top)}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 var(--fb);padding:0 max(14px,env(safe-area-inset-right)) 104px max(14px,env(safe-area-inset-left));padding-top:env(safe-area-inset-top)}
 .wrap{max-width:760px;margin:0 auto}
 h1,h2{font-family:var(--fd);font-weight:600;margin:0;line-height:1.2}
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:3px solid var(--blue);outline-offset:2px}
-.top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:16px 0 8px}
+.top{position:sticky;top:0;z-index:20;background:var(--bg);display:flex;gap:10px;align-items:center;justify-content:space-between;padding:12px 0 8px;border-bottom:2px solid var(--line)}.stars{font:600 1.3rem var(--fd);color:#E09B00}.scr{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.scr .chip{flex:none;white-space:nowrap}
 .top h1{font-size:1.5rem}
 .lnk{text-decoration:none;color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:6px 12px;font-weight:700;background:var(--card)}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
 .chip{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px;font-weight:700;color:var(--mut)}
 .chip.on{border-color:var(--blue);background:var(--blue);color:#fff}
 .lab{font-size:.9rem;color:var(--mut);font-weight:700}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0;padding:10px max(14px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));background:var(--card);border-top:2px solid var(--line)}
 .tab{border:0;border-radius:14px;padding:12px 6px;font-weight:700;font-family:var(--fd);font-size:1.05rem;background:var(--card);box-shadow:0 4px 0 var(--line)}
 .tab.on{background:var(--blue);color:#fff;box-shadow:0 4px 0 var(--blued)}
 .btn{border:0;border-radius:14px;padding:12px 20px;font-weight:700;background:var(--blue);color:#fff;box-shadow:0 4px 0 var(--blued)}
@@ -187,8 +187,8 @@ function newSession(){
 /* ============ GIAO DIỆN CHUNG ============ */
 function render(){
   stopA();
-  var h='<header class="top"><h1>Ôn tập tiếng Anh</h1><a class="lnk" href="roadmap.html">← Lộ trình</a></header>';
-  h+='<div class="row"><span class="lab">Chọn bài</span>'+DATA.map(function(u){return'<button class="chip'+(ST.unit===u[0]?" on":"")+'" data-act="unit" data-u="'+u[0]+'">'+u[1]+'</button>'}).join("")+'<button class="chip'+(ST.unit==="all"?" on":"")+'" data-act="unit" data-u="all">Trộn tất cả</button></div>';
+  var h='<header class="top"><h1>Ôn tập tiếng Anh</h1><div class="row" style="margin:0"><span class="stars" aria-label="Tổng số sao">★ '+ST.total+'</span><a class="lnk" href="roadmap.html">← Lộ trình</a></div></header>';
+  h+='<div class="row scr"><span class="lab">Chọn bài</span>'+DATA.map(function(u){return'<button class="chip'+(ST.unit===u[0]?" on":"")+'" data-act="unit" data-u="'+u[0]+'">'+u[1]+'</button>'}).join("")+'<button class="chip'+(ST.unit==="all"?" on":"")+'" data-act="unit" data-u="all">Trộn tất cả</button></div>';
   h+='<div class="tabs" role="tablist">'+[["cards","Thẻ ôn tập"],["memory","Ghép cặp"],["race","Đua 60 giây"]].map(function(t){return'<button class="tab'+(ST.view===t[0]?" on":"")+'" role="tab" data-act="tab" data-v="'+t[0]+'">'+t[1]+'</button>'}).join("")+'</div>';
   h+=ST.view==="cards"?rCards():(ST.view==="memory"?rMem():rRace());
   $("app").innerHTML=h;
@@ -230,7 +230,7 @@ function finish(c,ok,msg){
   c.done=true;c.ok=ok;c.msg=msg;
   if(ok&&c.tries<=1){Q.stars++;ST.total++;save()}
   if(!ok&&!c.rq){Q.cards.push(newCard(c.it,c.type,true))}
-  var h=document.querySelector(".sc");paintBack();if(h){h.lastChild.textContent="★ "+Q.stars+" · Tổng ★ "+ST.total}
+  var h=document.querySelector(".sc"),sr=document.querySelector(".stars");if(sr)sr.textContent="★ "+ST.total;paintBack();if(h){h.lastChild.textContent="★ "+Q.stars+" · Tổng ★ "+ST.total}
 }
 function check(){
   var c=cur(),it=c.it,tgt=sentOf(it);c.tries++;var ok;
