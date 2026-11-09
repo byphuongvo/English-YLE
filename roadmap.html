@@ -220,6 +220,22 @@ textarea.wr:focus-visible{border-color:var(--accent);outline:none;box-shadow:0 0
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .shp{color:#0E1526}}
 .subhead{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .subtxt{margin:0;white-space:pre-wrap;font:inherit;padding:10px 12px;background:var(--bg);border-radius:10px;overflow-wrap:anywhere}
+
+.bookslot{display:grid;gap:8px;justify-items:center}
+.bookslot img.bkpage{max-width:100%;border-radius:10px;border:1px solid var(--line)}
+.bookslot.empty.nots{display:none}
+.bookslot.empty img{display:none}
+.bookslot .slot{display:none;padding:12px 14px;border:2px dashed var(--note);border-radius:10px;background:var(--note-bg);color:var(--note);font-size:.92rem;overflow-wrap:anywhere;width:100%}
+.bookslot.empty .slot{display:block}
+img.bkimg{width:92px;height:92px;object-fit:contain;border-radius:10px}
+.tile.sm img.bkimg{width:74px;height:74px}
+.story .ctx{padding:10px 14px;border-left:5px solid var(--lvl);background:var(--bg);border-radius:0 10px 10px 0}
+.story .ln{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:8px 10px;border:1px solid var(--line);border-radius:12px;min-width:0}
+.story .ln .who{font-weight:700;color:var(--lvl);font-size:.85rem}
+.story .ln .en{font-weight:700;font-size:1.05rem;overflow-wrap:anywhere}
+.story .ln .vi{font-size:.92rem;color:var(--muted)}
+.story.hidevi .vi{display:none}
+.story .use{padding:10px 14px;border-radius:10px;background:var(--accent-soft);font-size:.97rem}
 </style>
 <div id="app"></div>
 <script>
@@ -404,6 +420,14 @@ SCENE.party=function(){
  return sceneWrap(480,300,s,'Tiệc sinh nhật: bốn bạn nhỏ (bạn đội mũ vẫy tay sau bàn, bạn nhảy, bạn cầm ba quả bóng bay, bạn cầm quà), bánh có ba cây nến, chú chó dưới bàn');
 };
 
+SCENE.zoo=function(){
+ function em(e,x,y,sz){return '<text x="'+x+'" y="'+y+'" font-size="'+sz+'" stroke="none" font-family="Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,sans-serif">'+e+'</text>';}
+ var s='<rect width="480" height="300" fill="#D7F0D2" stroke="none"/><circle cx="436" cy="40" r="22" fill="#F2C14E" stroke="none"/><rect y="226" width="480" height="74" fill="#BFE0A0" stroke="none"/>';
+ s+=nest('tree',350,20,130,'green');
+ s+=em('🐘',30,232,84)+em('🦒',190,222,100)+em('🐒',350,262,54)+em('🦜',398,100,46)+em('🐧',120,288,48)+em('🐊',240,290,52);
+ return sceneWrap(480,300,s,'Sở thú: con voi to bên trái, hươu cao cổ ở giữa, con khỉ dưới cây, con vẹt trên cây, chim cánh cụt và cá sấu trên cỏ');
+};
+
 
 /* Nội dung giai đoạn 1 (lớp 4, mức Movers): tuần 1 và tuần 2. Giọng: f = nữ Anh, m = nam Anh, f2 và m2 = giọng phụ. */
 function V(w,icon,vi,c){return {w:w,icon:icon,c:c,vi:vi,au:A(w)};}
@@ -411,6 +435,8 @@ function Q(q,opts,ans,why,x){var o={q:q,opts:opts,ans:ans,why:why||''};if(x){for
 function G(pre,ans,post,x){var o={pre:pre,ans:ans,post:post};if(x){for(var k in x){o[k]=x[k];}}return o;}
 function S(h,au){return {h:h,au:au};}
 var TF=['True','False'];
+var D7=[{s:'d1',k:'Bài học chính · Global Success'},{s:'d2',k:'Ôn tập'},{s:'d3',k:'Bài học chính · Global Success'},{s:'d4',k:'Ôn tập'},{s:'d5',k:'Bài học chính · Movers'},{s:'d6',k:'Ôn tập'},{s:'d7',k:'Ôn tập'}];
+
 
 var WEEKS=[
 
@@ -535,122 +561,312 @@ var WEEKS=[
  ]}
 ]},
 
-/* ============================== TUẦN 2 ============================== */
-{id:2,title:'Tuần 2',topic:'My week, my birthday và things I can do',
- sub:'Bám theo Global Success 4 (Unit 3, 4, 5) và mở rộng theo mức Movers: ngày, tháng, ngày sinh nhật, đồ ăn thức uống, can / can\'t',
- goals:['Hỏi và trả lời về các ngày trong tuần: What day is it today? What do you do on Mondays?','Nói tháng và ngày sinh: When\'s your birthday? It\'s in May. It\'s on the twentieth of May.','Nói em muốn ăn uống gì: What do you want to eat / drink? I want some ...','Nói khả năng với can / can\'t: Can you ride a horse? Yes, I can.'],
- plan:'2 buổi (25 phút) và 4 bài về nhà (15 đến 20 phút), tất cả làm trực tiếp trên trang',
+/* ============================== TUẦN 2: Global Success Unit 1, 2 + Movers chủ đề 1 (phần A) ============================== */
+{id:2,title:'Tuần 2',topic:'Greetings, I\'m from ... và Animals (phần 1)',
+ sub:'Global Success Unit 1 (Nice to see you again), Unit 2 (I\'m from Japan) và Get Ready for Movers chủ đề 1: Animals',
+ goals:['Chào hỏi theo buổi trong ngày và hỏi thăm: How are you? I\'m fine, thank you. And you?','Chào tạm biệt: Goodbye. See you tomorrow / later / soon.','Hỏi và trả lời quê hương, quốc tịch: Where are you from? I\'m from Viet Nam. What nationality are you? I\'m Vietnamese.','Nói tên 12 con vật theo mức Movers và đặt câu mô tả đơn giản'],
+ plan:'7 ngày: ngày 1 và 3 học Global Success, ngày 5 học Movers, ngày 2, 4, 6, 7 ôn tập (25 phút mỗi ngày, làm trực tiếp trên trang)',
+ days:D7,
  sections:[
 
- {id:'b1',tab:'Buổi 1',title:'Từ vựng, Ngữ pháp và Nói',mins:25,blocks:[
-  {t:'text',html:'<b>Hôm nay em học (Global Success Unit 3, 4, 5):</b><ul><li>12 từ và cụm từ: việc cuối tuần, đồ ăn thức uống, khả năng.</li><li>Hỏi đáp về <b>ngày trong tuần</b>, <b>tháng sinh nhật</b>, <b>đồ ăn thức uống</b>, <b>can / can\'t</b>.</li><li>Mở rộng theo mức Movers: nói ngày bằng <b>số thứ tự</b> (the twentieth of May) và dùng <b>on, in, at</b>.</li><li>Nhìn tranh tiệc sinh nhật và nói.</li></ul>'},
-  {t:'vocab',title:'12 từ và cụm từ mới',instr:'Bấm vào thẻ để nghe cô đọc, rồi đọc theo to và rõ.',items:[
-    V('do housework','🧽','làm việc nhà'),V('listen to music','🎧','nghe nhạc'),V('study at school','📚','học ở trường'),V('birthday party','🎉','tiệc sinh nhật'),
-    V('chips','🍟','khoai tây chiên'),V('grapes','🍇','nho'),V('jam','🍓','mứt'),V('lemonade','🍋','nước chanh'),
-    V('ride a horse','🐴','cưỡi ngựa'),V('play the guitar','🎸','chơi đàn ghi-ta'),V('roller skate','🛼','trượt patin'),V('cook','🍳','nấu ăn')]},
-  {t:'rule',title:'Bốn mẫu câu hỏi đáp',
-   pics:[{icon:'📅',cap:'What day is it today?',au:A('What day is it today?')},{icon:'🎂',cap:'When\'s your birthday?',au:A('When\'s your birthday?')},{icon:'🍇',cap:'I want some grapes.',au:A('I want some grapes.')},{icon:'🐴',cap:'Can you ride a horse?',au:A('Can you ride a horse?')}],
-   head:['Hỏi','Trả lời','Ví dụ'],
-   rows:[['What day is it today?','It\'s + thứ','It\'s Thursday.',A('It\'s Thursday.')],['What do you do on Saturdays?','I + hoạt động','I do housework on Saturdays.',A('I do housework on Saturdays.')],['When\'s your birthday?','It\'s in + tháng','It\'s in May.',A('It\'s in May.')],['What do you want to eat / drink?','I want some + món','I want some chips and some lemonade.',A('I want some chips and some lemonade.')],['Can you ride a horse?','Yes, I can. / No, I can\'t.','No, I can\'t, but I can ride a bike.',A('No, I can\'t, but I can ride a bike.')],['Can she play the guitar?','Yes, she can. / No, she can\'t.','Yes, she can. She can play the guitar very well.',A('Yes, she can. She can play the guitar very well.')]],
-   note:'<b>Chú ý:</b> <b>can</b> và <b>can\'t</b> giữ nguyên với mọi chủ ngữ (she can, không nói <i>she cans</i>), và động từ sau can luôn ở nguyên mẫu: <b>She can swim</b>. Nói <b>on Mondays</b> (mọi thứ Hai), <b>in May</b> (trong tháng 5).'},
-  {t:'rule',title:'Ngày trong tuần, tháng và ngày sinh (mở rộng Movers)',
-   head:['Nội dung','Cách nói','Ví dụ'],
-   rows:[['Ngày trong tuần','Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday','My English class is on Fridays.',A('My English class is on Fridays.')],['Tháng','January, February, March, April, May, June, July, August, September, October, November, December','My birthday is in November.',A('My birthday is in November.')],['Ngày (số thứ tự)','first, second, third, fourth, fifth ... tenth ... twentieth','My birthday is on the twentieth of May.',A('My birthday is on the twentieth of May.')],['Giờ','at + giờ','The party starts at seven o\'clock.',A('The party starts at seven o\'clock.')],['Mời bạn','Come to my party on + ngày, at + giờ','Come to my party on Saturday at six.',A('Come to my party on Saturday at six.')]],
-   note:'<b>Mẹo nhớ on, in, at:</b> <b>on</b> + thứ / ngày cụ thể (on Monday, on the 5th of March) · <b>in</b> + tháng, năm (in May, in 2026) · <b>at</b> + giờ (at six o\'clock).'},
-  {t:'gap',title:'Điền từ còn thiếu',instr:'Gõ một từ rồi bấm Kiểm tra.',bank:['on','in','at','can','can\'t'],qs:[
-    G('My birthday is ',['in'],' March.'),G('I do housework ',['on'],' Saturdays.'),G('The party starts ',['at'],' six o\'clock.'),G('She ',['can'],' play the guitar. (được)'),
-    G('I ',['can\'t'],' ride a horse. (không được)'),G('We study at school ',['on'],' Mondays.'),G('Her birthday is ',['on'],' the fifth of June.'),G('He ',['can'],' cook fried rice. (được)')]},
-  {t:'mcq',title:'Chọn đáp án đúng',instr:'Chọn một đáp án cho mỗi câu.',qs:[
-    Q('What do you do on Sundays?',['I listen to music.','It\'s Sunday.','I\'m from Viet Nam.'],0,'Câu hỏi về hoạt động nên trả lời bằng hoạt động.'),
-    Q('When\'s your birthday?',['It\'s Monday.','It\'s in April.','It\'s at six.'],1,'Hỏi về sinh nhật thì trả lời bằng tháng.'),
-    Q('What do you want to drink?',['I want some jam.','I want some grapes.','I want some lemonade.'],2,'Drink là thức uống, lemonade là nước chanh.'),
-    Q('Can you ride a horse? (No)',['No, I can\'t.','No, I don\'t.','No, I not.'],0,'Hỏi với Can thì trả lời với can / can\'t.'),
-    Q('Which sentence is correct?',['She cans swim.','She can swims.','She can swim.'],2,'Sau can là động từ nguyên mẫu, không thêm -s.'),
-    Q('Which sentence is correct?',['My birthday is on May.','My birthday is in May.','My birthday is at May.'],1,'Dùng in với tháng.')]},
-  {t:'speak',title:'Nhìn tranh tiệc sinh nhật và nói',scene:'party',prompt:'Look at the picture. Tell me about the birthday party.',
-   frames:['It\'s ___\'s birthday party.','There is a big cake with ___ candles.','___ is holding ___ balloons.','The dog is under the ___.'],
-   modelTitle:'Bài nói mẫu của cô',model:A('It is Kim\'s birthday party. Kim is standing behind the table and waving. There is a big cake with three candles on the table. Leo is jumping and he is wearing a party hat. Ben is holding three balloons. They are red, blue and yellow. Zoe is holding a red present. The dog is under the table.'),
-   check:['Nói ít nhất 4 câu','Đếm đúng số nến, số bóng bay','Dùng đúng is + động từ-ing','Có từ chỉ vị trí hoặc màu sắc'],
-   kw:[{l:'There is / There are',re:'there (is|are)'},{l:'Động từ -ing',re:'\\w+ing\\b'},{l:'Vị trí (on, under, behind...)',re:'\\b(on|under|behind|next to|in front of)\\b'},{l:'Màu sắc hoặc số lượng',re:'\\b(red|blue|green|yellow|pink|two|three|four|five)\\b'}],minWords:25},
-  {t:'teacher',html:'<b>Bám theo Global Success 4:</b> Unit 3 (What day is it today? What do you do on ...?), Unit 4 (When\'s your birthday? What do you want to eat / drink?), Unit 5 (Can you ...?). Phần mở rộng (số thứ tự, on / in / at, nói về tranh) theo mức Movers.<br><b>Phân bổ 25 phút:</b> 0–3 ôn tuần 1 · 3–8 từ mới (đóng kịch động tác) · 8–15 bốn mẫu câu và on / in / at · 15–20 điền từ, chọn đáp án · 20–25 nhìn tranh và nói, học sinh ghi âm và nộp ngay trên trang.<br><b>Lỗi hay gặp:</b> nói <i>on May</i>, thêm -s sau can, trả lời Can you ...? bằng "Yes, I do", nhầm eat và drink.<br><b>Cách sửa:</b> cho bé hỏi đáp theo cặp với thẻ ngày, tháng, thẻ đồ ăn.'}
+ {id:'d1',tab:'Ngày 1',title:'Unit 1: Nice to see you again',mins:25,blocks:[
+  {t:'text',html:'<b>Hôm nay em học (Global Success Unit 1):</b><ul><li>Chào hỏi theo buổi: <b>Good morning, Good afternoon, Good evening</b>.</li><li>Hỏi thăm sức khỏe: <b>How are you? I\'m fine, thank you. And you?</b></li><li>Gặp lại bạn: <b>Nice to see you again.</b></li><li>Chào tạm biệt: <b>Goodbye. See you tomorrow.</b></li></ul>'},
+  {t:'bookimg',src:'images/gs4-u1-lesson1.jpg',cap:'Tranh trong sách Global Success 4, Unit 1, Lesson 1'},
+  {t:'vocab',title:'12 từ và cụm từ chào hỏi',instr:'Bấm vào thẻ để nghe cô đọc, rồi đọc theo to và rõ.',items:[
+    V('Good morning','🌅','chào buổi sáng'),V('Good afternoon','☀️','chào buổi chiều'),V('Good evening','🌆','chào buổi tối'),V('Good night','🌙','chúc ngủ ngon'),
+    V('Goodbye','👋','tạm biệt'),V('See you tomorrow','📅','hẹn gặp ngày mai'),V('See you later','🕒','hẹn gặp lại sau'),V('See you soon','🔜','hẹn sớm gặp lại'),
+    V('Nice to see you again','🤝','rất vui được gặp lại'),V('How are you?','💬','bạn khỏe không?'),V("I'm fine, thank you",'😊','mình khỏe, cảm ơn'),V('And you?','❓','còn bạn thì sao?')]},
+  {t:'story',title:'Tình huống 1: Gặp lại cô giáo sau kỳ nghỉ',ctx:'Sáng thứ Hai, Nam đến trường và gặp cô Hoa ở cổng. Hai cô trò đã lâu không gặp.',
+   lines:[['f','Good morning, Nam. Nice to see you again.','Chào buổi sáng, Nam. Cô rất vui được gặp lại em.'],['m',"Good morning, Miss Hoa. Nice to see you, too.",'Chào cô Hoa. Em cũng rất vui được gặp cô.'],['f','How are you?','Em khỏe không?'],['m',"I'm fine, thank you. And you?",'Em khỏe, cảm ơn cô. Còn cô ạ?'],['f',"I'm fine, thank you. Let's go to class.",'Cô khỏe, cảm ơn em. Mình vào lớp nhé.']],
+   use:'Dùng khi gặp lại người quen sau một thời gian. Nghe "Nice to see you again" thì đáp "Nice to see you, too".'},
+  {t:'story',title:'Tình huống 2: Cuối giờ học',ctx:'Tan học, Mai chào Tom ở cổng trường. Ngày mai hai bạn lại gặp nhau.',
+   lines:[['f2',"Goodbye, Tom. See you tomorrow.",'Tạm biệt Tom. Mai gặp lại nhé.'],['m',"Bye, Mai. See you tomorrow.",'Tạm biệt Mai. Mai gặp.'],['f2',"Have a good evening!",'Chúc buổi tối vui vẻ!'],['m',"You too. Goodbye!",'Bạn cũng vậy. Tạm biệt!']],
+   use:'Dùng khi chia tay. Biết sẽ gặp lại thì nói "See you tomorrow / later / soon".'},
+  {t:'rule',title:'Mẫu câu chào hỏi',
+   pics:[{icon:'🌅',cap:'Good morning!',au:A('Good morning!')},{icon:'💬',cap:'How are you?',au:A('How are you?')},{icon:'🤝',cap:'Nice to see you again.',au:A('Nice to see you again.')},{icon:'👋',cap:'See you tomorrow.',au:A('See you tomorrow.')}],
+   head:['Khi nào','Nói','Ví dụ'],
+   rows:[['Trước 12 giờ trưa','Good morning','Good morning, Miss Hoa.',A('Good morning, Miss Hoa.')],['Từ 12 giờ đến chiều tối','Good afternoon','Good afternoon, class.',A('Good afternoon, class.')],['Buổi tối','Good evening','Good evening, Mum.',A('Good evening, Mum.')],['Hỏi thăm','How are you?','I\'m fine, thank you. And you?',A("I'm fine, thank you. And you?")],['Gặp lại','Nice to see you again.','Nice to see you, too.',A('Nice to see you, too.')],['Chia tay','Goodbye. / Bye.','Goodbye. See you tomorrow.',A('Goodbye. See you tomorrow.')]],
+   note:'<b>Lưu ý:</b> <b>Good night</b> chỉ nói khi chia tay vào buổi tối hoặc khi đi ngủ, không dùng để chào khi mới gặp. Trả lời <b>How are you?</b> xong nhớ hỏi lại <b>And you?</b>.'},
+  {t:'gap',title:'Điền từ còn thiếu',instr:'Gõ từ còn thiếu rồi bấm Kiểm tra.',bank:['morning','afternoon','evening','fine','tomorrow','again'],qs:[
+    G('Good ',['morning'],', Miss Hoa. (8 giờ sáng)'),G('Good ',['afternoon'],', Tom. (2 giờ chiều)'),G('How are you? I\'m ',['fine'],', thank you.'),G('Nice to see you ',['again'],'.'),G('Goodbye. See you ',['tomorrow'],'.'),G('Good ',['evening'],', Dad. (8 giờ tối)')]},
+  {t:'mcq',title:'Chọn câu đáp lại',instr:'Chọn câu trả lời đúng.',qs:[
+    Q('How are you?',["I'm fine, thank you.","I'm from Viet Nam.","See you tomorrow."],0,'Hỏi thăm thì trả lời I\'m fine.'),
+    Q('Nice to see you again.',['Goodbye.','Nice to see you, too.','Good night.'],1,'Đáp lại bằng Nice to see you, too.'),
+    Q('You meet your teacher at 9 a.m. You say:',['Good evening.','Good morning.','Good night.'],1,'9 giờ sáng là Good morning.'),
+    Q('You leave school. You say:',['Good morning.','How are you?','Goodbye. See you tomorrow.'],2,'Chia tay thì nói Goodbye.'),
+    Q("I'm fine, thank you. ___",['And you?','And me?','And are?'],0,'Hỏi lại bạn: And you?')]},
+  {t:'speak',title:'Nhìn tranh và nói chào hỏi',scene:'classroom',prompt:'Look at the picture. You meet your teacher in the classroom. What do you say?',
+   frames:['Good ___, Miss ___.','Nice to see you again.','How are you? I\'m fine, thank you. And you?','Goodbye. See you ___.'],
+   modelTitle:'Bài nói mẫu của cô',model:A("Good morning, Miss Lan. Nice to see you again. How are you? I'm fine, thank you. And you? Now it is time for class. Goodbye. See you tomorrow."),
+   check:['Chào đúng buổi trong ngày','Có How are you? và And you?','Có Goodbye và See you ...','Nói chậm và rõ'],
+   kw:[{l:'Good morning / afternoon / evening',re:'good (morning|afternoon|evening)'},{l:'How are you / I\'m fine',re:"how are you|i'?m fine"},{l:'Goodbye hoặc See you',re:'goodbye|bye|see you'},{l:'Nice to see you',re:'nice to see you'}],minWords:20},
+  {t:'teacher',html:'<b>Bám theo Global Success 4 Unit 1.</b> Phân bổ 25 phút: 0–3 chào hỏi cả lớp · 3–9 từ mới (đóng vai chào theo giờ trên đồng hồ) · 9–14 hai tình huống, cho bé đọc theo từng câu · 14–20 điền từ, chọn câu đáp · 20–25 nhìn tranh nói.<br><b>Lỗi hay gặp:</b> dùng Good night để chào buổi tối, quên And you?, nhầm fine với five.<br><b>Gợi ý ảnh:</b> đặt ảnh trang sách vào thư mục images/ đúng tên ghi ở khung ảnh.'}
  ]},
 
- {id:'b2',tab:'Buổi 2',title:'Nghe, Đọc và Âm',mins:25,blocks:[
+ {id:'d2',tab:'Ngày 2',title:'Ôn tập Unit 1',mins:20,blocks:[
+  {t:'text',html:'<b>Ôn tập Unit 1.</b> Nghe, chọn, rồi nói theo. Cuối buổi viết một đoạn hội thoại ngắn.'},
+  {t:'mcq',title:'Nghe và chọn đáp án',instr:'Bấm nút nghe (nghe được nhiều lần) rồi chọn.',qs:[
+    Q('What does Nam say?',['Good morning.','Good afternoon.','Good evening.'],1,'',{au:A('Good afternoon, Miss Hoa.','m')}),
+    Q('How is Mai?',['She is fine.','She is tired.','She is late.'],0,'',{au:D([['m','How are you, Mai?'],['f2',"I'm fine, thank you. And you?"]])}),
+    Q('When will they meet again?',['Today','Tomorrow','Next year'],1,'',{au:D([['f','Goodbye, Ben.'],['m','Goodbye. See you tomorrow.']])}),
+    Q('What does Linh say after "Nice to see you again"?',['Nice to see you, too.','Goodbye.','I am nine.'],0,'',{au:D([['m','Hello, Linh. Nice to see you again.'],['f2','Nice to see you, too.']])})]},
+  {t:'gap',title:'Nghe và điền từ',instr:'Nghe cả câu rồi gõ từ còn thiếu.',qs:[
+    G('Good ',['morning'],', class.',{au:A('Good morning, class.')}),G('How ',['are'],' you?',{au:A('How are you?')}),G("I'm ",['fine'],', thank you.',{au:A("I'm fine, thank you.")}),G('See you ',['tomorrow'],'.',{au:A('See you tomorrow.')}),G('Nice to see you ',['again'],'.',{au:A('Nice to see you again.')})]},
+  {t:'shadow',title:'Nghe và nhắc lại (6 câu)',items:[
+    S('Good <b>morning</b>, Miss <b>Hoa</b>.',A('Good morning, Miss Hoa.')),S('<b>How</b> are you?',A('How are you?')),S("I'm <b>fine</b>, thank you. And <b>you</b>?",A("I'm fine, thank you. And you?")),S('Nice to <b>see</b> you <b>again</b>.',A('Nice to see you again.')),S('<b>Goodbye</b>. See you to<b>morrow</b>.',A('Goodbye. See you tomorrow.')),S('Good <b>evening</b>, <b>Dad</b>.',A('Good evening, Dad.'))]},
+  {t:'write',title:'Viết hội thoại: Gặp bạn ở trường',instr:'Viết 6 câu hội thoại giữa em và một người bạn: chào, hỏi thăm, gặp lại, chia tay.',frames:['Good ___, ___.','How are you?','I\'m fine, thank you. And you?','Nice to see you again.','Goodbye. See you ___.'],
+   min:5,kw:[{l:'Có chào theo buổi (Good morning...)',re:'good (morning|afternoon|evening)'},{l:'Có How are you / I\'m fine',re:"how are you|i'?m fine"},{l:'Có Goodbye hoặc See you',re:'goodbye|bye|see you'}],
+   modelTitle:'Xem bài mẫu sau khi nộp',model:A("Good morning, Linh. How are you? I'm fine, thank you. And you? I'm fine too. Nice to see you again. Goodbye. See you tomorrow."),modelText:"Good morning, Linh. How are you? I'm fine, thank you. And you? I'm fine too. Nice to see you again. Goodbye. See you tomorrow."}
+ ]},
+
+ {id:'d3',tab:'Ngày 3',title:'Unit 2: I\'m from Japan',mins:25,blocks:[
+  {t:'text',html:'<b>Hôm nay em học (Global Success Unit 2):</b><ul><li>Tên nước và quốc tịch: <b>Viet Nam – Vietnamese, Japan – Japanese</b>.</li><li>Hỏi quê hương: <b>Where are you from? I\'m from Viet Nam.</b></li><li>Hỏi quốc tịch: <b>What nationality are you? I\'m Vietnamese.</b></li></ul>'},
+  {t:'bookimg',src:'images/gs4-u2-lesson1.jpg',cap:'Tranh trong sách Global Success 4, Unit 2, Lesson 1'},
+  {t:'vocab',title:'12 từ: nước và quốc tịch',instr:'Bấm vào thẻ để nghe. Chú ý: tên nước và quốc tịch đều viết hoa chữ cái đầu.',items:[
+    V('Viet Nam','🇻🇳','nước Việt Nam'),V('Vietnamese','🇻🇳','người Việt Nam'),V('Japan','🇯🇵','nước Nhật'),V('Japanese','🇯🇵','người Nhật'),
+    V('America','🇺🇸','nước Mỹ'),V('American','🇺🇸','người Mỹ'),V('England','🇬🇧','nước Anh'),V('English','🇬🇧','người Anh'),
+    V('Australia','🇦🇺','nước Úc'),V('Australian','🇦🇺','người Úc'),V('Malaysia','🇲🇾','nước Ma-lai-xi-a'),V('Malaysian','🇲🇾','người Ma-lai-xi-a')]},
+  {t:'story',title:'Tình huống: Bạn mới trong lớp',ctx:'Lớp 4A có một bạn mới tên là Akira. Mai làm quen với bạn trong giờ ra chơi.',
+   lines:[['f2',"Hello. I'm Mai. What's your name?",'Xin chào. Mình là Mai. Bạn tên là gì?'],['m',"Hi, Mai. I'm Akira.",'Chào Mai. Mình là Akira.'],['f2','Nice to meet you, Akira. Where are you from?','Rất vui được làm quen. Bạn đến từ đâu?'],['m',"I'm from Japan. What about you?",'Mình đến từ Nhật Bản. Còn bạn?'],['f2',"I'm from Viet Nam. I'm Vietnamese. What nationality are you?",'Mình đến từ Việt Nam. Mình là người Việt. Bạn mang quốc tịch gì?'],['m',"I'm Japanese.",'Mình là người Nhật.']],
+   use:'Dùng khi làm quen bạn mới. Hỏi quê hương dùng "Where are you from?", hỏi quốc tịch dùng "What nationality are you?".'},
+  {t:'rule',title:'Mẫu câu về quê hương và quốc tịch',
+   pics:[{icon:'🇻🇳',cap:'I\'m from Viet Nam.',au:A("I'm from Viet Nam.")},{icon:'🇯🇵',cap:'I\'m Japanese.',au:A("I'm Japanese.")},{icon:'🇺🇸',cap:'She\'s American.',au:A("She's American.")},{icon:'🇦🇺',cap:'He\'s from Australia.',au:A("He's from Australia.")}],
+   head:['Hỏi','Trả lời','Ví dụ'],
+   rows:[['Where are you from?','I\'m from + nước','I\'m from Japan.',A("I'm from Japan.")],['What nationality are you?','I\'m + quốc tịch','I\'m Vietnamese.',A("I'm Vietnamese.")],['Where is he from?','He\'s from + nước','He\'s from America.',A("He's from America.")],['What nationality is she?','She\'s + quốc tịch','She\'s Australian.',A("She's Australian.")],['Are you Japanese?','Yes, I am. / No, I\'m not.','No, I\'m not. I\'m Malaysian.',A("No, I'm not. I'm Malaysian.")]],
+   note:'<b>Mẹo:</b> <b>from</b> đi với <b>tên nước</b> (from Japan). Quốc tịch đứng một mình sau <b>I\'m / He\'s / She\'s</b> (I\'m Japanese). Không nói <i>I\'m from Japanese</i>.'},
+  {t:'gap',title:'Điền từ còn thiếu',instr:'Gõ từ còn thiếu rồi bấm Kiểm tra.',bank:['from','Japan','Japanese','Vietnamese','American','England'],qs:[
+    G('I\'m ',['from'],' Viet Nam.'),G('He is from ',['Japan'],'. He is Japanese.'),G('She is from America. She is ',['American'],'.'),G('Where are you ',['from'],'?'),G('I\'m ',['Vietnamese'],'. (quốc tịch)'),G('They are from ',['England'],'. They are English.')]},
+  {t:'mcq',title:'Chọn đáp án đúng',instr:'Chọn một đáp án cho mỗi câu.',qs:[
+    Q('Where are you from?',["I'm from Viet Nam.","I'm Vietnam.","I'm fine."],0,'Hỏi quê hương: I\'m from + nước.'),
+    Q('What nationality are you?',["I'm from Japan.","I'm Japanese.","I'm nine."],1,'Hỏi quốc tịch: I\'m + quốc tịch.'),
+    Q('Which sentence is correct?',["He's from Japanese.","He's from Japan.","He from Japan."],1,'from + tên nước.'),
+    Q('Akira is from Japan. He is ___.',['Japan','Japanese','Japaneses'],1,'Quốc tịch là Japanese.'),
+    Q('Are you Australian? (No)',["No, I'm not.","No, I don't.","No, I aren't."],0,'Are you ...? trả lời Yes, I am. / No, I\'m not.')]},
+  {t:'speak',title:'Nhìn tranh và làm quen',scene:'classroom',prompt:'You meet a new friend in the classroom. Ask and answer: What is your name? Where are you from? What nationality are you?',
+   frames:["Hello. I'm ___. What's your name?","Where are you from?","I'm from ___. I'm ___.","Nice to meet you."],
+   modelTitle:'Bài nói mẫu của cô',model:A("Hello. I'm Mai. What's your name? I'm Akira. Nice to meet you. Where are you from? I'm from Japan. I'm Japanese. I'm from Viet Nam. I'm Vietnamese."),
+   check:['Hỏi và nói tên','Hỏi Where are you from?','Nói đúng I\'m from + nước','Nói đúng quốc tịch'],
+   kw:[{l:"Where are you from / I'm from",re:"where are you from|i'?m from|he'?s from|she'?s from"},{l:'Có quốc tịch (Vietnamese, Japanese...)',re:'vietnamese|japanese|american|english|australian|malaysian'},{l:'Có tên (I\'m ...)',re:"i'?m [a-z]+|my name is"}],minWords:20},
+  {t:'teacher',html:'<b>Bám theo Global Success 4 Unit 2.</b> Phân bổ 25 phút: 0–3 ôn Unit 1 · 3–9 nước và quốc tịch (chỉ bản đồ, thẻ cờ) · 9–14 tình huống bạn mới · 14–20 điền từ, chọn đáp án · 20–25 làm quen theo cặp và nói.<br><b>Lỗi hay gặp:</b> I\'m from Japanese, quên viết hoa, phát âm Vietnamese thiếu âm cuối.'}
+ ]},
+
+ {id:'d4',tab:'Ngày 4',title:'Ôn tập Unit 1 và Unit 2',mins:20,blocks:[
+  {t:'text',html:'<b>Ôn tập Unit 1 và 2.</b> Nghe hội thoại, điền, rồi nói theo.'},
+  {t:'mcq',title:'Nghe hội thoại',instr:'Nghe rồi chọn đáp án.',qs:[
+    Q('Where is Tom from?',['America','England','Australia'],1,'',{au:D([['f','Where are you from, Tom?'],['m',"I'm from England."]])}),
+    Q('What nationality is Lan?',['Japanese','Malaysian','Vietnamese'],2,'',{au:D([['m','What nationality are you, Lan?'],['f2',"I'm Vietnamese."]])}),
+    Q('How is Ben today?',['Fine','Late','Sad'],0,'',{au:D([['f','Good morning, Ben. How are you?'],['m',"I'm fine, thank you. And you?"]])}),
+    Q('Where is Kenji from?',['Japan','Malaysia','America'],0,'',{au:D([['f2','Is Kenji from America?'],['m2',"No, he isn't. He's from Japan. He's Japanese."]])})]},
+  {t:'gap',title:'Điền câu hoàn chỉnh',instr:'Gõ từ còn thiếu.',bank:['from','nationality','Japanese','Good','fine'],qs:[
+    G('',['Good'],' afternoon, Miss Hoa.'),G('I\'m ',['fine'],', thank you. And you?'),G('Where are you ',['from'],'?'),G('What ',['nationality'],' are you?'),G('He is from Japan. He is ',['Japanese'],'.')]},
+  {t:'shadow',title:'Nghe và nhắc lại (8 câu)',items:[
+    S('Good <b>afternoon</b>, <b>class</b>.',A('Good afternoon, class.')),S('<b>Where</b> are you <b>from</b>?',A('Where are you from?')),S("I'm <b>from</b> Viet <b>Nam</b>.",A("I'm from Viet Nam.")),S('What <b>nationality</b> are you?',A('What nationality are you?')),
+    S("I'm <b>Vietnamese</b>.",A("I'm Vietnamese.")),S("He's from <b>Japan</b>. He's <b>Japanese</b>.",A("He's from Japan. He's Japanese.")),S('She is <b>American</b>.',A('She is American.')),S('<b>Nice</b> to <b>meet</b> you.',A('Nice to meet you.'))]},
+  {t:'speak',title:'Nói 1 phút: Giới thiệu bản thân',prompt:'Say hello. Tell me your name, where you are from and your nationality. Then say goodbye.',frames:['Good ___. I\'m ___.','I\'m from ___. I\'m ___.','How are you? I\'m fine.','Goodbye. See you ___.'],
+   modelTitle:'Bài nói mẫu của cô',model:A("Good morning. I'm Linh. I'm from Viet Nam. I'm Vietnamese. How are you? I'm fine, thank you. Goodbye. See you tomorrow."),
+   check:['Chào theo buổi','Nói tên, nước, quốc tịch','Có Goodbye','Nói chậm và rõ'],
+   kw:[{l:'Chào (Good ...)',re:'good (morning|afternoon|evening)|hello|hi'},{l:'Quê hương (from)',re:'from'},{l:'Quốc tịch',re:'vietnamese|japanese|american|english|australian|malaysian'},{l:'Tạm biệt',re:'goodbye|bye|see you'}],minWords:22}
+ ]},
+
+ {id:'d5',tab:'Ngày 5',title:'Movers chủ đề 1: Animals (phần 1)',mins:25,blocks:[
+  {t:'text',html:'<b>Hôm nay em học (Get Ready for Movers, chủ đề 1):</b><ul><li>12 con vật ở mức Movers.</li><li>Nghe và chọn tranh, đọc và điền từ, nhìn tranh sở thú và nói.</li><li>Câu mô tả: <b>It is big. It lives in Australia. It can jump.</b></li></ul>'},
+  {t:'bookimg',src:'images/movers-t1-p1.jpg',cap:'Tranh trong Get Ready for Movers, chủ đề 1'},
+  {t:'vocab',title:'12 con vật',instr:'Bấm vào thẻ để nghe cô đọc, rồi đọc theo.',items:[
+    V('kangaroo','🦘','chuột túi'),V('parrot','🦜','con vẹt'),V('crocodile','🐊','cá sấu'),V('monkey','🐒','con khỉ'),
+    V('elephant','🐘','con voi'),V('giraffe','🦒','hươu cao cổ'),V('penguin','🐧','chim cánh cụt'),V('dolphin','🐬','cá heo'),
+    V('tiger','🐅','con hổ'),V('snake','🐍','con rắn'),V('spider','🕷️','con nhện'),V('bee','🐝','con ong')]},
+  {t:'story',title:'Tình huống: Ở sở thú',ctx:'Cuối tuần, Nam và cô Hoa đi sở thú. Nam hỏi về những con vật em nhìn thấy.',
+   lines:[['m','Look, Miss Hoa! What is that animal?','Cô Hoa nhìn kìa! Con vật đó là gì ạ?'],['f','It is a giraffe. It is very tall.','Đó là con hươu cao cổ. Nó rất cao.'],['m','And what can it eat?','Thế nó ăn được gì?'],['f','It can eat leaves from the trees.','Nó ăn lá cây.'],['m','Wow! I like the penguins too. They are small and funny.','Ồ! Em cũng thích chim cánh cụt. Chúng nhỏ và ngộ nghĩnh.']],
+   use:'Dùng khi hỏi và nói về con vật: What is that animal? It is a ... It is big / small / tall.'},
+  {t:'mcq',title:'Nghe và chọn con vật',instr:'Nghe mô tả rồi chọn con vật đúng.',qs:[
+    Q('Which animal is it?',['kangaroo','penguin','tiger'],0,'',{au:A('It is brown. It lives in Australia. It can jump very far.')}),
+    Q('Which animal is it?',['monkey','elephant','snake'],1,'',{au:A('It is very big and grey. It has a long nose.')}),
+    Q('Which animal is it?',['parrot','dolphin','spider'],0,'',{au:A('It can fly and it can talk. It is green and red.')}),
+    Q('Which animal is it?',['crocodile','bee','giraffe'],2,'',{au:A('It is yellow and brown. Its neck is very long.')}),
+    Q('Which animal is it?',['dolphin','tiger','penguin'],0,'',{au:A('It lives in the sea. It can swim and jump high.')})]},
+  {t:'gap',title:'Đọc và điền từ (kiểu Movers)',instr:'Điền tên con vật thích hợp. Gõ một từ.',bank:['kangaroo','parrot','spider','bee','crocodile','tiger'],qs:[
+    G('A ',['bee'],' makes honey and it can fly.'),G('A ',['spider'],' has eight legs.'),G('A ',['crocodile'],' lives in rivers and has big teeth.'),G('A ',['parrot'],' can fly and talk.'),G('A ',['kangaroo'],' lives in Australia and can jump.'),G('A ',['tiger'],' is big, orange and black.')]},
+  {t:'speak',title:'Nhìn tranh sở thú và nói',scene:'zoo',prompt:'Look at the picture. Tell me about the animals at the zoo.',
+   frames:['This is a zoo. There is a ___ and a ___.','The ___ is big / tall / small.','The ___ is in the tree / on the grass.','I like the ___ because ...'],
+   modelTitle:'Bài nói mẫu của cô',model:A('This is a zoo. There is a big elephant on the left. The giraffe is very tall. A monkey is under the tree and a parrot is in the tree. There is a penguin and a crocodile on the grass. I like the penguin because it is small and funny.'),
+   check:['Nói ít nhất 5 câu','Gọi đúng tên con vật','Có từ chỉ vị trí (in, on, under)','Có tính từ (big, tall, small)'],
+   kw:[{l:'There is / There are',re:'there (is|are)'},{l:'Tên con vật',re:'elephant|giraffe|monkey|parrot|penguin|crocodile'},{l:'Vị trí (in, on, under)',re:'\\b(in|on|under|next to)\\b'},{l:'Tính từ (big, tall, small)',re:'\\b(big|tall|small|long|funny)\\b'}],minWords:25},
+  {t:'teacher',html:'<b>Movers chủ đề 1 (phần 1).</b> Phân bổ 25 phút: 0–3 ôn Unit 1–2 · 3–9 con vật (đóng kịch động tác, đố "Who am I?") · 9–14 tình huống sở thú · 14–20 nghe chọn, điền từ · 20–25 tả tranh.<br><b>Gợi ý:</b> chủ đề này có thể đối chiếu với trang tương ứng trong sách Oxford, đặt ảnh trang đó vào thư mục images/.'}
+ ]},
+
+ {id:'d6',tab:'Ngày 6',title:'Ôn tập: Viết và vận dụng',mins:20,blocks:[
+  {t:'text',html:'<b>Ôn tập: viết.</b> Em viết một bức thư làm quen và tả một con vật em thích.'},
+  {t:'gap',title:'Khởi động',instr:'Điền từ.',bank:['from','Japanese','fine','tall','tomorrow'],qs:[G('I\'m ',['fine'],', thank you.'),G('She is ',['Japanese'],'. She is from Japan.'),G('Where are you ',['from'],'?'),G('A giraffe is ',['tall'],'.')]},
+  {t:'write',title:'Bài viết: Letter to a new friend',instr:'Viết 6 đến 8 câu gửi bạn mới. Chào, giới thiệu tên, quê hương, quốc tịch và con vật em thích.',
+   frames:['Hello, ___! I\'m ___.','I\'m from ___. I\'m ___.','How are you?','My favourite animal is the ___.','It is ___ and it can ___.','Goodbye. See you ___.'],
+   min:6,kw:[{l:'Có chào (Hello, Hi, Good ...)',re:'hello|hi\\b|good (morning|afternoon|evening)'},{l:'Có from và quốc tịch',re:'from'},{l:'Có tên con vật',re:'kangaroo|parrot|crocodile|monkey|elephant|giraffe|penguin|dolphin|tiger|snake|spider|bee'},{l:'Có Goodbye / See you',re:'goodbye|bye|see you'}],
+   modelTitle:'Xem bài mẫu sau khi nộp',model:A("Hello, Akira! I'm Mai. I'm from Viet Nam. I'm Vietnamese. How are you? My favourite animal is the elephant. It is big and grey. It can swim and it can eat grass. Goodbye. See you tomorrow."),modelText:"Hello, Akira! I'm Mai. I'm from Viet Nam. I'm Vietnamese. How are you? My favourite animal is the elephant. It is big and grey. It can swim and it can eat grass. Goodbye. See you tomorrow."},
+  {t:'mcq',title:'Chọn câu đúng',instr:'Chọn một đáp án.',qs:[
+    Q('Which is correct?',["I'm from Vietnamese.","I'm from Viet Nam.","I from Viet Nam."],1,'from + tên nước.'),
+    Q('Which animal has eight legs?',['bee','spider','dolphin'],1,'Spider có tám chân.'),
+    Q('It is 7 p.m. You say:',['Good morning.','Good evening.','Good afternoon.'],1,'7 giờ tối là Good evening.'),
+    Q('A penguin ___ fly.',["can","can't","cans"],1,'Chim cánh cụt không bay được.')]}
+ ]},
+
+ {id:'d7',tab:'Ngày 7',title:'Ôn tập: Nói và tổng kết tuần',mins:20,blocks:[
+  {t:'text',html:'<b>Ôn tập: nói.</b> Nghe, nhắc lại, rồi ghi âm khoảng 1 phút. Chấm điểm tự động, em nói chậm và rõ.'},
+  {t:'shadow',title:'8 câu nghe và nhắc lại',items:[
+    S('Good <b>morning</b>. <b>Nice</b> to see you <b>again</b>.',A('Good morning. Nice to see you again.')),S("I'm <b>from</b> Viet <b>Nam</b>. I'm <b>Vietnamese</b>.",A("I'm from Viet Nam. I'm Vietnamese.")),S('<b>Where</b> is she <b>from</b>?',A('Where is she from?')),S("She's <b>from</b> Japan. She's <b>Japanese</b>.",A("She's from Japan. She's Japanese.")),
+    S('A <b>giraffe</b> is very <b>tall</b>.',A('A giraffe is very tall.')),S('An <b>elephant</b> is <b>big</b> and <b>grey</b>.',A('An elephant is big and grey.')),S('A <b>penguin</b> can <b>swim</b>.',A('A penguin can swim.')),S('<b>Goodbye</b>. See you <b>tomorrow</b>.',A('Goodbye. See you tomorrow.'))]},
+  {t:'speak',title:'Tell me about you and your favourite animal',prompt:'Say hello. Tell me about yourself and your favourite animal. Say goodbye.',frames:['Hello. I\'m ___. I\'m from ___.','I\'m ___ (quốc tịch).','My favourite animal is the ___.','It is ___ and it can ___.','Goodbye. See you ___.'],
+   modelTitle:'Bài nói mẫu của cô',model:A("Hello. I'm Nam. I'm from Viet Nam. I'm Vietnamese. My favourite animal is the dolphin. It is grey and it can swim and jump. I like it because it is friendly. Goodbye. See you tomorrow."),
+   check:['Nói đủ ít nhất 6 câu','Có from và quốc tịch','Có con vật yêu thích','Có Goodbye','Nói chậm và rõ'],
+   kw:[{l:'Quê hương',re:'from'},{l:'Quốc tịch',re:'vietnamese|japanese|american|english|australian|malaysian'},{l:'Con vật',re:'kangaroo|parrot|crocodile|monkey|elephant|giraffe|penguin|dolphin|tiger|snake|spider|bee'},{l:'Tạm biệt',re:'goodbye|bye|see you'}],minWords:30}
+ ]}
+]},
+
+/* ============================== TUẦN 3: Global Success Unit 3, 4 + Movers chủ đề 1 (phần B) ============================== */
+{id:3,title:'Tuần 3',topic:'My week, my birthday và Animals (phần 2)',
+ sub:'Global Success Unit 3 (What day is it today?), Unit 4 (When\'s your birthday?) và Get Ready for Movers chủ đề 1: Animals (tiếp)',
+ goals:['Hỏi và trả lời ngày trong tuần: What day is it today? What do you do on Mondays?','Nói tháng và ngày sinh: When\'s your birthday? It\'s in May. It\'s on the twentieth of May.','Nói em muốn ăn uống gì: What do you want to eat / drink? I want some ...','Mô tả con vật với can / can\'t, has got, lives in và so sánh đơn giản'],
+ plan:'7 ngày: ngày 1 và 3 học Global Success, ngày 5 học Movers, ngày 2, 4, 6, 7 ôn tập (25 phút mỗi ngày, làm trực tiếp trên trang)',
+ days:D7,
+ sections:[
+
+ {id:'d1',tab:'Ngày 1',title:'Unit 3: What day is it today?',mins:25,blocks:[
+  {t:'text',html:'<b>Hôm nay em học (Global Success Unit 3):</b><ul><li>Các thứ trong tuần: <b>Monday ... Sunday</b>.</li><li>Hỏi thứ: <b>What day is it today? It\'s Thursday.</b></li><li>Hỏi hoạt động: <b>What do you do on Saturdays? I do housework.</b></li></ul>'},
+  {t:'bookimg',src:'images/gs4-u3-lesson1.jpg',cap:'Tranh trong sách Global Success 4, Unit 3, Lesson 1'},
+  {t:'vocab',title:'12 từ và cụm từ',instr:'Bấm vào thẻ để nghe cô đọc, rồi đọc theo.',items:[
+    V('Monday','1️⃣','thứ Hai'),V('Tuesday','2️⃣','thứ Ba'),V('Wednesday','3️⃣','thứ Tư'),V('Thursday','4️⃣','thứ Năm'),
+    V('Friday','5️⃣','thứ Sáu'),V('Saturday','6️⃣','thứ Bảy'),V('Sunday','7️⃣','Chủ nhật'),V('study at school','📚','học ở trường'),
+    V('do housework','🧽','làm việc nhà'),V('listen to music','🎧','nghe nhạc'),V('visit my grandparents','👵','thăm ông bà'),V('watch TV','📺','xem ti vi')]},
+  {t:'story',title:'Tình huống: Hỏi bạn làm gì cuối tuần',ctx:'Giờ ra chơi, Mai hỏi Tom về lịch trong tuần.',
+   lines:[['f2','What day is it today, Tom?','Hôm nay là thứ mấy vậy Tom?'],['m',"It's Friday. We have English today.",'Hôm nay thứ Sáu. Hôm nay mình có tiết tiếng Anh.'],['f2','What do you do on Saturdays?','Thứ Bảy bạn làm gì?'],['m','I do housework with my mum.','Mình làm việc nhà với mẹ.'],['f2','And what do you do on Sundays?','Còn Chủ nhật thì sao?'],['m','I visit my grandparents.','Mình thăm ông bà.']],
+   use:'Dùng khi hỏi ngày và thói quen: What day is it today? What do you do on + thứ (số nhiều)?'},
+  {t:'rule',title:'Hai mẫu câu của Unit 3',pics:[{icon:'1️⃣',cap:'It\'s Monday.',au:A("It's Monday.")},{icon:'🧽',cap:'I do housework.',au:A('I do housework.')},{icon:'🎧',cap:'I listen to music.',au:A('I listen to music.')},{icon:'📚',cap:'I study at school.',au:A('I study at school.')}],
+   head:['Hỏi','Trả lời','Ví dụ'],
+   rows:[['What day is it today?','It\'s + thứ','It\'s Thursday.',A("It's Thursday.")],['What do you do on Saturdays?','I + hoạt động','I do housework on Saturdays.',A('I do housework on Saturdays.')],['What do you do on Sundays?','I + hoạt động','I listen to music on Sundays.',A('I listen to music on Sundays.')],['What does she do on Mondays?','She + hoạt động(s)','She studies at school on Mondays.',A('She studies at school on Mondays.')]],
+   note:'<b>Chú ý:</b> thứ luôn <b>viết hoa</b> và dùng <b>on</b>: on Monday, on Mondays (mọi thứ Hai). Với she, he thì động từ thêm -s: She <b>studies</b>, he <b>does</b> housework.'},
+  {t:'gap',title:'Điền từ còn thiếu',instr:'Gõ một từ rồi bấm Kiểm tra.',bank:['on','Monday','housework','music','today','does'],qs:[
+    G('What day is it ',['today'],'?'),G('I study at school ',['on'],' Mondays.'),G('I do ',['housework'],' on Saturdays.'),G('I listen to ',['music'],' on Sundays.'),G('It\'s ',['Monday'],'. We have English.'),G('What ',['does'],' she do on Fridays?')]},
+  {t:'mcq',title:'Chọn đáp án đúng',instr:'Chọn một đáp án cho mỗi câu.',qs:[
+    Q('What day is it today?',["It's Thursday.","It's in May.","I'm fine."],0,'Hỏi thứ thì trả lời It\'s + thứ.'),
+    Q('What do you do on Sundays?',['It is Sunday.','I listen to music.','I am nine.'],1,'Hỏi hoạt động.'),
+    Q('Which is correct?',['on monday','On Monday','In Monday'],1,'Thứ viết hoa và dùng on.'),
+    Q('I study at school ___ Mondays.',['in','at','on'],2,'Dùng on với thứ.')]},
+  {t:'speak',title:'Nhìn tranh và nói',scene:'classroom',prompt:'Look at the picture. Tell me what day it is and what you do on this day.',
+   frames:["It's ___ today.",'I study ___ on ___.','On Saturdays I ___.','On Sundays I ___.'],
+   modelTitle:'Bài nói mẫu của cô',model:A("It's Monday today. We study at school on Mondays. On Saturdays I do housework with my mum. On Sundays I listen to music and visit my grandparents."),
+   check:['Nói đúng thứ','Dùng on đúng','Nói ít nhất 4 câu','Nói chậm và rõ'],
+   kw:[{l:'Có thứ trong tuần',re:'monday|tuesday|wednesday|thursday|friday|saturday|sunday'},{l:'Có on',re:'\\bon\\b'},{l:'Có hoạt động',re:'housework|music|study|grandparents|tv'}],minWords:22},
+  {t:'teacher',html:'<b>Bám theo Global Success 4 Unit 3.</b> Phân bổ 25 phút: 0–3 ôn tuần 2 · 3–9 thứ trong tuần (bài hát, thẻ) · 9–14 tình huống · 14–20 điền từ, chọn đáp án · 20–25 tả tranh.<br><b>Lỗi hay gặp:</b> không viết hoa thứ, nói in Monday, quên -s với she/he.'}
+ ]},
+
+ {id:'d2',tab:'Ngày 2',title:'Ôn tập Unit 3',mins:20,blocks:[
   {t:'mcq',title:'Nghe và chọn đáp án',instr:'Bấm nút nghe rồi chọn.',qs:[
     Q('What does Nam do on Saturdays?',['He does housework','He listens to music','He studies at school'],0,'',{au:A('On Saturdays Nam does housework, but on Sundays he listens to music.')}),
-    Q('When is Lily\'s birthday?',['In March','In May','In July'],1,'',{au:A('My name is Lily and my birthday is in May. It is on the twentieth of May.')}),
-    Q('What does Mia want to drink?',['Water','Lemonade','Juice'],1,'',{au:A('What do you want to drink, Mia? I want some lemonade, please.')}),
-    Q('Can Ben ride a horse?',['Yes, he can','No, he can\'t'],1,'',{au:A('Ben can ride a bike and he can swim, but he can\'t ride a horse.')})]},
-  {t:'mcq',title:'Nghe hội thoại',instr:'Nghe cuộc nói chuyện rồi chọn đáp án.',qs:[
     Q('What day is it today?',['Monday','Thursday','Saturday'],1,'',{au:D([['f','What day is it today, Tom?'],['m','It is Thursday. We have English today.']])}),
-    Q('When is the party?',['On Friday at 5:00','On Saturday at 4:00','On Saturday at 6:00'],2,'',{au:D([['f2','Can you come to my birthday party, Nam?'],['m','Yes! When is it?'],['f2','It is on Saturday at six o\'clock.']])}),
+    Q('What does Mai do on Sundays?',['Visits her grandparents','Watches TV','Studies at school'],0,'',{au:A('On Sundays Mai visits her grandparents in the village.')}),
+    Q('When does Ben study at school?',['On Mondays','On Saturdays','On Sundays'],0,'',{au:A('Ben studies at school on Mondays, Tuesdays, Wednesdays, Thursdays and Fridays.')})]},
+  {t:'gap',title:'Nghe và điền từ',instr:'Nghe cả câu rồi gõ từ còn thiếu.',qs:[
+    G('We study at school ',['on'],' Mondays.',{au:A('We study at school on Mondays.')}),G('I do ',['housework'],' on Saturdays.',{au:A('I do housework on Saturdays.')}),G('It is ',['Friday'],' today.',{au:A('It is Friday today.')}),G('She listens to ',['music'],' on Sundays.',{au:A('She listens to music on Sundays.')})]},
+  {t:'shadow',title:'Nghe và nhắc lại (6 câu)',items:[
+    S('What <b>day</b> is it <b>today</b>?',A('What day is it today?')),S("It's <b>Thursday</b>.",A("It's Thursday.")),S('I study at <b>school</b> on <b>Mondays</b>.',A('I study at school on Mondays.')),S('I do <b>housework</b> on <b>Saturdays</b>.',A('I do housework on Saturdays.')),S('She <b>listens</b> to <b>music</b>.',A('She listens to music.')),S('He <b>visits</b> his <b>grandparents</b>.',A('He visits his grandparents.'))]},
+  {t:'write',title:'Viết: My week',instr:'Viết 5 đến 6 câu về một tuần của em. Dùng On Mondays..., On Saturdays..., On Sundays....',frames:['On Mondays I ___.','On Saturdays I ___.','On Sundays I ___.','I like ___ because ___.'],min:5,
+   kw:[{l:'Có thứ trong tuần',re:'monday|tuesday|wednesday|thursday|friday|saturday|sunday'},{l:'Có on',re:'\\bon\\b'},{l:'Có hoạt động',re:'housework|music|study|grandparents|tv|play|read'}],
+   modelTitle:'Xem bài mẫu sau khi nộp',model:A('On Mondays I study at school. On Wednesdays I play badminton. On Saturdays I do housework with my mum. On Sundays I listen to music. I like Sundays because I visit my grandparents.'),modelText:'On Mondays I study at school. On Wednesdays I play badminton. On Saturdays I do housework with my mum. On Sundays I listen to music. I like Sundays because I visit my grandparents.'}
+ ]},
+
+ {id:'d3',tab:'Ngày 3',title:'Unit 4: When\'s your birthday?',mins:25,blocks:[
+  {t:'text',html:'<b>Hôm nay em học (Global Success Unit 4):</b><ul><li>12 tháng: <b>January ... December</b>.</li><li>Hỏi sinh nhật: <b>When\'s your birthday? It\'s in May.</b></li><li>Mời bạn đến tiệc và nói món muốn ăn: <b>I want some chips and some lemonade.</b></li></ul>'},
+  {t:'bookimg',src:'images/gs4-u4-lesson1.jpg',cap:'Tranh trong sách Global Success 4, Unit 4, Lesson 1'},
+  {t:'vocab',title:'12 tháng',instr:'Bấm vào thẻ để nghe. Tháng luôn viết hoa chữ cái đầu.',items:[
+    V('January','❄️','tháng Một'),V('February','💝','tháng Hai'),V('March','🌱','tháng Ba'),V('April','🌧️','tháng Tư'),V('May','🌸','tháng Năm'),V('June','☀️','tháng Sáu'),
+    V('July','🏖️','tháng Bảy'),V('August','🍉','tháng Tám'),V('September','🎒','tháng Chín'),V('October','🎃','tháng Mười'),V('November','🍂','tháng Mười một'),V('December','🎄','tháng Mười hai')]},
+  {t:'vocab',title:'8 món ăn và thức uống ở tiệc',instr:'Bấm vào thẻ để nghe.',items:[
+    V('birthday party','🎉','tiệc sinh nhật'),V('chips','🍟','khoai tây chiên'),V('grapes','🍇','nho'),V('jam','🍓','mứt'),V('lemonade','🍋','nước chanh'),V('cake','🎂','bánh gato'),V('juice','🧃','nước ép'),V('water','💧','nước lọc')]},
+  {t:'story',title:'Tình huống: Mời bạn đến tiệc sinh nhật',ctx:'Sắp đến sinh nhật Lily. Lily mời Nam đến dự và hỏi Nam muốn ăn uống gì.',
+   lines:[['f2',"Nam, my birthday is in May. It's on the twentieth of May.",'Nam ơi, sinh nhật mình vào tháng Năm, ngày hai mươi.'],['m','When is the party?','Khi nào có tiệc vậy?'],['f2',"It's on Saturday at six o'clock. Can you come?",'Tiệc vào thứ Bảy lúc sáu giờ. Bạn đến được không?'],['m',"Yes, I can. Thank you!",'Được chứ. Cảm ơn bạn!'],['f2','What do you want to eat and drink?','Bạn muốn ăn và uống gì?'],['m','I want some grapes and some lemonade, please.','Cho mình nho và nước chanh nhé.']],
+   use:'Dùng khi mời bạn dự tiệc: When\'s your birthday? Can you come? What do you want to eat / drink? I want some ...'},
+  {t:'rule',title:'Mẫu câu của Unit 4',
+   head:['Hỏi','Trả lời','Ví dụ'],
+   rows:[['When\'s your birthday?','It\'s in + tháng','It\'s in May.',A("It's in May.")],['What\'s the date?','It\'s the + số thứ tự of + tháng','It\'s the twentieth of May.',A("It's the twentieth of May.")],['What do you want to eat?','I want some + món','I want some chips and some grapes.',A('I want some chips and some grapes.')],['What do you want to drink?','I want some + thức uống','I want some lemonade.',A('I want some lemonade.')],['Come to my party!','Giờ: at + giờ','The party starts at six o\'clock.',A("The party starts at six o'clock.")]],
+   note:'<b>Mẹo on, in, at:</b> <b>on</b> + ngày cụ thể (on the 5th of March, on Saturday) · <b>in</b> + tháng (in May) · <b>at</b> + giờ (at six). <b>Số thứ tự:</b> first, second, third, fourth, fifth, ... tenth, ... twentieth.'},
+  {t:'gap',title:'Điền từ còn thiếu',instr:'Gõ một từ rồi bấm Kiểm tra.',bank:['on','in','at','want','some'],qs:[
+    G('My birthday is ',['in'],' March.'),G('The party is ',['on'],' Saturday.'),G('It starts ',['at'],' six o\'clock.'),G('I ',['want'],' some juice and some chips.'),G('Her birthday is ',['on'],' the fifth of June.'),G('I want ',['some'],' grapes, please.')]},
+  {t:'mcq',title:'Chọn đáp án đúng',instr:'Chọn một đáp án cho mỗi câu.',qs:[
+    Q("When's your birthday?",["It's Monday.","It's in April.","It's at six."],1,'Hỏi sinh nhật thì trả lời bằng tháng.'),
+    Q('What do you want to drink?',['I want some jam.','I want some grapes.','I want some lemonade.'],2,'Drink là thức uống.'),
+    Q('Which is correct?',['My birthday is on May.','My birthday is in May.','My birthday is at May.'],1,'in + tháng.'),
+    Q('The month after April is ___.',['March','May','June'],1,'April, May, June.')]},
+  {t:'speak',title:'Nhìn tranh tiệc sinh nhật và nói',scene:'party',prompt:'Look at the picture. Tell me about the birthday party.',
+   frames:["It's ___'s birthday party.",'There is a big cake with ___ candles.','___ is holding ___ balloons.','The dog is under the ___.'],
+   modelTitle:'Bài nói mẫu của cô',model:A("It is Kim's birthday party. Kim is standing behind the table and waving. There is a big cake with three candles on the table. Leo is jumping and he is wearing a party hat. Ben is holding three balloons. Zoe is holding a red present. The dog is under the table."),
+   check:['Nói ít nhất 4 câu','Đếm đúng số nến, số bóng bay','Dùng is + động từ-ing','Có vị trí hoặc màu sắc'],
+   kw:[{l:'There is / There are',re:'there (is|are)'},{l:'Động từ -ing',re:'\\w+ing\\b'},{l:'Vị trí',re:'\\b(on|under|behind|next to|in front of)\\b'},{l:'Màu hoặc số lượng',re:'\\b(red|blue|green|yellow|pink|two|three|four|five)\\b'}],minWords:25},
+  {t:'teacher',html:'<b>Bám theo Global Success 4 Unit 4.</b> Phân bổ 25 phút: 0–3 ôn Unit 3 · 3–9 tháng và món ăn · 9–15 tình huống mời tiệc · 15–20 điền từ, chọn đáp án · 20–25 tả tranh tiệc.<br><b>Lỗi hay gặp:</b> nói on May, nhầm eat và drink, đọc sai số thứ tự.'}
+ ]},
+
+ {id:'d4',tab:'Ngày 4',title:'Ôn tập Unit 3 và Unit 4',mins:20,blocks:[
+  {t:'mcq',title:'Nghe hội thoại',instr:'Nghe rồi chọn đáp án.',qs:[
+    Q('When is the party?',['On Friday at 5:00','On Saturday at 4:00','On Saturday at 6:00'],2,'',{au:D([['f2','Can you come to my birthday party, Nam?'],['m','Yes! When is it?'],['f2',"It is on Saturday at six o'clock."]])}),
     Q('What does Anna want to eat?',['Chips','Grapes','Jam'],1,'',{au:D([['m','What do you want to eat, Anna?'],['f','I want some grapes, please. I do not like chips.']])}),
-    Q('Can Mai play the guitar?',['Yes, she can','No, she can\'t, but she can play the piano'],1,'',{au:D([['m2','Can you play the guitar, Mai?'],['f2','No, I can\'t, but I can play the piano.']])})]},
-  {t:'gap',title:'Nghe và điền từ còn thiếu',instr:'Nghe cả câu rồi gõ từ còn thiếu.',qs:[
-    G('My birthday is ',['in'],' November.',{au:A('My birthday is in November.')}),G('We study at school ',['on'],' Mondays.',{au:A('We study at school on Mondays.')}),G('I want some ',['grapes'],' and some water.',{au:A('I want some grapes and some water.')}),
-    G('She ',['can\'t'],' ride a horse.',{au:A('She can\'t ride a horse.')}),G('Come to my party ',['at'],' six o\'clock.',{au:A('Come to my party at six o\'clock.')})]},
-  {t:'sounds',title:'Âm /dʒ/ và /w/',instr:'Nghe từng cặp. Cột trái là âm /dʒ/ (như jam), cột phải là âm /w/ (như water). Đọc to cả hai từ.',
-   head:['Âm /dʒ/','Âm /w/'],pairs:[['jam','water'],['juice','window'],['July','Wednesday'],['jump','week'],['jacket','watch'],['join','wash']],
-   tip:'<b>Mẹo phát âm:</b> /dʒ/ như "ch" nhưng có rung cổ họng, lưỡi chạm vòm miệng (jam, juice). /w/ thì tròn môi như chữ "u" rồi mở ra, môi không chạm răng (water, window). Đừng đọc water thành "voa-tơ".'},
-  {t:'mcq',title:'Nghe: can hay can\'t?',instr:'Nghe câu rồi chọn. Chú ý: can đọc nhẹ /kən/, can\'t đọc rõ và dài /kɑːnt/.',qs:[
-    Q('Em nghe thấy gì?',['can','can\'t'],0,'Câu là: I can swim.',{au:A('I can swim very well.')}),
-    Q('Em nghe thấy gì?',['can','can\'t'],1,'Câu là: I can\'t swim.',{au:A('I can\'t swim in the sea.')}),
-    Q('Em nghe thấy gì?',['can','can\'t'],1,'Câu là: She can\'t ride a horse.',{au:A('She can\'t ride a horse.')}),
-    Q('Em nghe thấy gì?',['can','can\'t'],0,'Câu là: He can play the guitar.',{au:A('He can play the guitar.')})]},
-  {t:'mcq',title:'Đọc hiểu: A letter to a pen friend',instr:'Nghe hoặc đọc bức thư, rồi trả lời.',
-   passage:'Dear Alex, My name is Mai and I am ten years old. I live in Hue. My birthday is in September and it is on the twelfth. I am going to have a party at my house on Saturday at five o\'clock. I want some chips, some grapes and lemonade for my party. On Sundays I listen to music and I do housework with my mum. I can play the piano and I can cook, but I can\'t ride a horse. What about you? When is your birthday? What can you do? Write to me soon. Mai',
-   passageAu:A('Dear Alex, My name is Mai and I am ten years old. I live in Hue. My birthday is in September and it is on the twelfth. I am going to have a party at my house on Saturday at five o\'clock. I want some chips, some grapes and lemonade for my party. On Sundays I listen to music and I do housework with my mum. I can play the piano and I can cook, but I can\'t ride a horse. What about you? When is your birthday? What can you do? Write to me soon. Mai'),
-   qs:[Q('When is Mai\'s birthday?',['In September','In March','In June'],0,'My birthday is in September.'),
-       Q('What time is the party?',['At four','At five','At six'],1,'On Saturday at five o\'clock.'),
-       Q('What does Mai want at her party?',['Chips, grapes and lemonade','Jam and water','Cake and juice'],0,'She wants chips, grapes and lemonade.'),
-       Q('What does Mai do on Sundays?',['She goes to school','She plays football','She listens to music and does housework'],2,'On Sundays she listens to music and does housework with her mum.'),
-       Q('Mai can ride a horse.',TF,1,'Mai can\'t ride a horse.')]},
-  {t:'teacher',html:'<b>Phân bổ 25 phút:</b> 0–5 ôn mẫu câu · 5–12 nghe chọn đáp án và hội thoại · 12–18 âm /dʒ/ và /w/ (Global Success Unit 4 Lesson 3), can / can\'t · 18–25 đọc thư (dạng đọc và chọn đáp án của Movers).<br><b>Kiểm tra nhanh cuối buổi:</b> hỏi miệng: "What do you do on Sundays?" "When\'s your birthday?" "What do you want to drink?" "Can you ride a horse?" Bé trả lời bằng câu đầy đủ.<br><b>Nếu bé sai nhiều ở nghe hội thoại:</b> cho nghe lại, bé gạch chân ngày, giờ và món ăn.'}
+    Q("When's Lily's birthday?",['In March','In May','In July'],1,'',{au:A('My name is Lily and my birthday is in May. It is on the twentieth of May.')}),
+    Q('What day is it today?',['Monday','Wednesday','Sunday'],1,'',{au:D([['f','What day is it today?'],['m',"It's Wednesday."]])})]},
+  {t:'gap',title:'Nghe và điền từ',instr:'Nghe cả câu rồi gõ từ còn thiếu.',qs:[
+    G('My birthday is ',['in'],' November.',{au:A('My birthday is in November.')}),G('I want some ',['grapes'],' and some water.',{au:A('I want some grapes and some water.')}),G('Come to my party ',['at'],' six o\'clock.',{au:A("Come to my party at six o'clock.")}),G('We study at school ',['on'],' Mondays.',{au:A('We study at school on Mondays.')})]},
+  {t:'shadow',title:'Nghe và nhắc lại (8 câu)',items:[
+    S('What <b>day</b> is it <b>today</b>?',A('What day is it today?')),S('I do <b>housework</b> and listen to <b>music</b> on <b>Sundays</b>.',A('I do housework and listen to music on Sundays.')),S('<b>When\'s</b> your <b>birthday</b>?',A("When's your birthday?")),S('My birthday is in <b>July</b>.',A('My birthday is in July.')),
+    S("It's on the <b>twentieth</b> of <b>May</b>.",A("It's on the twentieth of May.")),S('I want some <b>jam</b> and some <b>water</b>.',A('I want some jam and some water.')),S('Come to my <b>party</b> at <b>six</b> o\'clock.',A("Come to my party at six o'clock.")),S('What do you <b>want</b> to <b>drink</b>?',A('What do you want to drink?'))]},
+  {t:'speak',title:'Trả lời như giám khảo',prompt:'What day is it today? What do you do on Saturdays and Sundays? When is your birthday? What do you want to eat and drink at your party?',frames:["It's ___. / On Saturdays I ___.",'My birthday is in ___.','I want some ___ and some ___.'],
+   modelTitle:'Bài nói mẫu của cô',model:A('Today is Monday. On Saturdays I do housework and on Sundays I listen to music. My birthday is in June. It is on the fifteenth of June. At my party I want some chips, some grapes and some lemonade.'),
+   check:['Trả lời đủ các câu hỏi','Nói đúng on, in, at','Nói chậm và rõ','Không dùng tiếng Việt'],
+   kw:[{l:'Có thứ trong tuần',re:'monday|tuesday|wednesday|thursday|friday|saturday|sunday'},{l:'Có tháng sinh nhật',re:'january|february|march|april|may|june|july|august|september|october|november|december'},{l:'Có I want some',re:'want some'}],minWords:28}
  ]},
 
- {id:'h1',tab:'Về nhà 1',title:'Viết thiệp mời sinh nhật',mins:20,blocks:[
-  {t:'text',html:'<b>Dạng bài: Viết.</b> Làm khởi động, rồi viết ngay trong khung bên dưới và bấm <b>Nộp cho cô</b>.'},
-  {t:'gap',title:'Khởi động',instr:'Điền từ thích hợp.',bank:['on','in','at','want','can'],qs:[G('My birthday is ',['in'],' August.'),G('The party is ',['on'],' Sunday.'),G('It starts ',['at'],' four o\'clock.'),G('I ',['want'],' some juice and some chips.')]},
-  {t:'write',title:'Bài viết: Come to my birthday party!',instr:'Viết một thư mời sinh nhật gửi bạn, 6 đến 8 câu. Nói rõ ngày, giờ, địa điểm, em muốn ăn uống gì và em có thể làm gì ở tiệc.',
-   frames:['Dear ___, My birthday is in ___.','Please come to my party on ___ at ___ o\'clock.','The party is at my house.','I want some ___ and some ___.','I can ___ and I can ___.','Write to me soon.'],
-   min:6,kw:[{l:'Có tháng hoặc ngày (in May, on Saturday...)',re:'\\b(january|february|march|april|may|june|july|august|september|october|november|december|monday|tuesday|wednesday|thursday|friday|saturday|sunday)\\b'},{l:'Có giờ (at six o\'clock...)',re:'\\bat (\\d|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|half|a quarter)'},{l:'Có I want some ...',re:'\\bwant some\\b'},{l:'Có can hoặc can\'t',re:'\\bcan\'?t?\\b'}],
-   modelTitle:'Xem bài mẫu sau khi nộp',model:A('Dear Linh, My birthday is in October. Please come to my party on Saturday at five o\'clock. The party is at my house. I want some chips, some grapes and some lemonade. I can play the guitar and I can cook. We can play games and listen to music. Write to me soon.'),modelText:'Dear Linh, My birthday is in October. Please come to my party on Saturday at five o\'clock. The party is at my house. I want some chips, some grapes and some lemonade. I can play the guitar and I can cook. We can play games and listen to music. Write to me soon.'}
+ {id:'d5',tab:'Ngày 5',title:'Movers chủ đề 1: Animals (phần 2)',mins:25,blocks:[
+  {t:'text',html:'<b>Hôm nay em học (Get Ready for Movers, chủ đề 1, tiếp):</b><ul><li>Mô tả con vật: <b>can / can\'t</b>, <b>has got</b>, <b>lives in</b>.</li><li>So sánh đơn giản: <b>bigger than, taller than, faster than</b>.</li><li>Đọc một đoạn văn và viết 5 câu về con vật em thích.</li></ul>'},
+  {t:'bookimg',src:'images/movers-t1-p2.jpg',cap:'Tranh trong Get Ready for Movers, chủ đề 1 (trang tiếp)'},
+  {t:'story',title:'Tình huống: Đố vui con vật',ctx:'Ở câu lạc bộ tiếng Anh, Linh và Ben chơi trò đố: một bạn tả, bạn kia đoán con vật.',
+   lines:[['f2','It has got a long neck and four long legs.','Nó có cổ dài và bốn chân dài.'],['m','Is it a giraffe?','Có phải hươu cao cổ không?'],['f2','Yes! It lives in Africa. It can run fast.','Đúng rồi! Nó sống ở châu Phi. Nó chạy nhanh.'],['m','My turn. It lives in the sea. It can swim and jump but it can\'t fly.','Đến lượt mình. Nó sống ở biển. Nó bơi và nhảy được nhưng không bay được.'],['f2','A dolphin!','Cá heo!']],
+   use:'Dùng khi tả con vật cho bạn đoán: It has got ... It lives in ... It can / can\'t ...'},
+  {t:'rule',title:'Mẫu câu mô tả con vật',
+   pics:[{icon:'🦘',cap:'A kangaroo can jump.',au:A('A kangaroo can jump.')},{icon:'🐧',cap:'A penguin can\'t fly.',au:A("A penguin can't fly.")},{icon:'🦒',cap:'A giraffe is taller than a tiger.',au:A('A giraffe is taller than a tiger.')},{icon:'🐬',cap:'It lives in the sea.',au:A('It lives in the sea.')}],
+   head:['Ý nghĩa','Cấu trúc','Ví dụ'],
+   rows:[['Làm được / không làm được','can / can\'t + động từ','A parrot can talk but it can\'t swim.',A("A parrot can talk but it can't swim.")],['Có (đặc điểm)','has got / have got','A giraffe has got a long neck.',A('A giraffe has got a long neck.')],['Sống ở đâu','lives in + nơi','A kangaroo lives in Australia.',A('A kangaroo lives in Australia.')],['So sánh hơn','tính từ-er + than','An elephant is bigger than a tiger.',A('An elephant is bigger than a tiger.')],['Ăn gì','eats + thức ăn','A monkey eats bananas.',A('A monkey eats bananas.')]],
+   note:'<b>Chú ý:</b> sau <b>can</b> luôn là động từ nguyên mẫu (a parrot can <b>fly</b>, không nói <i>can flies</i>). Với một con vật (it): <b>has got</b>, <b>lives</b>, <b>eats</b> có -s.'},
+  {t:'mcq',title:'Đọc hiểu (kiểu Movers): Animals at the zoo',instr:'Nghe hoặc đọc đoạn văn rồi trả lời.',
+   passage:'There are many animals at the zoo. The elephant is the biggest animal. It has got a long nose and it can swim. The giraffe is taller than the elephant. It lives in Africa and it eats leaves. The penguins are small. They can swim very fast but they can\'t fly. The monkeys are funny. They can climb trees and they eat bananas. My favourite animal is the dolphin. It can jump very high.',
+   passageAu:A("There are many animals at the zoo. The elephant is the biggest animal. It has got a long nose and it can swim. The giraffe is taller than the elephant. It lives in Africa and it eats leaves. The penguins are small. They can swim very fast but they can't fly. The monkeys are funny. They can climb trees and they eat bananas. My favourite animal is the dolphin. It can jump very high."),
+   qs:[Q('Which animal is the biggest?',['The giraffe','The elephant','The penguin'],1,'The elephant is the biggest animal.'),
+       Q('What does the giraffe eat?',['Leaves','Bananas','Fish'],0,'It eats leaves.'),
+       Q('Penguins can fly.',TF,1,'They can\'t fly.'),
+       Q('What do monkeys eat?',['Leaves','Bananas','Grass'],1,'They eat bananas.'),
+       Q('What is the writer\'s favourite animal?',['The dolphin','The monkey','The tiger'],0,'My favourite animal is the dolphin.')]},
+  {t:'gap',title:'Điền từ còn thiếu',instr:'Gõ một từ rồi bấm Kiểm tra.',bank:['can','can\'t','lives','has','taller'],qs:[
+    G('A kangaroo ',['can'],' jump very high.'),G('A penguin ',['can\'t'],' fly.'),G('A giraffe ',['has'],' got a long neck.'),G('A kangaroo ',['lives'],' in Australia.'),G('A giraffe is ',['taller'],' than a monkey.')]},
+  {t:'speak',title:'Tả con vật và nói',scene:'zoo',prompt:'Choose one animal in the picture. Tell me what it looks like, what it can do and where it lives.',
+   frames:['It is a ___.','It is ___ (big, small, tall).','It can ___ but it can\'t ___.','It lives in ___.'],
+   modelTitle:'Bài nói mẫu của cô',model:A('It is a giraffe. It is very tall. It has got a long neck and four long legs. It can run fast but it can\'t swim. It lives in Africa. It eats leaves from the trees.'),
+   check:['Nói tên con vật','Có can và can\'t','Có has got hoặc lives in','Nói ít nhất 5 câu'],
+   kw:[{l:'Có can / can\'t',re:"can'?t?\\b"},{l:'Có has got / lives',re:'has got|have got|lives'},{l:'Tên con vật',re:'elephant|giraffe|monkey|parrot|penguin|crocodile'},{l:'Tính từ',re:'\\b(big|small|tall|long|fast)\\b'}],minWords:28},
+  {t:'teacher',html:'<b>Movers chủ đề 1 (phần 2).</b> Phân bổ 25 phút: 0–3 ôn con vật tuần 2 · 3–9 trò chơi đố con vật · 9–15 mẫu câu mô tả · 15–21 đọc hiểu · 21–25 tả con vật.<br><b>Lỗi hay gặp:</b> thêm -s sau can, nói It have, quên than khi so sánh.'}
  ]},
 
- {id:'h2',tab:'Về nhà 2',title:'Nghe và nhắc lại có chấm điểm',mins:15,blocks:[
-  {t:'text',html:'<b>Dạng bài: Nghe và nói theo.</b> Bấm nút loa để nghe, rồi bấm <b>Nói</b> để đọc lại. Máy chấm từng câu. Chú ý các chữ <b>in đậm</b>. Cuối bài bấm <b>Nộp kết quả cho cô</b>.'},
+ {id:'d6',tab:'Ngày 6',title:'Ôn tập: Viết và vận dụng',mins:20,blocks:[
+  {t:'gap',title:'Khởi động',instr:'Điền từ.',bank:['on','in','at','can','want'],qs:[G('My birthday is ',['in'],' August.'),G('The party is ',['on'],' Sunday.'),G('It starts ',['at'],' four o\'clock.'),G('A parrot ',['can'],' talk.')]},
+  {t:'write',title:'Bài viết: Come to my birthday party!',instr:'Viết thư mời sinh nhật gửi bạn, 6 đến 8 câu. Nói rõ ngày, giờ, em muốn ăn uống gì và ở tiệc có thể làm gì.',
+   frames:['Dear ___, my birthday is in ___.','Please come to my party on ___ at ___ o\'clock.','I want some ___ and some ___.','We can ___ and we can ___.','Write to me soon.'],
+   min:6,kw:[{l:'Có tháng hoặc thứ',re:'january|february|march|april|may|june|july|august|september|october|november|december|monday|tuesday|wednesday|thursday|friday|saturday|sunday'},{l:'Có giờ (at six o\'clock)',re:'\\bat (\\d|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|half|a quarter)'},{l:'Có want some',re:'want some'},{l:'Có can',re:"can'?t?\\b"}],
+   modelTitle:'Xem bài mẫu sau khi nộp',model:A("Dear Linh, my birthday is in October. Please come to my party on Saturday at five o'clock. The party is at my house. I want some chips, some grapes and some lemonade. We can play games and listen to music. Write to me soon."),modelText:"Dear Linh, my birthday is in October. Please come to my party on Saturday at five o'clock. The party is at my house. I want some chips, some grapes and some lemonade. We can play games and listen to music. Write to me soon."},
+  {t:'write',title:'Bài viết: My favourite animal',instr:'Viết 5 câu về con vật em thích: tên, màu sắc hoặc kích thước, nó làm được gì, nó sống ở đâu.',frames:['My favourite animal is the ___.','It is ___ and ___.','It can ___ but it can\'t ___.','It lives in ___.','I like it because ___.'],
+   min:5,kw:[{l:'Có tên con vật',re:'kangaroo|parrot|crocodile|monkey|elephant|giraffe|penguin|dolphin|tiger|snake|spider|bee'},{l:'Có can / can\'t',re:"can'?t?\\b"},{l:'Có lives in',re:'lives in'}],
+   modelTitle:'Xem bài mẫu sau khi nộp',model:A('My favourite animal is the kangaroo. It is brown and strong. It can jump very far but it can\'t fly. It lives in Australia. I like it because it is funny.'),modelText:'My favourite animal is the kangaroo. It is brown and strong. It can jump very far but it can\'t fly. It lives in Australia. I like it because it is funny.'}
+ ]},
+
+ {id:'d7',tab:'Ngày 7',title:'Ôn tập: Nói và tổng kết 3 tuần',mins:20,blocks:[
   {t:'shadow',title:'8 câu nghe và nhắc lại',items:[
-    S('What <b>day</b> is it <b>today</b>?',A('What day is it today?')),S('I <b>study</b> at school on <b>Mondays</b>.',A('I study at school on Mondays.')),S('I do <b>housework</b> and listen to <b>music</b> on <b>Sundays</b>.',A('I do housework and listen to music on Sundays.')),S('<b>When\'s</b> your <b>birthday</b>?',A('When\'s your birthday?')),
-    S('My birthday is in <b>July</b>.',A('My birthday is in July.')),S('I want some <b>jam</b> and some <b>water</b>.',A('I want some jam and some water.')),S('Can you ride a <b>horse</b>?',A('Can you ride a horse?')),S('Yes, I <b>can</b>, but I <b>can\'t</b> play the <b>guitar</b>.',A('Yes, I can, but I can\'t play the guitar.'))]}
- ]},
-
- {id:'h3',tab:'Về nhà 3',title:'Trả lời câu hỏi như giám khảo',mins:20,blocks:[
-  {t:'text',html:'<b>Dạng bài: Nói (giống phần Speaking của Movers: giám khảo hỏi về em).</b> Bấm <b>Ghi âm</b> và trả lời lần lượt các câu hỏi bên dưới, khoảng 1 phút. Nghe lại rồi bấm <b>Nộp cho cô</b>.'},
-  {t:'speak',title:'Tell me about yourself',prompt:'Answer the questions: What day is it today? What do you do on Saturdays and Sundays? When\'s your birthday? What do you want to eat and drink at your party? What can you do?',frames:['It\'s ___. / On Saturdays I ___.','My birthday is in ___. It\'s on the ___ of ___.','I want some ___ and some ___.','I can ___ but I can\'t ___.','My friend can ___.'],
-   modelTitle:'Bài nói mẫu của cô',model:A('Today is Monday. On Saturdays I do housework and on Sundays I listen to music. My birthday is in June. It is on the fifteenth of June. At my party I want some chips, some grapes and some lemonade. I can play the guitar and I can cook, but I can\'t ride a horse. My friend Nam can roller skate very well.'),
-   check:['Trả lời đủ 5 câu hỏi','Nói đúng on, in, at','Dùng can / can\'t đúng','Nói chậm và rõ âm /dʒ/ và /w/','Không dùng tiếng Việt'],
-   kw:[{l:'Có ngày trong tuần',re:'\\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)s?\\b'},{l:'Có tháng sinh nhật',re:'\\b(january|february|march|april|may|june|july|august|september|october|november|december)\\b'},{l:'Có I want some ...',re:'\\bwant some\\b'},{l:'Có can hoặc can\'t',re:'\\bcan\'?t?\\b'}],minWords:30}
- ]},
-
- {id:'h4',tab:'Về nhà 4',title:'Từ vựng và đọc',mins:20,blocks:[
-  {t:'text',html:'<b>Dạng bài: Từ vựng và đọc.</b> Ôn từ vựng tuần 2 và đọc một đoạn văn theo dạng Movers.'},
-  {t:'gap',title:'Nhìn hình và viết từ',instr:'Nhìn biểu tượng, gõ cụm từ tiếng Anh tương ứng.',qs:[
-    G('',['do housework'],'',{icon:'🧽'}),G('',['listen to music'],'',{icon:'🎧'}),G('',['grapes'],'',{icon:'🍇'}),G('',['lemonade'],'',{icon:'🍋'}),G('',['play the guitar'],'',{icon:'🎸'}),G('',['ride a horse'],'',{icon:'🐴'})]},
-  {t:'mcq',title:'Chọn từ đúng',instr:'Chọn đáp án đúng.',qs:[
-    Q('Which one is a drink?',['chips','lemonade','jam'],1,'Lemonade là đồ uống.'),
-    Q('Which one is different?',['Monday','March','Friday'],1,'March là tháng, hai từ kia là thứ trong tuần.'),
-    Q('The month after April is ___.',['March','May','June'],1,'April, May, June.'),
-    Q('She ___ play the piano. (không được)',['can','can\'t','cans'],1,'Can\'t nghĩa là không thể.'),
-    Q('We have a party ___ Saturday.',['in','at','on'],2,'Dùng on với thứ.'),
-    Q('The fifth month of the year is ___.',['April','May','June'],1,'January, February, March, April, May.')]},
-  {t:'mcq',title:'Read and answer: Nam\'s week',instr:'Đọc đoạn văn rồi trả lời.',
-   passage:'I am Nam. I am nine years old and my birthday is in December. On Mondays, Wednesdays and Fridays I study English at school. On Tuesdays and Thursdays I play football with my friends after school. At the weekend I stay at home. On Saturdays I do housework with my dad, and on Sundays I listen to music and play the guitar. I can ride a bike and I can swim, but I can\'t roller skate. My sister Lan can roller skate very well. She is going to teach me next month.',
-   passageAu:A('I am Nam. I am nine years old and my birthday is in December. On Mondays, Wednesdays and Fridays I study English at school. On Tuesdays and Thursdays I play football with my friends after school. At the weekend I stay at home. On Saturdays I do housework with my dad, and on Sundays I listen to music and play the guitar. I can ride a bike and I can swim, but I can\'t roller skate. My sister Lan can roller skate very well. She is going to teach me next month.'),
-   qs:[Q('When is Nam\'s birthday?',['In November','In December','In January'],1,'My birthday is in December.'),
-       Q('What does Nam do on Tuesdays?',['Studies English','Plays football','Does housework'],1,'On Tuesdays and Thursdays he plays football.'),
-       Q('What does Nam do on Sundays?',['He listens to music and plays the guitar','He does housework','He plays football'],0,'On Sundays he listens to music and plays the guitar.'),
-       Q('Nam can roller skate.',TF,1,'Nam can\'t roller skate. His sister Lan can.'),
-       Q('Who is going to teach Nam?',['His dad','His sister Lan','His teacher'],1,'Lan is going to teach him.')]}
+    S('What <b>day</b> is it <b>today</b>?',A('What day is it today?')),S('I study at <b>school</b> on <b>Mondays</b>.',A('I study at school on Mondays.')),S('My <b>birthday</b> is in <b>July</b>.',A('My birthday is in July.')),S('I want some <b>jam</b> and some <b>water</b>.',A('I want some jam and some water.')),
+    S('A <b>kangaroo</b> can <b>jump</b>.',A('A kangaroo can jump.')),S("A <b>penguin</b> <b>can't</b> fly.",A("A penguin can't fly.")),S('A <b>giraffe</b> is <b>taller</b> than a <b>tiger</b>.',A('A giraffe is taller than a tiger.')),S('It <b>lives</b> in <b>Australia</b>.',A('It lives in Australia.'))]},
+  {t:'speak',title:'Tell me about yourself',prompt:'Say hello. Tell me your name and where you are from. What do you do on Saturdays? When is your birthday? What is your favourite animal and what can it do?',frames:['Hello. I\'m ___. I\'m from ___.','On Saturdays I ___.','My birthday is in ___.','My favourite animal is the ___. It can ___.'],
+   modelTitle:'Bài nói mẫu của cô',model:A("Hello. I'm Mai. I'm from Viet Nam. On Saturdays I do housework with my mum. My birthday is in June. It is on the fifteenth of June. At my party I want some chips and some lemonade. My favourite animal is the dolphin. It can swim and jump very high."),
+   check:['Nói đủ ít nhất 8 câu','Có from và quốc tịch hoặc tên nước','Có thứ trong tuần và tháng','Có can','Nói chậm và rõ'],
+   kw:[{l:'Quê hương',re:'from'},{l:'Thứ trong tuần',re:'monday|tuesday|wednesday|thursday|friday|saturday|sunday'},{l:'Tháng sinh nhật',re:'january|february|march|april|may|june|july|august|september|october|november|december'},{l:'Con vật và can',re:'can'}],minWords:35}
  ]}
 ]}
 
@@ -659,6 +875,7 @@ var WEEKS=[
 /* Âm thanh cho từng từ trong bảng cặp từ */
 WEEKS.forEach(function(w){w.sections.forEach(function(s){s.blocks.forEach(function(b){
   if(b.t==='sounds'){b.aus=b.pairs.map(function(p){return [A(p[0]),A(p[1])];});}
+  if(b.t==='story'){b.lineAu=b.lines.map(function(l){return A(l[1],l[0]);});b.allAu=D(b.lines.map(function(l){return [l[0],l[1]];}));}
 });});});
 
 (function(){
@@ -742,6 +959,35 @@ function optHtml(o){
   return one(o)+(o.l?'<span>'+esc(o.l)+'</span>':'');
 }
 
+
+/* ---------- ảnh từ sách (bạn tự đặt vào thư mục images/) ---------- */
+function slug(s){return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
+function imgTag(base,fb,cls){
+  return '<img class="bkimg'+(cls?' '+cls:'')+'" src="images/'+base+'.jpg" data-base="'+base+'" data-ext="jpg" data-fb="'+esc(fb||'')+'" alt="">';
+}
+document.addEventListener('error',function(e){
+  var t=e.target;if(!t||t.tagName!=='IMG'){return;}
+  if(t.classList.contains('bkimg')){
+    var ext=t.getAttribute('data-ext'),base=t.getAttribute('data-base');
+    if(ext==='jpg'){t.setAttribute('data-ext','png');t.src='images/'+base+'.png';return;}
+    if(ext==='png'){t.setAttribute('data-ext','webp');t.src='images/'+base+'.webp';return;}
+    var fb=t.getAttribute('data-fb');
+    if(fb){var d=document.createElement('span');d.innerHTML=iconSvg(fb,null,'ico');t.parentNode.replaceChild(d.firstChild,t);}
+    else{t.style.display='none';}
+  }else if(t.classList.contains('bkpage')){
+    var p=t.closest('.bookslot');if(p){p.classList.add('empty');}
+  }
+},true);
+function rBookimg(b){
+  return '<section class="blk bookslot'+(ST.teacher?'':' nots')+'"><img class="bkpage" src="'+esc(b.src)+'" alt="'+esc(b.cap||'')+'"><div class="slot">Chỗ đặt ảnh trang sách: <b>'+esc(b.src)+'</b><br>'+esc(b.cap||'')+'. Chưa có ảnh nên học sinh chưa thấy khung này.</div>'+(b.cap?'<p class="muted bkcap">'+esc(b.cap)+'</p>':'')+'</section>';
+}
+function rStoryBlk(b){
+  var h='<section class="blk story"><h3>'+esc(b.title)+'</h3><div class="ctx"><b>Tình huống:</b> '+esc(b.ctx)+'</div><div>'+auBtn(b.allAu,'Nghe cả đoạn hội thoại')+'</div>';
+  b.lines.forEach(function(l,i){h+='<div class="ln"><span class="who">'+(VOICE_NAME[l[0]]||l[0])+'</span><div><div class="row2">'+auBtn(b.lineAu[i])+'<span class="en">'+esc(l[1])+'</span></div><div class="vi">'+esc(l[2])+'</div></div></div>';});
+  h+='<div class="use"><b>Dùng khi nào:</b> '+esc(b.use||'')+'</div></section>';
+  return h;
+}
+
 /* ---------- khối nội dung ---------- */
 function bid(b){return 'w'+ST.week+'.'+ST.sec+'.'+b;}
 function actions(){return '<div class="actions"><button type="button" class="btn" data-act="check">Kiểm tra</button><button type="button" class="btn ghost" data-act="reset">Làm lại</button><span class="score" aria-live="polite"></span></div>';}
@@ -757,7 +1003,7 @@ function rScene(b){return '<section class="blk"><div class="scenebox">'+SCENE[b.
 function rVocab(b){
   var h='<section class="blk"><h3>'+esc(b.title)+'</h3><p class="muted">'+esc(b.instr)+'</p><div class="vgrid">';
   b.items.forEach(function(it){var id=aid(it.au);AUTXT[id]=it.w;
-    h+='<button type="button" class="vcard" data-au="'+id+'"><div class="tile sm">'+iconSvg(it.icon,it.c)+'</div><span class="w">'+esc(it.w)+'</span><span class="vi">'+esc(it.vi)+'</span></button>';});
+    h+='<button type="button" class="vcard" data-au="'+id+'"><div class="tile sm">'+imgTag('vocab-'+slug(it.w),it.icon)+'</div><span class="w">'+esc(it.w)+'</span><span class="vi">'+esc(it.vi)+'</span></button>';});
   return h+'</div></section>';
 }
 function rRule(b){
@@ -866,8 +1112,10 @@ function scriptText(w){
 }
 
 /* ---------- lộ trình theo ngày ---------- */
-var DAYMAP=[{s:'b1',k:'Bài học'},{s:'h1',k:'Bài tập'},{s:'h2',k:'Bài tập'},{s:'b2',k:'Bài học'},{s:'h3',k:'Bài tập'},{s:'h4',k:'Bài tập'}];
+var DAYMAP6=[{s:'b1',k:'Bài học'},{s:'h1',k:'Bài tập'},{s:'h2',k:'Bài tập'},{s:'b2',k:'Bài học'},{s:'h3',k:'Bài tập'},{s:'h4',k:'Bài tập'}];
 var CLASS_ROWS=null,CLASS_ERR='';
+function daysOfId(wid){var w=weekById(wid);return (w&&w.days)||DAYMAP6;}
+function dayOffset(wid){var n=0;WEEKS.forEach(function(w){if(w.id<wid){n+=((w.days)||DAYMAP6).length;}});return n;}
 function weekById(id){return WEEKS.filter(function(w){return w.id===id;})[0];}
 function weekObj(){return weekById(ST.week);}
 function secById(w,s){return w.sections.filter(function(x){return x.id===s;})[0];}
@@ -876,9 +1124,9 @@ function doneMap(){if(!P._done){P._done={};}return P._done;}
 function isDone(wid,s){return !!doneMap()['w'+wid+'.'+s];}
 function unlockWeek(){return (ST.user&&ST.user.unlockWeek)||1;}
 function isLocked(wid){return !ST.teacher&&wid>unlockWeek();}
-function dayNo(wid,idx){return (wid-1)*6+idx+1;}
-function dayIdx(s){for(var i=0;i<DAYMAP.length;i++){if(DAYMAP[i].s===s){return i;}}return -1;}
-function flatDays(){var a=[];WEEKS.forEach(function(w){DAYMAP.forEach(function(m,j){a.push({w:w.id,s:m.s,idx:j});});});return a;}
+function dayNo(wid,idx){return dayOffset(wid)+idx+1;}
+function dayIdx(s){var m=daysOfId(ST.week);for(var i=0;i<m.length;i++){if(m[i].s===s){return i;}}return -1;}
+function flatDays(){var a=[];WEEKS.forEach(function(w){daysOfId(w.id).forEach(function(m,j){a.push({w:w.id,s:m.s,idx:j});});});return a;}
 function nextTodo(){
   var a=flatDays();
   for(var i=0;i<a.length;i++){if(!isLocked(a[i].w)&&!isDone(a[i].w,a[i].s)){return a[i];}}
@@ -917,7 +1165,7 @@ function renderMap(){
   WEEKS.forEach(function(w){
     var lk=isLocked(w.id);
     h+='<section class="blk wk'+(lk?' lk':'')+'"><h3>'+esc(w.title)+': '+esc(w.topic)+(lk?' <span class="pill">Chưa mở</span>':'')+'</h3><p class="muted">'+esc(w.sub)+'</p><div class="days">';
-    DAYMAP.forEach(function(m,j){
+    daysOfId(w.id).forEach(function(m,j){
       var sc=secById(w,m.s),dn=isDone(w.id,m.s),isNt=nt&&nt.w===w.id&&nt.s===m.s;
       h+='<button type="button" class="day'+(dn?' done':'')+(isNt?' now':'')+'" data-open="w'+w.id+'-'+m.s+'"'+(lk?' disabled':'')+'><span class="dn">Ngày '+dayNo(w.id,j)+'</span><span class="dt">'+esc(sc.title)+'</span><span class="dm">'+m.k+' · '+sc.mins+' phút</span><span class="ds">'+(dn?'Đã xong':(isNt?'Hôm nay':(lk?'Chưa mở':'')))+'</span></button>';
     });
@@ -941,13 +1189,13 @@ function renderDay(){
   var sec=secObj(w),idx=dayIdx(ST.sec);
   if(!sec){ST.view='map';render();return;}
   h+='<div class="secbar"><div class="actions"><button type="button" class="btn ghost sm" data-act="back">← Lộ trình</button><b>Ngày '+dayNo(w.id,idx)+' · '+esc(w.title)+'</b></div></div>';
-  h+='<main class="stack"><div class="sechead"><h2>'+esc(sec.title)+'</h2><span class="mins">'+DAYMAP[idx].k+' · khoảng '+sec.mins+' phút</span></div>';
+  h+='<main class="stack"><div class="sechead"><h2>'+esc(sec.title)+'</h2><span class="mins">'+daysOfId(w.id)[idx].k+' · khoảng '+sec.mins+' phút</span></div>';
   sec.blocks.forEach(function(b,i){var id=bid(i);
     switch(b.t){
       case 'text':h+=rText(b);break;case 'teacher':h+=rTeacher(b);break;case 'scene':h+=rScene(b);break;
       case 'vocab':h+=rVocab(b);break;case 'rule':h+=rRule(b);break;case 'pics':h+=rPics(b);break;
       case 'mcq':h+=rMcq(b,id);break;case 'gap':h+=rGap(b,id);break;case 'sounds':h+=rSounds(b);break;
-      case 'speak':h+=rSpeak(b,id);break;case 'shadow':h+=rShadow(b,id);break;case 'write':h+=rWrite(b,id);break;case 'model':h+=rModel(b);break;case 'check':h+=rCheck(b,id);break;
+      case 'speak':h+=rSpeak(b,id);break;case 'shadow':h+=rShadow(b,id);break;case 'write':h+=rWrite(b,id);break;case 'model':h+=rModel(b);break;case 'check':h+=rCheck(b,id);break;case 'bookimg':h+=rBookimg(b);break;case 'story':h+=rStoryBlk(b);break;
     }
   });
   var dn=isDone(w.id,ST.sec);
@@ -1009,7 +1257,7 @@ function afterLogin(){ST.view='map';readHash();render();window.scrollTo(0,0);loa
 function doLogin(name,code,silent){
   name=String(name||'').trim();code=String(code||'').trim();
   if(!name||!code){if(silent){renderLogin();}return;}
-  if(!API_URL){applyStudent({name:name,role:code.toLowerCase()==='gv'?'teacher':'student',unlockWeek:2},code);afterLogin();return;}
+  if(!API_URL){applyStudent({name:name,role:code.toLowerCase()==='gv'?'teacher':'student',unlockWeek:3},code);afterLogin();return;}
   setMsg('Đang kiểm tra...');
   api({action:'lr_login',name:name,code:code}).then(function(j){
     if(j.ok){applyStudent(j.student,code);afterLogin();}
