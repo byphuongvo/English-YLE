@@ -1136,7 +1136,7 @@ function counts(){var t=0,d=0;flatDays().forEach(function(x){if(isLocked(x.w)){r
 
 function topbar(){
   var u=ST.user;
-  var h='<header class="top"><div class="brand"><b>Lộ trình học tiếng Anh</b><span>'+esc(u.name)+(u.role==='teacher'?' · Giáo viên':'')+' · <span id="syncMsg"></span></span></div><div class="row2"><a class="btn ghost sm lnk" href="review.html">Ôn tập</a>';
+  var h='<header class="top"><div class="brand"><b>Lộ trình học tiếng Anh</b><span>'+esc(u.name)+(u.role==='teacher'?' · Giáo viên':'')+' · <span id="syncMsg"></span></span></div><div class="row2"><a class="btn ghost sm lnk" href="practice.html">Ôn tập</a>';
   if(u.role==='teacher'){h+='<div class="seg" role="group" aria-label="Chế độ"><button type="button" data-mode="s" aria-pressed="'+(!ST.teacher)+'">Học sinh</button><button type="button" data-mode="t" aria-pressed="'+ST.teacher+'">Giáo viên</button></div>';}
   h+='<button type="button" class="btn ghost sm" data-act="logout">Đăng xuất</button></div></header>';
   if(!API_URL){h+='<div class="note">Chế độ thử: chưa kết nối Google Sheet, tiến độ chỉ lưu trên máy này.</div>';}
