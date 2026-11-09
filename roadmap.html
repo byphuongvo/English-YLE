@@ -1,4 +1,6 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<link rel="stylesheet" href="roadmap-theme.css">
+</head><body>
   
   <title>Lộ trình học theo ngày</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -1674,75 +1676,4 @@ window.addEventListener('hashchange',function(){if(ST.user){ST.view='map';readHa
 })();
 
 </script>
-/* roadmap-theme.css
-   Cách dùng: trong roadmap.html, thêm dòng này NGAY TRƯỚC thẻ </body>:
-   <link rel="stylesheet" href="roadmap-theme.css">
-   Muốn quay về giao diện cũ: xóa dòng đó. File chỉ đổi giao diện, không đổi nội dung hay chức năng. */
-
-body{--purple:#6B43CF;--gold:#FFD84D;--gold-d:#C99A00;font-size:18px}
-@media (prefers-color-scheme:dark){body{--purple:#B79BFF}}
-
-/* Nút nảy kiểu trò chơi, cùng phong cách với trang ôn tập */
-body .btn{border-radius:14px;padding:12px 22px;box-shadow:0 4px 0 color-mix(in srgb,var(--accent) 65%,#000)}
-body .btn.ghost{box-shadow:0 4px 0 var(--line)}
-body .btn.sm{padding:8px 14px;box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 65%,#000)}
-body .btn.ghost.sm{box-shadow:0 3px 0 var(--line)}
-body .btn:active{transform:translateY(3px);box-shadow:none}
-body .btn:disabled{opacity:.5}
-
-/* Khối chào đầu trang: một mảng màu đặc, có thanh tiến độ vàng */
-body .hero{background:var(--accent);color:var(--accent-ink);border:0;border-radius:24px;padding:26px 22px;box-shadow:0 6px 0 color-mix(in srgb,var(--accent) 60%,#000)}
-body .hero .kicker{text-transform:none;letter-spacing:0;font-size:1rem;color:inherit;opacity:.85}
-body .hero h1{font-size:2rem}
-body .hero .muted{color:inherit;opacity:.9}
-body .hero .pbar{height:16px;border:0;border-radius:8px;background:rgba(255,255,255,.35)}
-body .hero .pbar i{background:var(--gold);border-radius:8px}
-body .hero .btn{background:var(--gold);color:#3B2F00;box-shadow:0 4px 0 var(--gold-d)}
-
-/* Lộ trình: các ngày nối với nhau thành một con đường */
-body .wk{padding:20px 16px}
-body .days{display:flex;flex-direction:column;gap:14px;position:relative}
-body .days::before{content:"";position:absolute;left:27px;top:20px;bottom:20px;width:6px;border-radius:3px;background:var(--line)}
-body .day{position:relative;padding:12px 14px 12px 74px;min-height:76px;border-radius:18px;box-shadow:0 4px 0 var(--line)}
-body .day::before{content:"";position:absolute;left:12px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:var(--surface);border:4px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:1.05rem}
-body .day.done::before{content:"✓";background:var(--good);border-color:var(--good);color:#fff}
-body .day.now{border-color:var(--gold-d);background:var(--accent-soft)}
-body .day.now::before{content:"★";left:9px;width:42px;height:42px;background:var(--gold);border-color:var(--gold-d);color:#5A4300}
-body .day:disabled{box-shadow:none}
-body .day .dt{font-size:1.1rem}
-body .day .ds{min-height:0}
-body .wk .pill{font-size:.8rem}
-
-/* Thanh trên khi đang học một ngày */
-body .secbar{border-bottom:2px solid var(--line);padding:10px 0;margin-bottom:6px}
-body .secbar b{font-family:var(--font-display);font-size:1.1rem}
-body .sechead h2{font-size:1.7rem}
-
-/* Khối bài tập: dải màu bên trái cho biết dạng bài */
-body .blk{border-width:2px;border-radius:20px;padding:20px;box-shadow:0 4px 0 var(--line)}
-body .blk[data-t="mcq"]{border-left:8px solid var(--accent)}
-body .blk[data-t="gap"]{border-left:8px solid var(--purple)}
-body .blk[data-t="speak"],body .shblk{border-left:8px solid var(--lvl)}
-body .blk[data-t="write"]{border-left:8px solid var(--good)}
-body .blk>h3{font-size:1.3rem}
-body .q{border-width:2px;border-radius:16px}
-
-/* Thẻ từ vựng, đáp án, ô điền: to và dễ chạm hơn cho học sinh nhỏ */
-body .vgrid{gap:12px}
-body .vcard{border-radius:18px;padding:12px 8px;box-shadow:0 4px 0 var(--line)}
-body .vcard:active{transform:translateY(3px);box-shadow:none}
-body .vcard .w{font-size:1.25rem}
-body .opt .ot{border-width:3px;border-radius:16px;min-height:56px;box-shadow:0 3px 0 var(--line)}
-body .gap{border-width:3px;border-radius:14px;font-size:1.1rem}
-body .chip{border-width:3px}
-body .play{width:46px;height:46px}
-body .play svg{width:24px;height:24px}
-body .playlong{padding:8px 18px 8px 10px;border-width:3px}
-body .shbtn{border-width:3px;padding:8px 16px}
-
-/* Nút Ngày trước, Ngày sau luôn nằm ở đáy màn hình */
-body .nav{position:sticky;bottom:0;z-index:20;background:var(--bg);padding:12px 0 calc(12px + env(safe-area-inset-bottom,0px));border-top:2px solid var(--line)}
-
-@media (max-width:480px){body .hero h1{font-size:1.6rem}body .blk{padding:16px}}
-@media (prefers-reduced-motion:reduce){body .btn:active,body .vcard:active{transform:none}}  
 </body></html>
