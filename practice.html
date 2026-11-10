@@ -67,6 +67,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .tile.up .art{border:0;border-radius:8px}
 .tile.m{border-color:var(--ok);background:var(--okbg)}
 .tm{font:600 1.6rem var(--fd)}
+body.embed .top,body.embed .tabs{display:none}body.embed{padding-bottom:24px}
 @media(max-width:480px){.opts{gap:6px}.opt{font-size:1rem}.pic{width:120px;height:120px}}
 @media(prefers-reduced-motion:reduce){.card{transition:none}}
 </style></head><body>
@@ -133,6 +134,7 @@ DATA.forEach(function(u){
 var TY={listen:{n:"Nghe và chọn",c:"#2F5BEA"},cloze:{n:"Điền từ",c:"#7A4FD6"},speak:{n:"Nói to",c:"#D9650A"},order:{n:"Xếp câu",c:"#14886A"},type:{n:"Gõ từ",c:"#C93A85"}};
 var ST={unit:"u1",view:"cards",total:0,best:{}};
 try{var s0=JSON.parse(localStorage.getItem("yle-practice-v3")||"null");if(s0){for(var k in s0){ST[k]=s0[k]}}}catch(e){}
+function hv(){var h=location.hash.slice(1);if(h==="cards"||h==="memory"||h==="race"){ST.view=h}}
 function save(){try{localStorage.setItem("yle-practice-v3",JSON.stringify(ST))}catch(e){}}
 function rate(){return 1}
 function $(i){return document.getElementById(i)}
@@ -324,6 +326,9 @@ document.addEventListener("keydown",function(e){
   if((e.key==="Enter"||e.key===" ")&&t.getAttribute&&t.getAttribute("data-act")==="flip"){e.preventDefault();t.click()}
   else if(e.key==="Enter"&&t.id==="ti"){check()}
 });
+if(/[?&]embed=1/.test(location.search)){document.body.classList.add("embed")}
+hv();
+window.addEventListener("hashchange",function(){hv();clearInterval(RT);if(RACE&&RACE.run)RACE=null;render()});
 render();
 })();
 </script></body></html>
