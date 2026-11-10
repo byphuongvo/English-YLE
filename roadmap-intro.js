@@ -7,6 +7,12 @@
 if(window.__intro){return;}window.__intro=1;
 
 var CSS=[
+".in-cloud{animation:in-drift 14s ease-in-out infinite alternate}@keyframes in-drift{from{transform:translateX(-14px)}to{transform:translateX(18px)}}",
+".in-talk{animation:in-bob .5s ease-in-out infinite alternate}@keyframes in-bob{from{transform:translateY(0)}to{transform:translateY(-4px)}}",
+".in-mouth{transform-box:fill-box;transform-origin:center;animation:in-mo .28s ease-in-out infinite alternate}@keyframes in-mo{from{transform:scaleY(.35)}to{transform:scaleY(1.1)}}",
+".in-bird{animation:in-fly 9s linear infinite}@keyframes in-fly{from{transform:translateX(-40px)}to{transform:translateX(520px)}}",
+".in-pop{animation:in-pop .25s ease-out}@keyframes in-pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}",
+".in-twk{animation:in-tw 2s ease-in-out infinite alternate}@keyframes in-tw{from{opacity:.3}to{opacity:1}}",
 ".in-hide{display:none!important}",
 ".in-card{border-left:5px solid var(--lvl,#C75A1B)}",
 ".in-tabs{display:flex;gap:6px;flex-wrap:wrap}",
@@ -110,26 +116,26 @@ var PJ={top:"#7A5BD6",bt:"long",bot:"#7A5BD6"};
 /* 4 cảnh trong một ngày của Nam. [[...]] đánh dấu cụm từ mới. */
 var SC=[
  {tag:"Buổi sáng",h:7,place:"school",
-  cast:[{k:"hoa",x:40},{k:"nam",x:190}],
+  cast:[{k:"hoa",x:25,s:1.3},{k:"nam",x:185,s:1.3}],
   lines:[
    {who:"hoa",t:"[[Good morning]], Nam. [[Nice to see you again]].",vi:"Chào buổi sáng, Nam. Cô rất vui được gặp lại em."},
    {who:"nam",t:"Good morning, Miss Hoa. Nice to see you, too.",vi:"Chào cô Hoa. Em cũng rất vui được gặp cô."},
    {who:"hoa",t:"[[How are you?]]",vi:"Em khỏe không?"},
    {who:"nam",t:"[[I'm fine, thank you]]. [[And you?]]",vi:"Em khỏe, cảm ơn cô. Còn cô ạ?"}]},
  {tag:"Buổi chiều",h:15,place:"school",
-  cast:[{k:"tom",x:20,s:.85},{k:"nam",x:140,s:.85},{k:"mai",x:250,s:.85}],
+  cast:[{k:"tom",x:5,s:1.12},{k:"nam",x:120,s:1.12},{k:"mai",x:235,s:1.12}],
   lines:[
    {who:"tom",t:"[[Good afternoon]], Nam.",vi:"Chào buổi chiều, Nam."},
    {who:"nam",t:"Good afternoon, Tom.",vi:"Chào buổi chiều, Tom."},
    {who:"tom",t:"[[Goodbye]], Nam. [[See you tomorrow]].",vi:"Tạm biệt Nam. Mai gặp lại nhé."},
    {who:"mai",t:"Bye, Nam. [[See you later]]!",vi:"Tạm biệt Nam. Lát nữa gặp lại nhé!"}]},
- {tag:"Buổi tối",h:19,place:"home",
-  cast:[{k:"gran",x:40},{k:"nam",x:180,o:{}}],
+ {tag:"Buổi tối",h:19,place:"room",
+  cast:[{k:"gran",x:60,s:1.3},{k:"nam",x:270,s:1.3,o:{}}],
   lines:[
    {who:"nam",t:"[[Good evening]], Grandma.",vi:"Con chào bà buổi tối."},
    {who:"gran",t:"Good evening, Nam. Goodbye. [[See you soon]]!",vi:"Chào buổi tối, Nam. Tạm biệt. Sớm gặp lại nhé!"}]},
- {tag:"Đi ngủ",h:21,place:"home",
-  cast:[{k:"mum",x:40},{k:"nam",x:180,o:PJ}],
+ {tag:"Đi ngủ",h:21,place:"room",
+  cast:[{k:"mum",x:60,s:1.3},{k:"nam",x:270,s:1.3,o:PJ}],
   lines:[
    {who:"mum",t:"[[Good night]], Nam.",vi:"Chúc con ngủ ngon, Nam."},
    {who:"nam",t:"Good night, Mum.",vi:"Chúc mẹ ngủ ngon."}]}
@@ -159,7 +165,7 @@ function skyBits(h,pos,reg){
   }
   if(h>=7&&h<=17){
     var cl=reg?[[200,55],[262,72]]:[[110,50],[250,66],[390,36]];
-    for(i=0;i<cl.length;i++){s+='<g fill="#fff" stroke="none" opacity=".92"><ellipse cx="'+cl[i][0]+'" cy="'+cl[i][1]+'" rx="30" ry="12"/><ellipse cx="'+(cl[i][0]+16)+'" cy="'+(cl[i][1]-8)+'" rx="18" ry="11"/><ellipse cx="'+(cl[i][0]-14)+'" cy="'+(cl[i][1]-5)+'" rx="15" ry="9"/></g>';}
+    for(i=0;i<cl.length;i++){s+='<g class="in-cloud" fill="#fff" stroke="none" opacity=".92"><ellipse cx="'+cl[i][0]+'" cy="'+cl[i][1]+'" rx="30" ry="12"/><ellipse cx="'+(cl[i][0]+16)+'" cy="'+(cl[i][1]-8)+'" rx="18" ry="11"/><ellipse cx="'+(cl[i][0]-14)+'" cy="'+(cl[i][1]-5)+'" rx="15" ry="9"/></g>';}
   }
   return s;
 }
@@ -186,26 +192,91 @@ function building(place,h,dark){
   }
   return s;
 }
-function bubble(c){
-  var gy=(window.POSE&&window.POSE[c.pose||"stand"]&&window.POSE[c.pose||"stand"].gy)||132,s0=c.s||.95;
-  var hx=c.x+50*s0,by=262-gy*s0-12;
-  return '<g><ellipse cx="'+hx+'" cy="'+by+'" rx="24" ry="14" fill="#fff"/><path d="M'+(hx-5)+' '+(by+12)+' L'+hx+' '+(by+22)+' L'+(hx+6)+' '+(by+12)+'Z" fill="#fff"/>'
-   +'<circle cx="'+(hx-10)+'" cy="'+by+'" r="2.6" fill="#1B2A4A" stroke="none"/><circle cx="'+hx+'" cy="'+by+'" r="2.6" fill="#1B2A4A" stroke="none"/><circle cx="'+(hx+10)+'" cy="'+by+'" r="2.6" fill="#1B2A4A" stroke="none"/></g>';
+function wrapText(t){
+  var w=t.split(" "),L=[],cur="";
+  w.forEach(function(x){if((cur+" "+x).trim().length>24&&cur){L.push(cur);cur=x;}else{cur=(cur+" "+x).trim();}});
+  if(cur){L.push(cur);}
+  return L;
+}
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function bubble(c,text){
+  var P=window.POSE&&window.POSE[c.pose||"stand"],gy=(P&&P.gy)||132,s0=c.s||.95;
+  var cx=c.x+50*s0,headTop=262-gy*s0,L=wrapText(text),mx=0;
+  L.forEach(function(l){if(l.length>mx){mx=l.length;}});
+  var w=Math.min(300,mx*8.6+28),h=L.length*21+16,x=Math.max(6,Math.min(474-w,cx-w/2)),y=Math.max(6,headTop-h-22);
+  var tx=Math.max(x+16,Math.min(x+w-16,cx));
+  var s='<g class="in-pop"><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="14" fill="#fff" stroke="#1B2A4A" stroke-width="2.5"/>'
+   +'<path d="M'+(tx-8)+' '+(y+h-1)+' L'+(tx+2)+' '+(y+h+15)+' L'+(tx+9)+' '+(y+h-1)+'Z" fill="#fff" stroke="#1B2A4A" stroke-width="2.5" stroke-linejoin="round"/>'
+   +'<rect x="'+(tx-6)+'" y="'+(y+h-4)+'" width="14" height="6" fill="#fff" stroke="none"/>';
+  L.forEach(function(l,i){s+='<text x="'+(x+w/2)+'" y="'+(y+21+i*21)+'" text-anchor="middle" font-size="16" font-weight="700" font-family="Inter,Arial,sans-serif" fill="#1B2A4A" stroke="none">'+esc(l)+'</text>';});
+  return s+'</g>';
+}
+function mouth(c){
+  var P=window.POSE&&window.POSE[c.pose||"stand"],gy=(P&&P.gy)||132,s0=c.s||.95;
+  return '<ellipse class="in-mouth" cx="'+(c.x+50*s0)+'" cy="'+(262-gy*s0+30*s0)+'" rx="'+(5*s0)+'" ry="'+(4.2*s0)+'" fill="#8A2B2B" stroke="none"/>';
+}
+function tree(x,y,sc,dark){
+  return '<g transform="translate('+x+' '+y+') scale('+sc+')"><rect x="-5" y="-4" width="10" height="40" rx="3" fill="#8A5A36"/><circle cx="0" cy="-14" r="26" fill="'+(dark?"#2F6B49":"#5DBB6F")+'"/><circle cx="-16" cy="2" r="17" fill="'+(dark?"#2F6B49":"#5DBB6F")+'"/><circle cx="16" cy="2" r="17" fill="'+(dark?"#2F6B49":"#5DBB6F")+'"/></g>';
+}
+function flowers(dark){
+  var s="",F=[[20,250,"#F26B8A"],[62,262,"#FFD84D"],[110,252,"#fff"],[300,252,"#F26B8A"],[352,262,"#FFD84D"],[420,250,"#fff"],[455,262,"#F26B8A"]];
+  F.forEach(function(f){s+='<path d="M'+f[0]+' '+f[1]+' v12" stroke="#3E8E57" stroke-width="2" fill="none"/><circle cx="'+f[0]+'" cy="'+f[1]+'" r="4.5" fill="'+f[2]+'" stroke="none"/><circle cx="'+f[0]+'" cy="'+f[1]+'" r="1.8" fill="#F2A400" stroke="none"/>';});
+  return s;
+}
+function outdoorDeco(h,dark){
+  var s="";
+  s+=tree(290,176,1.0,dark)+tree(24,190,.8,dark);
+  s+='<path d="M0 238 H300" stroke="#fff" stroke-width="3" fill="none" stroke-opacity=".9"/><path d="M0 228 V246 M30 228 V246 M60 228 V246 M90 228 V246 M120 228 V246 M150 228 V246 M180 228 V246 M210 228 V246 M240 228 V246 M270 228 V246" stroke="#fff" stroke-width="4" fill="none" stroke-opacity=".9"/>';
+  s+='<path d="M380 232 Q400 262 360 300 L440 300 Q420 262 420 232Z" fill="#E6CFA0" stroke="none"/>';
+  s+=flowers(dark);
+  if(!dark){s+='<g class="in-bird"><path d="M30 40 q8 -9 16 0 q8 -9 16 0" fill="none" stroke="#1B2A4A" stroke-width="2.2" stroke-linecap="round"/></g>';}
+  return s;
+}
+/* phòng trong nhà: cửa sổ nhìn ra bầu trời, đèn, ghế sofa hoặc giường */
+function room(h,sceneIdx){
+  var night=h>=20||h<5,sk=skyAt(h),id="rw"+(++uid),lamp=h>=18||h<6,bed=night,s="";
+  s+='<rect width="480" height="232" fill="'+(lamp?"#F3D9B5":"#FBE8C8")+'" stroke="none"/>';
+  s+='<rect x="0" y="206" width="480" height="94" fill="#C4905C" stroke="none"/><path d="M0 206 H480" stroke="#8A5A36" stroke-width="3" fill="none"/>';
+  s+='<defs><linearGradient id="'+id+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+sk[0]+'"/><stop offset="1" stop-color="'+sk[1]+'"/></linearGradient></defs>';
+  s+='<rect x="322" y="34" width="128" height="116" rx="8" fill="url(#'+id+')" stroke="#8A5A36" stroke-width="7"/>';
+  if(night||h>=19){s+='<g class="in-twk"><circle cx="350" cy="62" r="2.2" fill="#fff" stroke="none"/><circle cx="410" cy="56" r="1.8" fill="#fff" stroke="none"/><circle cx="388" cy="84" r="2" fill="#fff" stroke="none"/></g><path d="M424 56 A16 16 0 1 0 424 90 A12 12 0 0 1 424 56Z" fill="#FFF3C4" stroke="none"/>';}
+  else{s+='<circle cx="428" cy="62" r="14" fill="#F2C14E" stroke="none"/>';}
+  s+='<path d="M386 34 V150 M322 92 H450" stroke="#8A5A36" stroke-width="5" fill="none"/>';
+  s+='<path d="M310 28 Q330 90 316 156 L336 156 Q346 90 334 28Z" fill="#E86B6B" stroke="none"/><path d="M462 28 Q442 90 456 156 L436 156 Q426 90 438 28Z" fill="#E86B6B" stroke="none"/>';
+  s+='<rect x="26" y="40" width="64" height="48" rx="4" fill="#fff" stroke="#8A5A36" stroke-width="5"/><path d="M34 78 L50 58 L62 70 L72 60 L84 78Z" fill="#7FC58B" stroke="none"/><circle cx="72" cy="50" r="5" fill="#F2C14E" stroke="none"/>';
+  s+=clock(250,66,22,h,0);
+  if(bed){
+    s+='<rect x="190" y="186" width="190" height="62" rx="10" fill="#7A5BD6"/><rect x="190" y="168" width="190" height="26" rx="10" fill="#9A7EE8"/><rect x="196" y="156" width="52" height="24" rx="10" fill="#fff"/>';
+  }else{
+    s+='<rect x="170" y="176" width="210" height="72" rx="14" fill="#6AA5E8"/><rect x="170" y="154" width="210" height="36" rx="14" fill="#8CBBF0"/><rect x="186" y="170" width="42" height="30" rx="9" fill="#FFD84D"/>';
+  }
+  s+='<rect x="414" y="168" width="8" height="80" fill="#8A5A36" stroke="none"/><path d="M400 168 L416 140 L440 168Z" fill="'+(lamp?"#FFE08A":"#E8D7A8")+'"/>';
+  if(lamp){s+='<ellipse cx="418" cy="170" rx="46" ry="30" fill="#FFE08A" fill-opacity=".28" stroke="none"/>';}
+  s+='<ellipse cx="240" cy="274" rx="120" ry="16" fill="#E86B6B" fill-opacity=".75" stroke="none"/>';
+  return s;
 }
 function drawScene(o){
-  var h=o.h,id="ig"+(++uid),sk=skyAt(h),dark=(h>=18||h<6),s="";
-  s+='<defs><linearGradient id="'+id+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+sk[0]+'"/><stop offset="1" stop-color="'+sk[1]+'"/></linearGradient></defs>';
-  s+='<rect width="480" height="300" fill="url(#'+id+')" stroke="none"/>';
-  s+=skyBits(h);
-  s+='<rect y="232" width="480" height="68" fill="'+(dark?"#4C8B63":"#8FD19E")+'" stroke="none"/>';
-  s+=building(o.place||(dark?"home":"school"),h,dark);
+  var h=o.h,id="ig"+(++uid),sk=skyAt(h),dark=(h>=18||h<6),s="",place=o.place||(dark?"home":"school");
+  if(place==="room"){s+=room(h);}
+  else{
+    s+='<defs><linearGradient id="'+id+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+sk[0]+'"/><stop offset="1" stop-color="'+sk[1]+'"/></linearGradient></defs>';
+    s+='<rect width="480" height="300" fill="url(#'+id+')" stroke="none"/>';
+    s+=skyBits(h);
+    s+='<rect y="232" width="480" height="68" fill="'+(dark?"#4C8B63":"#8FD19E")+'" stroke="none"/>';
+    s+=building(place,h,dark);
+    if(o.deco!==false){s+=outdoorDeco(h,dark);}
+  }
+  var said="";
   (o.cast||[]).forEach(function(c){
     var opt={x:c.x,ground:262,s:c.s||.95,pose:c.pose||"stand"},L=LOOK[c.k],k;
     for(k in L){opt[k]=L[k];}
     if(c.o){for(k in c.o){opt[k]=c.o[k];}}
-    if(typeof window.kid==="function"){s+=window.kid(opt);}
-    if(o.speaker===c.k){s+=bubble(c);}
+    var talk=o.speaker===c.k,g="";
+    if(typeof window.kid==="function"){g+=window.kid(opt);}
+    if(talk){g+=mouth(opt);said=bubble(opt,o.say||"");}
+    s+=talk?'<g class="in-talk">'+g+'</g>':g;
   });
+  if(o.speaker&&o.say){s+=said;}
   return window.sceneWrap(480,300,s,o.label||"Cảnh trong ngày của Nam");
 }
 /* tranh đường phố cho trò tìm điểm khác nhau: A là buổi sáng, B là buổi tối */
@@ -264,7 +335,7 @@ function build(main){
     b2.disabled=true;b2.title="Em xem xong lần 1 trước nhé";bs.hidden=true;
     SC.forEach(function(){dots.appendChild(mk("i"));});
     function scene(i,j){
-      box.innerHTML=drawScene({h:SC[i].h,place:SC[i].place,cast:SC[i].cast,speaker:j>=0?SC[i].lines[j].who:null,label:SC[i].tag});
+      box.innerHTML=drawScene({h:SC[i].h,place:SC[i].place,cast:SC[i].cast,speaker:j>=0?SC[i].lines[j].who:null,say:j>=0?plain(SC[i].lines[j].t):"",label:SC[i].tag});
       [].forEach.call(dots.children,function(d,k){d.className=(k===i)?"on":"";});
     }
     scene(0,-1);
