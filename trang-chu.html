@@ -130,7 +130,7 @@ function list(kind,title,sub){
 function inject(fr){
   try{var dc=fr.contentDocument;if(!dc||!dc.body)return;
     var l=dc.createElement("link");l.rel="stylesheet";l.href="roadmap-theme.css";dc.body.appendChild(l);
-    var st=dc.createElement("style");st.textContent=".top .brand,.top .lnk,.top [data-act=logout]{display:none!important}.top:not(:has(.seg)){display:none}";dc.body.appendChild(st);
+    var st=dc.createElement("style");st.textContent=".top .brand,.top .lnk,.top [data-act=logout]{display:none!important}.top:not(:has(.seg)){display:none}.secbar{display:none!important}";dc.body.appendChild(st);
   }catch(e){}
 }
 function frame(src,roadmap,bar,full){
