@@ -131,6 +131,7 @@ function inject(fr){
   try{var dc=fr.contentDocument;if(!dc||!dc.body)return;
     var l=dc.createElement("link");l.rel="stylesheet";l.href="roadmap-theme.css";dc.body.appendChild(l);
     var st=dc.createElement("style");st.textContent=".top .brand,.top .lnk,.top [data-act=logout]{display:none!important}.top:not(:has(.seg)){display:none}.secbar{display:none!important}";dc.body.appendChild(st);
+    if(!dc.getElementById("lk-js")){var sc=dc.createElement("script");sc.id="lk-js";sc.src="roadmap-learn.js?v=1";dc.body.appendChild(sc)}
   }catch(e){}
 }
 function frame(src,roadmap,bar,full){
