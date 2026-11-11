@@ -1882,6 +1882,10 @@ var CSS=[
 ".lk-bl{color:var(--accent);border-bottom:3px solid var(--accent)}",
 ".lk-sp{min-width:.5em;border:0}",
 ".lk-in.lk-ch{width:2.1ch;min-width:0;padding:0 4px;font-family:var(--font-display);font-size:1.9rem}",
+".lk-fwg{font-size:1.6rem}",
+".lk-fml{font-size:1.2rem;font-weight:700;line-height:1.8;max-width:34em}",
+".f-s{color:var(--accent)}.f-v{color:var(--lvl)}",
+".lk-pre{font-weight:700;color:var(--ink)}",
 ".lk-in.lk-wide{width:100%;text-align:left;border:2px solid var(--accent);border-radius:12px;padding:10px 12px}"
 ].join("");
 var stl=document.createElement("style");stl.textContent=CSS;document.head.appendChild(stl);
@@ -2036,8 +2040,8 @@ function choice(body,qs){
 
 /* ---------- thanh độ khó: chọn từ, hoặc tự gõ 1, 2, 3 từ, cả câu ---------- */
 var LV=[["Chọn từ",0],["Gõ 1 từ",1],["Gõ 2 từ",2],["Gõ 3 từ",3],["Gõ cả câu",4]];
-function leveled(body,max,build,labs){
-  var lvl=0;try{lvl=+localStorage.getItem("lk-lvl")||0}catch(e){}
+function leveled(body,max,build,labs,key){
+  key=key||"lk-lvl";var lvl=0;try{lvl=+localStorage.getItem(key)||0}catch(e){}
   if(lvl>max){lvl=max}
   var bar=mk("div","lk-lv"),c=mk("div","lk-body");
   body.innerHTML="";body.appendChild(bar);body.appendChild(c);
@@ -2046,7 +2050,7 @@ function leveled(body,max,build,labs){
     LV.forEach(function(l){
       if(l[1]>max){return}
       var b=mk("button","lk-lvb"+(l[1]===lvl?" on":""),(labs&&labs[l[1]])||l[0]);b.type="button";b.setAttribute("aria-pressed",l[1]===lvl?"true":"false");
-      b.addEventListener("click",function(){lvl=l[1];try{localStorage.setItem("lk-lvl",String(lvl))}catch(e){}draw();build(c,lvl)});
+      b.addEventListener("click",function(){lvl=l[1];try{localStorage.setItem(key,String(lvl))}catch(e){}draw();build(c,lvl)});
       bar.appendChild(b);
     });
   }
@@ -2578,6 +2582,202 @@ function review(body,items,lvl){
   load();
 }
 
+/* ---------- 4b. PHÒNG LUYỆN ĐỘNG TỪ: -s/-es/-ies, am/is/are, be + V-ing, cách đọc đuôi ---------- */
+var GS=[["I","my","am",0],["You","your","are",0],["He","his","is",1],["She","her","is",1],["We","our","are",0],["They","their","are",0],["Nam","his","is",1],["Linh","her","is",1],["My brother","his","is",1],["My friends","their","are",0]];
+/* [nguyên mẫu, thêm -s, -ing, phần còn lại, âm cuối của dạng -s] */
+var GVB=[["get","gets","getting","up at seven","s"],["have","has","having","breakfast at six","z"],["brush","brushes","brushing","{p} teeth","iz"],["go","goes","going","to school","z"],
+ ["do","does","doing","{p} homework","z"],["play","plays","playing","badminton","z"],["watch","watches","watching","TV","iz"],["tidy","tidies","tidying","{p} room","z"],
+ ["read","reads","reading","a comic","z"],["study","studies","studying","English","z"],["listen","listens","listening","to music","z"],["visit","visits","visiting","{p} grandparents","s"],
+ ["eat","eats","eating","lunch","s"],["swim","swims","swimming","in the pool","z"],["run","runs","running","in the park","z"],["wash","washes","washing","{p} hands","iz"],
+ ["make","makes","making","a cake","s"],["write","writes","writing","a letter","s"],["fly","flies","flying","a kite","z"],["jump","jumps","jumping","high","s"],
+ ["cook","cooks","cooking","dinner","s"],["sit","sits","sitting","on a chair","s"]];
+function cpre(a,b){var k=0;while(k<a.length&&k<b.length&&a[k]===b[k]){k++}return a.slice(0,k)}
+function oneOf(a){return a[Math.floor(Math.random()*a.length)]}
+function conjQs(n){
+  return sample(GVB,n).map(function(v,k){
+    var sj=oneOf(GS),cont=(k%2===1),rest=v[3].replace("{p}",sj[1]);
+    var cue=cont?oneOf(["now","at the moment"]):oneOf(["every day","every morning","on Sundays"]);
+    var toks,wrong,exp,other;
+    if(cont){
+      toks=[{full:sj[2],pre:""},{full:v[2],pre:cpre(v[0],v[2])}];
+      other=oneOf(["am","is","are"].filter(function(x){return x!==sj[2]}));
+      wrong=[sj[2]+" "+v[0],other+" "+v[2],v[2],sj[2]+" "+v[1]];
+      exp="\""+cue+"\" = đang làm, nên dùng am / is / are + V-ing: ";
+    }else if(sj[3]){
+      toks=[{full:v[1],pre:cpre(v[0],v[1])}];
+      var nv=v[0]+"s";wrong=[v[0],v[2],nv===v[1]?v[0]+"es":nv,"is "+v[2]];
+      exp="He / She / một người → động từ thêm -s / -es / -ies: ";
+    }else{
+      toks=[{full:v[0],pre:""}];
+      wrong=[v[1],v[2],"are "+v[2],v[0]+"s"];
+      exp="I / You / We / They → giữ nguyên động từ: ";
+    }
+    var ans=toks.map(function(t){return t.full}).join(" ");
+    var seen={};seen[ans]=1;wrong=wrong.filter(function(x){if(seen[x]){return false}seen[x]=1;return true});
+    var opts=shuf([ans].concat(sample(wrong,2)));
+    var full=sj[0]+" "+ans+" "+rest+" "+cue+".";
+    return {subj:sj[0],toks:toks,base:v[0],rest:rest,cue:cue,ans:ans,full:full,exp:exp+ans+".",
+      q:sj[0]+" ___ ("+v[0]+") "+rest+" "+cue+".",opts:opts,a:opts.indexOf(ans),say:full};
+  });
+}
+function conjType(body,qs,lvl){
+  var i=0,first=0,tried=false,ok=false,hints=0,x=null,inputs=[];
+  body.innerHTML='<p class="muted lk-prog"></p><div class="lk-tl"></div><div class="lk-fb" aria-live="polite"></div><div class="actions"><button type="button" class="btn sm lk-chk">Kiểm tra</button><button type="button" class="btn ghost sm lk-hint">Gợi ý</button><button type="button" class="btn sm lk-nx" hidden>Tiếp →</button></div><div class="lk-fin" hidden></div>';
+  function q(s){return body.querySelector(s)}
+  var prog=q(".lk-prog"),tl=q(".lk-tl"),fb=q(".lk-fb"),chk=q(".lk-chk"),hb=q(".lk-hint"),nx=q(".lk-nx"),fin=q(".lk-fin");
+  var parts=[prog,tl,fb,q(".actions")];
+  function mkIn(t){
+    var e=document.createElement("input");e.className="lk-in";e.type="text";e.autocomplete="off";e.autocapitalize="off";e.spellcheck=false;
+    var need=t.full.slice(lvl>=2?0:t.pre.length);e.style.width=(Math.max(2,need.length)+2)+"ch";
+    e.setAttribute("aria-label","Gõ dạng đúng của động từ");
+    e.addEventListener("input",function(){e.classList.remove("bad");fb.className="lk-fb";fb.textContent=""});
+    e.addEventListener("keydown",function(ev){if(ev.key==="Enter"){ev.preventDefault();if(ok){nx.click()}else{chk.click()}}});
+    return e;
+  }
+  function load(){
+    x=qs[i];tried=false;ok=false;hints=0;inputs=[];
+    prog.textContent="Câu "+(i+1)+"/"+qs.length;tl.innerHTML="";
+    tl.appendChild(mk("span",null,x.subj));
+    x.toks.forEach(function(t){
+      var box=mk("span","lk-slot");
+      if(lvl<2&&t.pre){box.appendChild(mk("span","lk-pre",t.pre))}
+      var e=mkIn(t);box.appendChild(e);inputs.push({el:e,need:t.full.slice(lvl>=2?0:t.pre.length)});tl.appendChild(box);
+    });
+    tl.appendChild(mk("span","muted","("+x.base+")"));
+    tl.appendChild(mk("span",null,x.rest+" "+x.cue+"."));
+    fb.className="lk-fb";fb.textContent="";chk.hidden=false;hb.hidden=false;nx.hidden=true;
+    if(i>0){try{inputs[0].el.focus()}catch(e){}}
+  }
+  function wrongs(){return inputs.filter(function(o){return o.el.value.trim().toLowerCase()!==o.need.toLowerCase()})}
+  chk.addEventListener("click",function(){
+    if(inputs.some(function(o){return !o.el.value.trim()})){fb.className="lk-fb bad";fb.textContent="Em gõ đủ các ô rồi bấm Kiểm tra nhé.";return}
+    var bad=wrongs();
+    inputs.forEach(function(o){o.el.classList.remove("ok","bad");o.el.classList.add(bad.indexOf(o)<0?"ok":"bad")});
+    if(bad.length){tried=true;fb.className="lk-fb bad";fb.textContent="Chưa đúng, em xem lại ô màu đỏ nhé.";return}
+    ok=true;if(!tried){first++}
+    inputs.forEach(function(o){o.el.disabled=true});
+    fb.className="lk-fb ok";fb.textContent="Đúng rồi! "+x.exp;
+    chk.hidden=true;hb.hidden=true;nx.hidden=false;nx.textContent=(i<qs.length-1)?"Tiếp →":"Xem kết quả";
+    say(x.full);
+  });
+  hb.addEventListener("click",function(){
+    tried=true;var w=wrongs()[0];if(!w){return}
+    var n=(w.el.__h||0)+1;w.el.__h=n;w.el.value=w.need.slice(0,Math.min(n,w.need.length-1)||1);w.el.classList.remove("bad");w.el.focus();
+  });
+  nx.addEventListener("click",function(){
+    i++;
+    if(i<qs.length){load();return}
+    parts.forEach(function(e){e.hidden=true});
+    summary(fin,first,qs.length,function(){i=0;first=0;qs=conjQs(qs.length);fin.hidden=true;parts.forEach(function(e){e.hidden=false});load()});
+  });
+  load();
+}
+function soundQs(){
+  var L=[["/s/ (như trong sit)","s"],["/z/ (như trong zoo)","z"],["/ɪz/ (như trong is)","iz"]];
+  var pick=[].concat(sample(GVB.filter(function(v){return v[4]==="s"}),2),sample(GVB.filter(function(v){return v[4]==="z"}),2),sample(GVB.filter(function(v){return v[4]==="iz"}),2));
+  return shuf(pick).map(function(v){
+    return {q:"Nghe và chọn: đuôi của \""+v[1]+"\" đọc là gì?",audio:v[1],say:v[1],opts:L.map(function(l){return l[0]}),a:L.map(function(l){return l[1]}).indexOf(v[4])};
+  });
+}
+function beQs(){
+  var S=[["I","am"],["You","are"],["He","is"],["She","is"],["We","are"],["They","are"],["My mum","is"],["My friends","are"],["Nam and Linh","are"],["The monkey","is"]];
+  var P=["nine years old","at school","in the park","happy","tired","a student","from Viet Nam"];
+  return sample(S,6).map(function(s){
+    var p=oneOf(P);return {q:s[0]+" ___ "+p+".",opts:["am","is","are"],a:["am","is","are"].indexOf(s[1]),say:s[0]+" "+s[1]+" "+p+"."};
+  });
+}
+/* bộ thẻ công thức: mặt trước câu hỏi gợi nhớ, mặt sau công thức và ví dụ có âm thanh */
+function gcards(){
+  var S='<span class="f-s">',V='<span class="f-v">',E="</span>";
+  return [
+   {big:"He / She / It + ... ?",sub:"Chủ ngữ là một người hoặc một vật. Động từ đổi thế nào?",title:"Thêm -s",f:S+"He / She / It"+E+" + "+V+"V-s"+E,
+    rows:[["She gets up at seven.","She gets up at seven."],["He plays badminton.","He plays badminton."],["My brother eats lunch at school.","My brother eats lunch at school."]],
+    note:"Với <b>I / You / We / They</b> thì giữ nguyên: I get up, They play."},
+   {big:"watch → ?   brush → ?   go → ?",sub:"Động từ tận cùng -ch, -sh, -ss, -x, -o thì thêm gì?",title:"Thêm -es",f:S+"He / She / It"+E+" + "+V+"V-es"+E,
+    rows:[["watch → watches: He watches TV.","He watches TV."],["brush → brushes: She brushes her teeth.","She brushes her teeth."],["go → goes: My mum goes to work.","My mum goes to work."]],
+    note:"Nhớ các đuôi <b>-ch, -sh, -ss, -x, -o</b> thì thêm <b>-es</b>."},
+   {big:"study → ?   tidy → ?   play → ?",sub:"Động từ tận cùng là chữ y thì đổi thế nào?",title:"Đuôi -y",f:"Phụ âm + y → bỏ y, thêm "+V+"-ies"+E+" · Nguyên âm + y → thêm "+V+"-s"+E,
+    rows:[["study → studies: She studies English.","She studies English."],["tidy → tidies: He tidies his room.","He tidies his room."],["play → plays: He plays badminton.","He plays badminton."]],
+    note:"Chữ trước y là <b>phụ âm</b> (d, t) thì đổi thành <b>-ies</b>. Chữ trước y là <b>nguyên âm</b> (a) thì chỉ thêm <b>-s</b>."},
+   {big:"have → ?   do → ?",sub:"Hai động từ đặc biệt không theo quy tắc.",title:"have, do, go",f:S+"have"+E+" → "+V+"has"+E+" · "+S+"do"+E+" → "+V+"does"+E+" · "+S+"go"+E+" → "+V+"goes"+E,
+    rows:[["She has breakfast at seven. (has đọc là /hæz/)","She has breakfast at seven."],["He does his homework. (does đọc là /dʌz/)","He does his homework."],["My dad goes to work by bus. (goes đọc là /gəʊz/)","My dad goes to work by bus."]],
+    note:"Riêng <b>have → has</b> (không phải haves)."},
+   {big:"gets · plays · watches",sub:"Đuôi -s / -es đọc như thế nào? Có 3 cách.",title:"Cách đọc đuôi -s / -es",f:V+"/s/"+E+" · "+V+"/z/"+E+" · "+V+"/ɪz/"+E,
+    rows:[["gets, jumps → /s/ (sau p, t, k, f)","gets"],["plays, reads, goes → /z/ (sau nguyên âm và âm rung)","plays"],["watches, brushes → /ɪz/ (sau s, sh, ch, x, z)","watches"]],
+    note:"Bấm 🔊 để nghe từng từ. Đuôi /ɪz/ tạo thêm một âm tiết: watch (1 âm) → watch-es (2 âm)."},
+   {big:"I ___   He ___   They ___",sub:"am, is hay are? Đọc như thế nào?",title:"am, is, are",f:S+"I"+E+" "+V+"am"+E+" · "+S+"He / She / It"+E+" "+V+"is"+E+" · "+S+"We / You / They"+E+" "+V+"are"+E,
+    rows:[["I am nine. (am đọc /æm/, nói tắt I'm)","I am nine."],["She is at school. (is đọc /ɪz/, nói tắt She's đọc /ʃiːz/)","She is at school."],["They are in the park. (are đọc /ɑː/, nói tắt They're)","They are in the park."]],
+    note:"<b>is</b> đọc là /ɪz/ với đuôi /z/ giống <b>plays</b>. Nói tắt <b>She's</b> /ʃiːz/, <b>He's</b> /hiːz/."},
+   {big:"She ___ (read) a comic now.",sub:"Đang làm gì ngay lúc này? Dùng cấu trúc nào?",title:"be + V-ing",f:S+"am / is / are"+E+" + "+V+"V-ing"+E,
+    rows:[["I am reading a comic. (đọc → reading)","I am reading a comic."],["She is making a cake. (make → making, bỏ e)","She is making a cake."],["They are swimming in the pool. (swim → swimming, gấp đôi m)","They are swimming in the pool."]],
+    note:"Cách viết V-ing: thêm <b>-ing</b> (play → playing) · bỏ <b>e</b> (make → making) · gấp đôi phụ âm cuối (run → running, sit → sitting)."},
+   {big:"She plays ... / She is playing ...",sub:"Khi nào dùng V-s, khi nào dùng is + V-ing?",title:"Thói quen và đang làm",f:V+"every day, on Sundays, always"+E+" → V-s · "+S+"now, at the moment"+E+" → is + V-ing",
+    rows:[["She plays badminton on Sundays. (thói quen)","She plays badminton on Sundays."],["She is playing badminton now. (đang làm)","She is playing badminton now."],["He watches TV every evening. (thói quen)","He watches TV every evening."]],
+    note:"Nhìn từ chỉ thời gian trong câu để chọn đúng cấu trúc."}
+  ];
+}
+function gdeck(body,cards){
+  var queue=cards.map(function(_,k){return k}),known=0,total=cards.length,flipped=false;
+  body.innerHTML='<p class="muted lk-prog"></p><div class="lk-fcw"></div><div class="actions lk-fca"></div><div class="lk-fin" hidden></div>';
+  var prog=body.querySelector(".lk-prog"),wrap=body.querySelector(".lk-fcw"),acts=body.querySelector(".lk-fca"),fin=body.querySelector(".lk-fin");
+  function draw(){
+    if(!queue.length){
+      prog.hidden=true;wrap.hidden=true;acts.hidden=true;fin.hidden=false;fin.innerHTML="";
+      fin.appendChild(mk("p","lk-line","⭐ Giỏi lắm! Em đã học xong "+total+" thẻ công thức."));
+      var again=mk("button","btn ghost sm","Học lại");again.type="button";again.addEventListener("click",function(){gdeck(body,cards)});fin.appendChild(again);return;
+    }
+    var c=cards[queue[0]];
+    prog.textContent="Còn "+queue.length+" thẻ · Em nhớ rồi: "+known+"/"+total;
+    wrap.innerHTML="";acts.innerHTML="";
+    var card=mk("div","lk-fc"+(flipped?" back":""));card.tabIndex=0;card.setAttribute("role","button");
+    card.setAttribute("aria-label",flipped?"Mặt sau. Bấm để lật lại.":"Mặt trước. Bấm để xem công thức.");
+    if(!flipped){
+      card.appendChild(mk("div","lk-fw lk-fwg",c.big));
+      card.appendChild(mk("div","lk-clue",c.sub));
+      card.appendChild(mk("p","muted","Em thử nhớ lại rồi bấm vào thẻ để lật."));
+    }else{
+      card.appendChild(mk("div","lk-fwsm",c.title));
+      var f=mk("div","lk-fml");f.innerHTML=c.f;card.appendChild(f);
+      var box=mk("div","lk-exs");
+      c.rows.forEach(function(r){
+        var row=mk("div","lk-exr"),p=mk("button","btn ghost sm","🔊");p.type="button";p.setAttribute("aria-label","Nghe");
+        p.addEventListener("click",function(ev){ev.stopPropagation();say(r[1])});
+        row.appendChild(p);row.appendChild(mk("span","lk-ext",r[0]));box.appendChild(row);
+      });
+      card.appendChild(box);
+      var n=mk("p","muted");n.innerHTML=c.note;card.appendChild(n);
+      if(window.LKSPD){var sb=LKSPD.btn();sb.addEventListener("click",function(ev){ev.stopPropagation()});card.appendChild(sb)}
+    }
+    function flip(){flipped=!flipped;draw()}
+    card.addEventListener("click",flip);
+    card.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();flip()}});
+    wrap.appendChild(card);
+    if(!flipped){var fl=mk("button","btn sm","Lật thẻ");fl.type="button";fl.addEventListener("click",flip);acts.appendChild(fl)}
+    else{
+      var no=mk("button","btn ghost sm","Chưa nhớ ↺");no.type="button";no.addEventListener("click",function(){queue.push(queue.shift());flipped=false;draw()});
+      var yes=mk("button","btn sm","Em nhớ rồi ✓");yes.type="button";yes.addEventListener("click",function(){queue.shift();known++;flipped=false;draw()});
+      acts.appendChild(no);acts.appendChild(yes);
+    }
+  }
+  draw();
+}
+function grammarLab(main){
+  var T={"Thì hiện tại đơn: thêm -s với he, she, it":1,"Hai mẫu câu của Unit 3":1,"Mẫu câu mô tả con vật":1},after=null;
+  [].forEach.call(main.children,function(sec){
+    if(sec.tagName!=="SECTION"||!sec.classList.contains("blk")){return}
+    var h=sec.querySelector("h3");if(h&&T[h.textContent.trim()]&&sec.querySelector(".tblwrap")){after=sec}
+  });
+  if(!after){return}
+  var modes=[
+   {t:"📘 Học công thức động từ",run:function(b){gdeck(b,gcards())}},
+   {t:"🔊 Nghe và chọn cách đọc đuôi -s / -es",run:function(b){choice(b,soundQs())}},
+   {t:"✍️ Chia động từ (-s, -es, am / is / are + V-ing)",run:function(b){
+      leveled(b,2,function(c,l){if(l===0){choice(c,conjQs(6))}else{conjType(c,conjQs(6),l)}},["Chọn đáp án","Gõ phần đuôi","Gõ cả từ"],"lk-lvg")}},
+   {t:"🔤 am, is hay are?",run:function(b){choice(b,beQs())}}
+  ];
+  activity(main,null,after,modes,0);
+}
+
 function vocabCard(main,c){
   var items=vocabItems(c),grids=main.querySelectorAll(".vgrid");
   if(!grids.length||items.length<4){return}
@@ -2710,6 +2910,7 @@ function enhance(){
   var c=ctx();
   [].forEach.call(main.querySelectorAll("svg.scene"),hotspots);
   discover(main);
+  grammarLab(main);
   if(c){vocabCard(main,c)}
   roleplay(main);
   sentenceCard(main,c);
