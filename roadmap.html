@@ -1865,6 +1865,23 @@ var CSS=[
 ".lk-in:focus{background:var(--accent-soft)}",
 ".lk-in.ok,.lk-in:disabled{border-color:var(--good);background:var(--good-bg);color:var(--good)}",
 ".lk-in.bad{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}",
+".lk-fc{display:grid;gap:12px;justify-items:center;text-align:center;padding:22px 18px;min-height:230px;align-content:center;border:2px solid var(--accent);border-radius:16px;background:var(--surface);cursor:pointer}",
+".lk-fc.back{background:var(--accent-soft);cursor:pointer;justify-items:center}",
+".lk-fcw .lk-fc:focus-visible{outline:3px solid var(--accent);outline-offset:2px}",
+".lk-fw{font-family:var(--font-display);font-size:2.1rem;font-weight:600;color:var(--ink);overflow-wrap:anywhere}",
+".lk-fwsm{font-family:var(--font-display);font-size:1.3rem;font-weight:600;color:var(--muted)}",
+".lk-clue{font-size:1.1rem;font-weight:700;color:var(--ink);max-width:34em}",
+".lk-vi2{font-size:1.5rem;font-weight:700;color:var(--ink)}",
+".lk-pos{display:inline-block;padding:3px 12px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.9rem}",
+".lk-exs{display:grid;gap:6px;width:100%;max-width:34em;text-align:left}",
+".lk-exr{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;background:var(--surface)}",
+".lk-ext{font-weight:700;overflow-wrap:anywhere}",
+".lk-wrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}",
+".lk-wl{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-end;justify-content:flex-start}",
+".lk-lt{font-family:var(--font-display);font-size:1.9rem;font-weight:600;color:var(--ink);min-width:.6em;text-align:center}",
+".lk-bl{color:var(--accent);border-bottom:3px solid var(--accent)}",
+".lk-sp{min-width:.5em;border:0}",
+".lk-in.lk-ch{width:2.1ch;min-width:0;padding:0 4px;font-family:var(--font-display);font-size:1.9rem}",
 ".lk-in.lk-wide{width:100%;text-align:left;border:2px solid var(--accent);border-radius:12px;padding:10px 12px}"
 ].join("");
 var stl=document.createElement("style");stl.textContent=CSS;document.head.appendChild(stl);
@@ -2019,7 +2036,7 @@ function choice(body,qs){
 
 /* ---------- thanh độ khó: chọn từ, hoặc tự gõ 1, 2, 3 từ, cả câu ---------- */
 var LV=[["Chọn từ",0],["Gõ 1 từ",1],["Gõ 2 từ",2],["Gõ 3 từ",3],["Gõ cả câu",4]];
-function leveled(body,max,build){
+function leveled(body,max,build,labs){
   var lvl=0;try{lvl=+localStorage.getItem("lk-lvl")||0}catch(e){}
   if(lvl>max){lvl=max}
   var bar=mk("div","lk-lv"),c=mk("div","lk-body");
@@ -2028,7 +2045,7 @@ function leveled(body,max,build){
     bar.innerHTML="";bar.appendChild(mk("span","muted","Độ khó:"));
     LV.forEach(function(l){
       if(l[1]>max){return}
-      var b=mk("button","lk-lvb"+(l[1]===lvl?" on":""),l[0]);b.type="button";b.setAttribute("aria-pressed",l[1]===lvl?"true":"false");
+      var b=mk("button","lk-lvb"+(l[1]===lvl?" on":""),(labs&&labs[l[1]])||l[0]);b.type="button";b.setAttribute("aria-pressed",l[1]===lvl?"true":"false");
       b.addEventListener("click",function(){lvl=l[1];try{localStorage.setItem("lk-lvl",String(lvl))}catch(e){}draw();build(c,lvl)});
       bar.appendChild(b);
     });
@@ -2365,14 +2382,210 @@ function memory(body,items){
     grid.appendChild(b);
   });
 }
+/* ---------- 3b. THẺ TỪ VỰNG (flashcard, không dùng hình): thẻ học và thẻ ôn ---------- */
+var POSL={n:"Danh từ",vp:"Cụm động từ",adj:"Tính từ",gr:"Lời chào",q:"Câu hỏi"};
+var FC={"get up":["vp","You do this in the morning, when you wake up and leave your bed.","I get up at six o'clock.","She gets up at seven."],"have breakfast":["vp","You eat this meal in the morning.","I have breakfast at six thirty.","He has breakfast with his family."],"brush my teeth":["vp","You do this with a toothbrush to clean your mouth.","I brush my teeth after breakfast.","She brushes her teeth before bed."],"go to school":["vp","You go to a place to study with your teacher and your friends.","We go to school at seven.","He goes to school by bike."],"have lunch":["vp","You eat this meal in the middle of the day.","I have lunch at school.","They have lunch at twelve."],"do my homework":["vp","You do this at home after school, for your teacher.","I do my homework in the evening.","He does his homework after dinner."],"play badminton":["vp","You play this sport with a racket and a shuttlecock.","We play badminton on Sundays.","She plays badminton with her friend."],"tidy my room":["vp","You put your toys and books in the right places.","I tidy my room on Saturdays.","He tidies his room every day."],"watch TV":["vp","You look at programmes on a screen at home.","I watch TV in the evening.","She watches TV after dinner."],"have a shower":["vp","You wash your body with water from above.","I have a shower before bed.","He has a shower in the morning."],"read a comic":["vp","You do this with a book that has pictures and short stories.","I read a comic after dinner.","He sometimes reads a comic."],"go to bed":["vp","You do this at night, when you are tired and want to sleep.","I go to bed at nine.","She goes to bed at nine thirty."],"Good morning":["gr","You say this to your teacher when you see her at eight in the morning.","Good morning, Miss Hoa.","Good morning, everyone!"],"Good afternoon":["gr","You say this to someone after lunch, at two o'clock.","Good afternoon, class.","Good afternoon, Mr Nam."],"Good evening":["gr","You say this to someone at seven in the evening.","Good evening, Mum.","Good evening, Grandpa."],"Good night":["gr","You say this to someone before they go to sleep.","Good night, Dad.","Good night! See you tomorrow."],"Goodbye":["gr","You say this when you leave.","Goodbye, Miss Hoa.","Goodbye! See you soon."],"See you tomorrow":["gr","You say this when you will meet your friend on the next day.","Goodbye! See you tomorrow.","See you tomorrow, Nam."],"See you later":["gr","You say this when you will meet again today or very soon.","Bye! See you later.","I'm going to the shop. See you later!"],"See you soon":["gr","You say this when you hope to meet again in a short time.","Goodbye, Grandma. See you soon.","See you soon, Lan!"],"Nice to see you again":["gr","You say this when you meet a friend again and you are happy.","Hi, Nam! Nice to see you again.","Nice to see you again, Miss Hoa."],"How are you?":["q","You ask this question to know if a person is well or happy.","Hello, Lan. How are you?","How are you today?"],"And you?":["q","You ask this after your answer, to ask the same question back.","I'm fine, thanks. And you?","I'm good. And you?"],"Viet Nam":["n","This is the country where we live. Its capital city is Ha Noi.","I'm from Viet Nam.","Viet Nam is a beautiful country."],"Vietnamese":["adj|n","A person from Viet Nam is this.","I'm Vietnamese.","She is Vietnamese. She is from Ha Noi."],"Japan":["n","This country is in Asia. Its capital city is Tokyo.","He's from Japan.","Japan is in Asia."],"Japanese":["adj|n","A person from Japan is this.","My friend is Japanese.","She's Japanese. She's from Tokyo."],"America":["n","This is a very big country. Its capital city is Washington, D.C.","My cousin is from America.","She lives in America."],"American":["adj|n","A person from America is this.","He's American.","My teacher is American."],"England":["n","This country is in Europe. Its capital city is London.","I'm from England.","London is in England."],"English":["adj|n","A person from England is this. We are also learning this language.","She's English.","I'm learning English."],"Australia":["n","This big country is full of kangaroos. Its capital city is Canberra.","Kangaroos live in Australia.","He's from Australia."],"Australian":["adj|n","A person from Australia is this.","She's Australian.","My friend Tom is Australian."],"Malaysia":["n","This country is in Asia, near Viet Nam. Its capital city is Kuala Lumpur.","I'm from Malaysia.","Kuala Lumpur is in Malaysia."],"Malaysian":["adj|n","A person from Malaysia is this.","He's Malaysian.","Her friend is Malaysian."],"kangaroo":["n","This animal jumps a lot and carries its baby in a pocket.","A kangaroo can jump.","The kangaroo lives in Australia."],"parrot":["n","This colourful bird can talk like people.","A parrot can talk.","The parrot is green and red."],"crocodile":["n","This big animal lives in the water and has sharp teeth.","A crocodile can swim.","The crocodile has big teeth."],"monkey":["n","This animal climbs trees and likes bananas.","A monkey can climb.","The monkey eats a banana."],"elephant":["n","This very big animal has a long nose and big ears.","An elephant is big.","An elephant can carry heavy things."],"giraffe":["n","This animal has a very long neck.","A giraffe is tall.","A giraffe is taller than a tiger."],"penguin":["n","This black and white bird can't fly, but it can swim.","A penguin can't fly.","The penguin can swim."],"dolphin":["n","This clever animal swims and jumps in the sea.","A dolphin can swim fast.","The dolphin is clever."],"tiger":["n","This big cat has orange fur with black stripes.","A tiger can run fast.","A tiger is stronger than a monkey."],"snake":["n","This long animal has no legs and moves along the ground.","A snake can't walk.","The snake is long."],"spider":["n","This small animal has eight legs and makes a web.","A spider has eight legs.","The spider is on the wall."],"bee":["n","This small insect makes honey.","A bee can fly.","The bee is on the flower."],"Monday":["n","This is the first school day of the week. It comes after Sunday.","I study at school on Mondays.","On Monday, I have English."],"Tuesday":["n","This is the day after Monday.","I play badminton on Tuesdays.","Today is Tuesday."],"Wednesday":["n","This is the day in the middle of the school week.","We have music on Wednesday.","I visit my uncle on Wednesdays."],"Thursday":["n","This is the day after Wednesday.","I do my homework on Thursdays.","Thursday is my favourite day."],"Friday":["n","This is the last school day of the week.","I go swimming on Fridays.","We have a test on Friday."],"Saturday":["n","This is a weekend day with no school. It comes before Sunday.","I do housework on Saturdays.","I tidy my room on Saturday."],"Sunday":["n","This is the last day of the week. It comes after Saturday.","I listen to music on Sundays.","We visit my grandparents on Sunday."],"study at school":["vp","You learn lessons with your teacher in a classroom.","I study at school on Mondays.","They study at school from Monday to Friday."],"do housework":["vp","You clean and help at home, for example you wash the dishes.","I do housework on Saturdays.","She does housework with her mum."],"listen to music":["vp","You do this with your ears when songs are playing.","I listen to music on Sundays.","He listens to music after school."],"visit my grandparents":["vp","You go to see your mum's parents or your dad's parents.","I visit my grandparents on Sundays.","She visits her grandparents in the countryside."],"January":["n","This is the first month of the year.","My birthday is in January.","It's cold in January."],"February":["n","This is the second month of the year. It is the shortest month.","My birthday is in February.","Tet is often in February."],"March":["n","This is the third month of the year.","Spring starts in March.","We have a trip in March."],"April":["n","This is the fourth month. It comes after March.","It rains a lot in April.","My birthday is in April."],"May":["n","This is the fifth month. It comes before June.","My birthday is in May.","It's hot in May."],"June":["n","This is the sixth month. The summer holidays often start in this month.","We have holidays in June.","My brother's birthday is in June."],"July":["n","This is the seventh month. It is in the middle of summer.","It's very hot in July.","We go to the beach in July."],"August":["n","This is the eighth month. It comes after July.","My sister's birthday is in August.","We play outside in August."],"September":["n","This is the ninth month. School starts in Viet Nam in this month.","School starts in September.","My birthday is in September."],"October":["n","This is the tenth month. It comes after September.","It's cool in October.","My party is in October."],"November":["n","This is the eleventh month of the year.","Teachers' Day is in November.","It's cold in November."],"December":["n","This is the last month of the year.","Christmas is in December.","My birthday is in December."],"birthday party":["n","This is a happy event with cake, friends and presents on your special day.","I have a birthday party in May.","We sing at the birthday party."],"chips":["n","You can eat these long, fried pieces of potato.","I like chips.","Do you want some chips?"],"grapes":["n","These small, round fruits grow in bunches. They are green or purple.","She eats some grapes.","I like grapes."],"jam":["n","This sweet food is made from fruit. You put it on bread.","I have bread and jam.","Strawberry jam is sweet."],"lemonade":["n","This is a cold drink. It is sweet and sour, and it is made from lemons.","I'd like some lemonade.","Lemonade is sweet and sour."],"cake":["n","This sweet food is baked. You eat it at a birthday party.","I want some cake.","The cake is on the table."],"juice":["n","This is a drink made from fruit.","I drink orange juice.","Would you like some juice?"],"water":["n","You drink this clear liquid every day.","I drink water.","Can I have some water, please?"]};
+function fcOf(it){var d=FC[it.w];return d?{pos:d[0],clue:d[1],ex:[d[2],d[3]]}:{pos:null,clue:"",ex:[]}}
+function fcAcc(d){return d.pos?d.pos.split("|"):[]}
+function exRow(t){
+  var r=mk("div","lk-exr"),p=mk("button","btn ghost sm","🔊");p.type="button";p.setAttribute("aria-label","Nghe câu ví dụ");
+  p.addEventListener("click",function(ev){ev.stopPropagation();say(t)});
+  r.appendChild(p);r.appendChild(mk("span","lk-ext",t));return r;
+}
+function wordRow(w){
+  var r=mk("div","lk-wrow"),p=mk("button","btn ghost sm","🔊 Nghe");p.type="button";
+  p.addEventListener("click",function(ev){ev.stopPropagation();say(w)});r.appendChild(p);
+  if(window.LKSPD){var sb=LKSPD.btn();sb.addEventListener("click",function(ev){ev.stopPropagation()});r.appendChild(sb)}
+  return r;
+}
+function backFace(el,it,d,front){
+  el.appendChild(mk("div","lk-fwsm",it.w));
+  el.appendChild(mk("div","lk-vi2",it.vi));
+  if(d.pos){el.appendChild(mk("span","lk-pos",POSL[fcAcc(d)[0]]))}
+  if(d.ex.length){
+    var box=mk("div","lk-exs");box.appendChild(mk("div","muted","Ví dụ trong câu:"));
+    d.ex.forEach(function(t){box.appendChild(exRow(t))});el.appendChild(box);
+  }
+}
+/* thẻ học: mặt trước = từ tiếng Anh + câu giải thích đơn giản; mặt sau = nghĩa, loại từ, ví dụ */
+function learn(body,items){
+  var queue=items.map(function(_,k){return k}),known=0,total=items.length,flipped=false;
+  body.innerHTML='<p class="muted lk-prog"></p><div class="lk-fcw"></div><div class="actions lk-fca"></div><div class="lk-fin" hidden></div>';
+  var prog=body.querySelector(".lk-prog"),wrap=body.querySelector(".lk-fcw"),acts=body.querySelector(".lk-fca"),fin=body.querySelector(".lk-fin");
+  function draw(){
+    if(!queue.length){
+      prog.hidden=true;wrap.hidden=true;acts.hidden=true;fin.hidden=false;fin.innerHTML="";
+      fin.appendChild(mk("p","lk-line","⭐ Giỏi lắm! Em đã học xong "+total+" thẻ."));
+      var again=mk("button","btn ghost sm","Học lại");again.type="button";
+      again.addEventListener("click",function(){learn(body,items)});fin.appendChild(again);return;
+    }
+    var it=items[queue[0]],d=fcOf(it);
+    prog.textContent="Còn "+queue.length+" thẻ · Em nhớ rồi: "+known+"/"+total;
+    wrap.innerHTML="";acts.innerHTML="";
+    var card=mk("div","lk-fc"+(flipped?" back":""));card.tabIndex=0;card.setAttribute("role","button");
+    card.setAttribute("aria-label",flipped?"Mặt sau của thẻ. Bấm để lật lại.":"Mặt trước của thẻ. Bấm để xem nghĩa.");
+    if(!flipped){
+      card.appendChild(mk("div","lk-fw",it.w));
+      card.appendChild(wordRow(it.w));
+      if(d.clue){card.appendChild(mk("div","lk-clue","💡 "+d.clue))}
+      card.appendChild(mk("p","muted","Em đoán nghĩa của từ này rồi bấm vào thẻ để lật."));
+    }else{backFace(card,it,d)}
+    function flip(){flipped=!flipped;draw()}
+    card.addEventListener("click",flip);
+    card.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();flip()}});
+    wrap.appendChild(card);
+    if(!flipped){
+      var f=mk("button","btn sm","Lật thẻ");f.type="button";f.addEventListener("click",flip);acts.appendChild(f);
+    }else{
+      var no=mk("button","btn ghost sm","Chưa nhớ ↺");no.type="button";
+      no.addEventListener("click",function(){queue.push(queue.shift());flipped=false;draw()});
+      var yes=mk("button","btn sm","Em nhớ rồi ✓");yes.type="button";
+      yes.addEventListener("click",function(){queue.shift();known++;flipped=false;draw()});
+      acts.appendChild(no);acts.appendChild(yes);
+    }
+  }
+  draw();
+}
+/* thẻ ôn: mặt trước = nghĩa tiếng Việt + gợi ý; học sinh chọn đuôi từ hoặc tự gõ một phần của từ, rồi chọn loại từ */
+function mutEnd(e){
+  var out=[],V="aeiou",k,c,r;
+  for(k=0;k<e.length;k++){
+    c=e[k].toLowerCase();
+    if(V.indexOf(c)>-1){V.split("").forEach(function(v){if(v!==c){r=e.slice(0,k)+(e[k]===e[k].toUpperCase()?v.toUpperCase():v)+e.slice(k+1);out.push(r)}})}
+  }
+  if(e.length>1){out.push(e.slice(0,-1)+(e.slice(-1)==="e"?"y":"e"))}
+  if(e.length>1){out.push(e[1]+e[0]+e.slice(2))}
+  return out;
+}
+function review(body,items,lvl){
+  var good=items.filter(function(it){return FC[it.w]});
+  var set=sample(good.length>=3?good:items,Math.min(8,items.length)),i=0,first=0,tried=false,ptried=false,ok1=false,hints=0,it=null,d=null,slots=[];
+  body.innerHTML='<p class="muted lk-prog"></p><div class="lk-rp"></div><div class="lk-wd"></div><div class="lk-os"></div><div class="lk-fb" aria-live="polite"></div><div class="lk-back" hidden></div><div class="actions"><button type="button" class="btn sm lk-chk" hidden>Kiểm tra</button><button type="button" class="btn ghost sm lk-hint" hidden>Gợi ý</button><button type="button" class="btn sm lk-nx" hidden>Tiếp →</button></div><div class="lk-fin" hidden></div>';
+  function q(x){return body.querySelector(x)}
+  var prog=q(".lk-prog"),rp=q(".lk-rp"),wd=q(".lk-wd"),os=q(".lk-os"),fb=q(".lk-fb"),bk=q(".lk-back"),chk=q(".lk-chk"),hb=q(".lk-hint"),nx=q(".lk-nx"),fin=q(".lk-fin");
+  var parts=[prog,rp,wd,os,fb,bk,q(".actions")];
+  function say2(ok,t){fb.className="lk-fb "+(ok?"ok":"bad");fb.textContent=t}
+  function load(){
+    it=set[i];d=fcOf(it);tried=false;ptried=false;ok1=false;hints=0;slots=[];
+    prog.textContent="Thẻ "+(i+1)+"/"+set.length;
+    rp.innerHTML="";wd.innerHTML="";os.innerHTML="";bk.innerHTML="";bk.hidden=true;fb.className="lk-fb";fb.textContent="";
+    nx.hidden=true;chk.hidden=true;hb.hidden=true;
+    rp.appendChild(mk("div","lk-vi2","Nghĩa: "+it.vi));
+    if(d.clue&&d.clue.toLowerCase().indexOf(it.w.toLowerCase())<0){rp.appendChild(mk("div","lk-clue","💡 "+d.clue))}
+    var w=it.w,L=[],k;for(k=0;k<w.length;k++){if(/[A-Za-z]/.test(w[k])){L.push(k)}}
+    var hide=[];
+    if(lvl===0){var n=Math.min(3,Math.max(2,Math.round(L.length/4)));hide=L.slice(-n)}
+    else if(lvl>=4){hide=L}
+    else{var pl=L.length>3?L.slice(1):L;hide=sample(pl,Math.min(lvl,pl.length)).sort(function(a,b){return a-b})}
+    if(lvl>=4){
+      var inp=document.createElement("input");inp.className="lk-in lk-wide";inp.placeholder="Gõ từ tiếng Anh...";
+      inp.type="text";inp.autocomplete="off";inp.autocapitalize="off";inp.spellcheck=false;
+      inp.addEventListener("keydown",function(ev){if(ev.key==="Enter"){ev.preventDefault();chk.click()}});
+      wd.appendChild(inp);slots=[{el:inp,all:true}];
+    }else{
+      var line=mk("div","lk-wl");
+      for(k=0;k<w.length;k++){
+        if(hide.indexOf(k)<0){line.appendChild(mk("span","lk-lt"+(w[k]===" "?" lk-sp":""),w[k]===" "?" ":w[k]));continue}
+        if(lvl===0){line.appendChild(mk("span","lk-lt lk-bl","_"));continue}
+        (function(k){
+          var e=document.createElement("input");e.className="lk-in lk-ch";e.maxLength=1;e.type="text";e.autocomplete="off";e.autocapitalize="off";e.spellcheck=false;
+          e.setAttribute("aria-label","Chữ cái còn thiếu");
+          e.addEventListener("input",function(){
+            e.classList.remove("bad");fb.className="lk-fb";fb.textContent="";
+            if(e.value){var ix=slots.findIndex(function(s){return s.el===e});if(slots[ix+1]){slots[ix+1].el.focus()}}
+          });
+          e.addEventListener("keydown",function(ev){
+            var ix=slots.findIndex(function(s){return s.el===e});
+            if(ev.key==="Enter"){ev.preventDefault();chk.click()}
+            else if(ev.key==="Backspace"&&!e.value&&slots[ix-1]){slots[ix-1].el.focus()}
+          });
+          slots.push({el:e,ch:w[k]});line.appendChild(e);
+        })(k);
+      }
+      wd.appendChild(line);
+    }
+    if(lvl===0){
+      var e0=hide.map(function(x){return w[x]}).join(""),opts=[e0],cand=[];
+      var up=(e0===e0.toUpperCase());
+      items.forEach(function(o){
+        var s=o.w.replace(/[^A-Za-z]/g,"");
+        if(s.length>=e0.length){var t=s.slice(-e0.length);t=up?t.toUpperCase():t.toLowerCase();if(t.toLowerCase()!==e0.toLowerCase()&&cand.indexOf(t)<0){cand.push(t)}}
+      });
+      sample(cand,1).forEach(function(x){opts.push(x)});
+      sample(mutEnd(e0).filter(function(x){return opts.indexOf(x)<0}),3-opts.length).forEach(function(x){opts.push(x)});
+      shuf(opts).forEach(function(x){
+        var b=mk("button","lk-o","-"+x);b.type="button";
+        b.addEventListener("click",function(){
+          if(ok1){return}
+          if(x===e0){
+            ok1=true;b.classList.add("ok");
+            wd.querySelectorAll(".lk-bl").forEach(function(s,ix){s.textContent=e0[ix];s.classList.remove("lk-bl")});
+            stepPos();
+          }else{tried=true;b.classList.add("bad");b.disabled=true;say2(false,"Chưa đúng, em thử đuôi khác nhé.")}
+        });
+        os.appendChild(b);
+      });
+    }else{chk.hidden=false;hb.hidden=false}
+    if(slots[0]&&i>0){try{slots[0].el.focus()}catch(e){}}
+  }
+  function wrong(){
+    return slots.filter(function(s){
+      if(s.all){return nrm(s.el.value)!==nrm(it.w)}
+      return s.el.value.toLowerCase()!==s.ch.toLowerCase();
+    });
+  }
+  chk.addEventListener("click",function(){
+    if(slots.some(function(s){return !s.el.value.trim()})){say2(false,"Em điền đủ các ô rồi bấm Kiểm tra nhé.");return}
+    var bad=wrong();
+    slots.forEach(function(s){s.el.classList.remove("ok","bad");s.el.classList.add(bad.indexOf(s)<0?"ok":"bad")});
+    if(bad.length){tried=true;say2(false,"Chưa đúng, em xem lại ô màu đỏ nhé.");return}
+    ok1=true;slots.forEach(function(s){s.el.disabled=true});chk.hidden=true;hb.hidden=true;stepPos();
+  });
+  hb.addEventListener("click",function(){
+    tried=true;hints++;
+    var s=wrong()[0];if(!s){return}
+    if(s.all){s.el.value=it.w.slice(0,Math.min(it.w.length-1,hints*2));s.el.focus()}
+    else{s.el.value=s.ch;s.el.classList.remove("bad");var ix=slots.indexOf(s);if(slots[ix+1]){slots[ix+1].el.focus()}}
+  });
+  function reveal(){
+    bk.hidden=false;bk.innerHTML="";os.innerHTML="";
+    var card=mk("div","lk-fc back");backFace(card,it,d);bk.appendChild(card);
+    if(!tried&&!ptried){first++}
+    say2(true,"Đúng rồi!");
+    nx.hidden=false;nx.textContent=(i<set.length-1)?"Tiếp →":"Xem kết quả";
+  }
+  function stepPos(){
+    say(it.w);
+    if(!d.pos){reveal();return}
+    var acc=fcAcc(d),keys=Object.keys(POSL).filter(function(x){return acc.indexOf(x)<0});
+    var opts=shuf([acc[0]].concat(sample(keys,3)));
+    os.innerHTML="";fb.className="lk-fb";fb.textContent="Từ này thuộc loại từ nào?";
+    opts.forEach(function(kk){
+      var b=mk("button","lk-o",POSL[kk]);b.type="button";
+      b.addEventListener("click",function(){
+        if(acc.indexOf(kk)>-1){b.classList.add("ok");reveal()}
+        else{ptried=true;b.classList.add("bad");b.disabled=true;say2(false,"Chưa đúng, em thử lại nhé.")}
+      });
+      os.appendChild(b);
+    });
+  }
+  nx.addEventListener("click",function(){
+    i++;
+    if(i<set.length){load();return}
+    parts.forEach(function(e){e.hidden=true});
+    summary(fin,first,set.length,function(){i=0;first=0;set=sample(set,set.length);fin.hidden=true;parts.forEach(function(e){e.hidden=false});load()});
+  });
+  load();
+}
+
 function vocabCard(main,c){
   var items=vocabItems(c),grids=main.querySelectorAll(".vgrid");
   if(!grids.length||items.length<4){return}
   var after=grids[grids.length-1].closest("section.blk");if(!after||after.parentNode!==main){return}
-  var modes=[{t:"🔊 Nghe và chạm vào hình",run:function(b){listenTap(b,items)}}];
+  var modes=[{t:"🃏 Thẻ học từ mới",run:function(b){learn(b,items)}},{t:"🔁 Thẻ ôn từ",run:function(b){leveled(b,4,function(cc,l){review(cc,items,l)},["Chọn đuôi từ","Gõ 1 chữ","Gõ 2 chữ","Gõ 3 chữ","Gõ cả từ"])}},{t:"🔊 Nghe và chạm vào hình",run:function(b){listenTap(b,items)}}];
   if(items.length>=5){modes.push({t:"🃏 Lật thẻ ghép chữ với hình",run:function(b){memory(b,items)}})}
   if(items.filter(function(x){return /^[A-Za-z]{3,9}$/.test(x.w)}).length>=3){modes.push({t:"🔤 Đánh vần từ",run:function(b){spell(b,items)}})}
-  activity(main,null,after,modes,c.n);
+  activity(main,null,after,modes,0);
 }
 
 /* ---------- 4. CÂU: xếp câu, nghe xếp câu, điền từ, nghe chọn câu ---------- */
