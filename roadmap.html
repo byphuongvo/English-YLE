@@ -116,6 +116,9 @@ button{font:inherit;cursor:pointer;color:inherit}
 .blk{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px;min-width:0}
 .blk>h3{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .textblk{padding:2px 4px}
+.vidbox{position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}
+.vidbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vidlnk{font-size:.95rem}
 .textblk ul{margin:6px 0 0;padding-left:22px;display:grid;gap:3px}
 
 .tile{background:var(--tile);border-radius:14px;display:flex;gap:6px;align-items:center;justify-content:center;padding:8px;min-height:92px}
@@ -1176,6 +1179,31 @@ function tkeyMcq(q){
   return '<div class="tkey">'+s+'</div>';
 }
 function rText(b){return '<section class="textblk">'+b.html+'</section>';}
+/* Video YouTube: nhận link thường (youtu.be, watch?v=, embed, shorts, live) hoặc mã 11 ký tự. Nhúng bằng youtube-nocookie. */
+function ytId(u){
+  u=String(u||'').trim();
+  var m=/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/|live\/|v\/))([A-Za-z0-9_-]{11})/.exec(u);
+  if(m){return m[1];}
+  return /^[A-Za-z0-9_-]{11}$/.test(u)?u:'';
+}
+function ytSec(t){
+  t=String(t==null?'':t).trim();if(!t){return 0;}
+  var m=/^(?:(\d+):)?(\d+):(\d+)$/.exec(t);
+  if(m){return (+m[1]||0)*3600+(+m[2])*60+(+m[3]);}
+  m=/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$/i.exec(t);
+  if(m&&(m[1]||m[2]||m[3])){return (+m[1]||0)*3600+(+m[2]||0)*60+(+m[3]||0);}
+  return 0;
+}
+function rVideo(b){
+  var id=ytId(b.url),h='<section class="blk vidblk">';
+  if(b.title){h+='<h3>'+esc(b.title)+'</h3>';}
+  if(b.note){h+='<p class="muted">'+esc(b.note)+'</p>';}
+  if(!id){return h+'<p class="muted">Chưa có video. Cô dán link YouTube vào khối này.</p></section>';}
+  var st=ytSec(b.start),en=ytSec(b.end),q='rel=0&modestbranding=1&playsinline=1'+(st?'&start='+st:'')+(en&&en>st?'&end='+en:'');
+  h+='<div class="vidbox"><iframe src="https://www.youtube-nocookie.com/embed/'+id+'?'+q+'" title="'+esc(b.title||'Video bài học')+'" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>';
+  h+='<p class="muted vidlnk">Video không chạy? <a href="https://www.youtube.com/watch?v='+id+(st?'&t='+st+'s':'')+'" target="_blank" rel="noopener">Mở trên YouTube</a></p></section>';
+  return h;
+}
 function rTeacher(b){return ST.teacher?'<aside class="teacher"><b>Dành cho giáo viên.</b> '+b.html+'</aside>':'';}
 function rScene(b){return '<section class="blk"><div class="scenebox">'+SCENE[b.name]()+'</div>'+(b.cap?'<p class="muted">'+esc(b.cap)+'</p>':'')+'</section>';}
 function rVocab(b){
@@ -1374,7 +1402,7 @@ function renderDay(){
       case 'text':h+=rText(b);break;case 'teacher':h+=rTeacher(b);break;case 'scene':h+=rScene(b);break;
       case 'vocab':h+=rVocab(b);break;case 'rule':h+=rRule(b);break;case 'pics':h+=rPics(b);break;
       case 'mcq':h+=rMcq(b,id);break;case 'gap':h+=rGap(b,id);break;case 'sounds':h+=rSounds(b);break;
-      case 'speak':h+=rSpeak(b,id);break;case 'shadow':h+=rShadow(b,id);break;case 'write':h+=rWrite(b,id);break;case 'model':h+=rModel(b);break;case 'check':h+=rCheck(b,id);break;case 'bookimg':h+=rBookimg(b);break;case 'story':h+=rStoryBlk(b);break;
+      case 'speak':h+=rSpeak(b,id);break;case 'shadow':h+=rShadow(b,id);break;case 'write':h+=rWrite(b,id);break;case 'model':h+=rModel(b);break;case 'check':h+=rCheck(b,id);break;case 'bookimg':h+=rBookimg(b);break;case 'video':h+=rVideo(b);break;case 'story':h+=rStoryBlk(b);break;
     }
   });
   var dn=isDone(w.id,ST.sec);
@@ -1931,13 +1959,14 @@ function missingAu(){
 }
 
 /* ---------- khung ---------- */
-var BT={text:'Văn bản',teacher:'Ghi chú giáo viên',bookimg:'Ảnh trong sách',vocab:'Thẻ từ vựng',rule:'Quy tắc ngữ pháp',gap:'Điền từ',mcq:'Trắc nghiệm',speak:'Nhìn tranh và nói',sounds:'Cặp âm cuối',write:'Bài viết',shadow:'Nghe và nhắc lại',story:'Hội thoại'};
+var BT={text:'Văn bản',teacher:'Ghi chú giáo viên',bookimg:'Ảnh trong sách',vocab:'Thẻ từ vựng',rule:'Quy tắc ngữ pháp',gap:'Điền từ',mcq:'Trắc nghiệm',speak:'Nhìn tranh và nói',sounds:'Cặp âm cuối',write:'Bài viết',shadow:'Nghe và nhắc lại',story:'Hội thoại',video:'Video YouTube'};
 var VOICES=[['f','Giọng nữ 1'],['m','Giọng nam 1'],['f2','Giọng nữ 2'],['m2','Giọng nam 2']];
 var KW={k:'kw',t:'list',l:'Từ khóa kiểm tra bài (máy tự tìm trong bài làm)',tpl:{l:'',re:''},it:[{k:'l',t:'str',l:'Tên mục (hiện cho học sinh)'},{k:'re',t:'str',l:'Biểu thức tìm (regex, viết thường)'}],lab:'l'};
 var TI={k:'title',t:'str',l:'Tiêu đề'},IN={k:'instr',t:'text',l:'Hướng dẫn'};
 var SCH={
   text:[{k:'html',t:'html',l:'Nội dung'}],
   teacher:[{k:'html',t:'html',l:'Ghi chú (chỉ giáo viên thấy)'}],
+  video:[{k:'title',t:'str',l:'Tiêu đề (không bắt buộc)'},{k:'url',t:'str',l:'Link YouTube (dán link bình thường, ví dụ https://youtu.be/31y2Bq1RYQA)'},{k:'start',t:'str',l:'Bắt đầu từ (không bắt buộc, ví dụ 45 hoặc 0:45)'},{k:'end',t:'str',l:'Dừng ở (không bắt buộc, ví dụ 2:10)'},{k:'note',t:'text',l:'Hướng dẫn cho học sinh (ví dụ: Xem video, rồi làm bài bên dưới)'}],
   bookimg:[{k:'src',t:'str',l:'Đường dẫn ảnh (ví dụ images/gs4-u1-lesson1.jpg, ảnh phải có trong thư mục web)'},{k:'cap',t:'str',l:'Chú thích'}],
   vocab:[TI,IN,{k:'items',t:'list',l:'Các từ',tpl:{w:'',icon:'📝',vi:''},it:[{k:'w',t:'str',l:'Từ / cụm từ tiếng Anh'},{k:'icon',t:'str',l:'Biểu tượng (emoji hoặc tên icon)'},{k:'vi',t:'str',l:'Nghĩa tiếng Việt'}],lab:'w'}],
   rule:[TI,{k:'pics',t:'list',l:'Ví dụ có hình',tpl:{icon:'📝',cap:''},it:[{k:'icon',t:'str',l:'Biểu tượng'},{k:'cap',t:'str',l:'Câu ví dụ'}],lab:'cap'},{k:'head',t:'strs',l:'Tiêu đề các cột của bảng'},{k:'rows',t:'grid',l:'Các dòng của bảng',cols:'head'},{k:'note',t:'html',l:'Ghi chú dưới bảng'}],
@@ -1950,7 +1979,7 @@ var SCH={
   story:[TI,{k:'ctx',t:'text',l:'Bối cảnh'},{k:'lines',t:'tuple',l:'Các lời thoại',cols:[{t:'sel',o:VOICES,l:'Giọng'},{t:'str',l:'Tiếng Anh'},{t:'str',l:'Tiếng Việt'}],tpl:['f','','']},{k:'use',t:'str',l:'Dùng khi nào (không bắt buộc)'}]
 };
 var TPL={
-  text:{t:'text',html:'<b>Tiêu đề</b><ul><li>Ý 1</li></ul>'},teacher:{t:'teacher',html:''},bookimg:{t:'bookimg',src:'',cap:''},
+  text:{t:'text',html:'<b>Tiêu đề</b><ul><li>Ý 1</li></ul>'},video:{t:'video',title:'Xem video',url:'',start:'',end:'',note:'Xem video, rồi làm bài bên dưới.'},teacher:{t:'teacher',html:''},bookimg:{t:'bookimg',src:'',cap:''},
   vocab:{t:'vocab',title:'Từ vựng mới',instr:'Bấm vào thẻ để nghe, rồi đọc theo to và rõ.',items:[{w:'',icon:'📝',vi:''}]},
   rule:{t:'rule',title:'Quy tắc mới',pics:[],head:['Chủ ngữ','Động từ'],rows:[['',''] ],note:''},
   gap:{t:'gap',title:'Điền từ',instr:'Gõ từ đúng vào chỗ trống rồi bấm Kiểm tra.',qs:[{pre:'',ans:[''],post:''}]},
