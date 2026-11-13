@@ -1,374 +1,691 @@
 <!doctype html>
-<html lang="vi"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Giáo viên · Lớp tiếng Anh</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600&display=swap">
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bảng điều khiển giáo viên</title>
 <style>
-/* Cùng bộ màu và phông với index.html để hai trang nhìn như một. */
-:root{--bg:#EEF3FF;--card:#fff;--ink:#16213E;--mut:#5A6584;--line:#CBD5F0;--blue:#2F5BEA;--blued:#2447BF;--soft:#E6EDFF;--side:#14213D;--gold:#FFD84D;--golddk:#C99A00;--ok:#17803F;--okbg:#E1F3E8;--bad:#A8231B;--badbg:#FBE4E1;--warn:#8A4F00;--warnbg:#FCEFD3;--fd:'Fredoka','Trebuchet MS',system-ui,sans-serif;--fb:'Atkinson Hyperlegible','Segoe UI',system-ui,sans-serif}
-@media(prefers-color-scheme:dark){:root{--bg:#0E1526;--card:#172036;--ink:#E7ECF8;--mut:#9AA6C3;--line:#2A3654;--soft:#22305A;--side:#0A1020;--ok:#6FDBA3;--okbg:#16372A;--bad:#FF9B93;--badbg:#401B19;--warn:#F2BC68;--warnbg:#3B2D12}}
+:root{--bg:#f4f6fb;--card:#fff;--ink:#14213d;--muted:#5b6785;--line:#d9deea;--accent:#1f4fd8;--accent-ink:#fff;--accent-soft:#e8eeff;--good:#067647;--good-bg:#e7f6ee;--bad:#b42318;--bad-bg:#fdeceb;--warn:#b54708;--warn-bg:#fff4e5;--r:12px}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1524;--card:#18203a;--ink:#eef1fb;--muted:#a3aed0;--line:#2c3760;--accent:#7aa2ff;--accent-ink:#0b1430;--accent-soft:#22305e;--good:#52d296;--good-bg:#12332a;--bad:#ff8a80;--bad-bg:#3a1c1c;--warn:#ffb866;--warn-bg:#3a2a12}}
 *{box-sizing:border-box}
-[hidden]{display:none!important}
-body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 var(--fb)}
-h1,h2,h3{font-family:var(--fd);font-weight:600;margin:0;line-height:1.2}
-a{color:inherit}
-button,input{font:inherit;color:inherit}
-button{cursor:pointer}
-:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
-.mut{color:var(--mut)}
-.btn{display:inline-block;border:0;border-radius:14px;padding:12px 22px;font-weight:700;background:var(--gold);color:#3B2F00;box-shadow:0 4px 0 var(--golddk);text-decoration:none}
-.btn:active{transform:translateY(3px);box-shadow:none}
-.btn:disabled{opacity:.6;cursor:default}
-.btn.g{background:var(--card);color:var(--ink);box-shadow:0 4px 0 var(--line);border:2px solid var(--line);padding:8px 16px}
-.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:18px 20px;box-shadow:0 4px 0 var(--line);margin:16px 0}
-.card h2{font-size:1.3rem;margin-bottom:8px}
-
-/* đăng nhập */
-.gate{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:20px}
-.login{width:100%;max-width:420px;display:grid;gap:14px}
-.login label{display:grid;gap:4px;font-weight:700}
-.login input{border:2px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg);font-weight:400}
-.msg{min-height:1.5em;font-weight:700}
-.msg.bad{color:var(--bad)}
-
-/* khung chính */
-.app{display:grid;grid-template-columns:248px 1fr;height:100vh;height:100dvh}
-.side{height:100%;overflow-y:auto;background:var(--side);color:#fff;display:flex;flex-direction:column;padding:22px 14px;gap:18px}
-.logo{display:flex;gap:10px;align-items:center;padding:0 8px;font:600 1.3rem var(--fd)}
-.logo i{width:38px;height:38px;border-radius:12px;background:var(--gold);color:#3B2F00;display:grid;place-items:center;font-style:normal;flex:none}
-.nav{display:grid;gap:6px}
-.nav a{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;color:#C9D3F0;text-decoration:none;font-weight:700}
-.nav a:hover{background:rgba(255,255,255,.08)}
-.nav a.on{background:var(--gold);color:#3B2F00}
-.nav svg{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.side .sp{flex:1}
-.side .ext{font-size:.95rem;color:#9AA6C3;padding:0 14px;text-decoration:none}
-.side .ext:hover{color:#fff}
-.main{min-width:0;display:flex;flex-direction:column;height:100%}
-.topbar{flex:none;height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 clamp(16px,3vw,32px);background:var(--card);border-bottom:2px solid var(--line)}
-.topbar h1{font-size:1.25rem}
-.who{display:flex;gap:10px;align-items:center}
-.ava{width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font:600 1rem var(--fd)}
-.content{flex:1;min-height:0;display:flex;flex-direction:column;position:relative}
-#native,#prwrap,#frwrap{flex:1;min-height:0}
-#native{overflow:auto}
-.pad{width:100%;max-width:960px;padding:28px clamp(16px,4vw,40px) 48px}
-.frwrap{position:relative;display:flex;flex-direction:column}
-.frwrap iframe{border:0;width:100%;flex:1;min-height:0;display:block;background:var(--bg)}
-.busy{position:absolute;inset:0;z-index:2;display:grid;place-items:center;background:var(--bg);padding:20px;text-align:center}
-.busy .card{max-width:520px;margin:0}
-.bar{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px;border-bottom:2px solid var(--line);background:var(--card)}
-.chip{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:6px 16px;font-weight:700;color:var(--mut)}
-.chip.on{border-color:var(--blue);background:var(--blue);color:#fff}
-
-/* tổng quan */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:18px 0}
-.stat{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:16px 18px;box-shadow:0 4px 0 var(--line);display:grid;gap:6px;align-content:start}
-.stat small{font-weight:700;color:var(--mut)}
-.stat b{font:600 2rem var(--fd);line-height:1.1}
-.stat .btn{justify-self:start;margin-top:4px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{margin:0;line-height:1.25}
+.muted{color:var(--muted)}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:10px 18px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.top h1{font-size:1.1rem}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.tab{border:0;background:transparent;padding:8px 14px;border-radius:999px;font-weight:700;color:var(--muted);cursor:pointer}
+.tab[aria-selected=true]{background:var(--accent);color:var(--accent-ink)}
+.tab .live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--bad);margin-right:6px}
+.wrap{max-width:1240px;margin:0 auto;padding:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.grid2{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.grid2>*,.stack>*,.card{min-width:0}
+.grid2.sm{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.stack{display:grid;gap:16px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:7px 16px;font-weight:700;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.danger{border-color:var(--bad);background:transparent;color:var(--bad)}
+.btn.sm{padding:4px 12px;font-size:.9rem}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn:focus-visible,.tab:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+label.f{display:grid;gap:3px;font-size:.85rem;font-weight:700;color:var(--muted)}
+input[type=text],input[type=number],input[type=password],input[type=url],select,textarea{width:100%;padding:7px 10px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);font-weight:400;color:var(--ink)}
+textarea{resize:vertical}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.8rem;font-weight:700}
+.pill.ok{background:var(--good-bg);color:var(--good)}.pill.warn{background:var(--warn-bg);color:var(--warn)}.pill.bad{background:var(--bad-bg);color:var(--bad)}
+.note{padding:10px 14px;border-radius:10px;background:var(--warn-bg);color:var(--warn);font-weight:600}
+.note.ok{background:var(--good-bg);color:var(--good)}.note.bad{background:var(--bad-bg);color:var(--bad)}
 table{width:100%;border-collapse:collapse}
-th,td{text-align:left;padding:8px 10px;border-top:2px solid var(--line)}
-th{border-top:0;color:var(--mut);font-size:.95rem}
-.tw{overflow-x:auto}
-.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-weight:700;font-size:.9rem;background:var(--soft)}
-.pill.warn{background:var(--warnbg);color:var(--warn)}
-.pill.ok{background:var(--okbg);color:var(--ok)}
-.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 0;border-top:2px solid var(--line)}
-.row:first-of-type{border-top:0}
-
-@media(max-width:860px){
- .app{grid-template-columns:68px 1fr}
- .side{padding:14px 6px;gap:14px}
- .logo{justify-content:center;padding:0}.logo span,.nav a span,.side .ext{display:none}
- .nav a{justify-content:center;padding:12px 0}
- .who .nm{display:none}
- .pad{padding:20px 16px 40px}
- .topbar{padding:0 12px}.topbar h1{font-size:1.05rem}
- .btn.g{white-space:nowrap;padding:6px 12px}
-}
-</style></head><body>
-
-<div class="gate" id="gate">
-  <form class="card login" id="lg" autocomplete="on">
-    <h1>Dành cho giáo viên</h1>
-    <p class="mut" style="margin:0">Đăng nhập bằng tên và mã giáo viên để sửa nội dung, chấm bài và theo dõi học sinh.</p>
-    <label>Tên<input type="text" id="lgName" autocomplete="username" required></label>
-    <label>Mã giáo viên<input type="password" id="lgCode" autocomplete="current-password" required></label>
-    <button class="btn" type="submit" id="lgBtn">Vào bảng điều khiển</button>
-    <p class="msg" id="lgMsg" role="status" aria-live="polite"></p>
-    <a class="mut" href="index.html">← Về trang học sinh</a>
-  </form>
-</div>
-
-<div class="app" id="app" hidden>
-  <aside class="side">
-    <div class="logo"><i>★</i><span>Giáo viên</span></div>
-    <nav class="nav" id="nav" aria-label="Menu giáo viên"></nav>
-    <div class="sp"></div>
-    <a class="ext" href="index.html" target="_blank" rel="noopener">Xem trang học sinh ↗</a>
-  </aside>
-  <div class="main">
-    <header class="topbar"><h1 id="ptitle">Tổng quan</h1>
-      <div class="who"><span class="ava" id="ava"></span><span class="nm" id="uname"></span><button type="button" class="btn g" id="logout">Đăng xuất</button></div>
-    </header>
-    <main class="content" id="main">
-      <div id="native"></div>
-      <div id="frwrap" class="frwrap" hidden>
-        <iframe id="fr" title="Soạn nội dung lộ trình"></iframe>
-        <div class="busy" id="busy"><p class="mut">Đang mở...</p></div>
-      </div>
-      <div id="prwrap" class="frwrap" hidden>
-        <div class="bar" id="prbar"></div>
-        <iframe id="pr" title="Xem thử trang luyện tập"></iframe>
-      </div>
-    </main>
-  </div>
-</div>
-
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.82rem;color:var(--muted)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--muted);vertical-align:middle}
+.dot.on{background:var(--good)}.dot.off{background:var(--warn)}
+.login{max-width:420px;margin:12vh auto;padding:0 18px}
+.login form{display:grid;gap:12px}
+/* nội dung */
+.cwrap{display:grid;gap:16px;grid-template-columns:270px 1fr;align-items:start}
+@media (max-width:860px){.cwrap{grid-template-columns:1fr}}
+.tree{display:grid;gap:4px;max-height:78vh;overflow:auto}
+.tree h3{font-size:.85rem;color:var(--muted);margin:10px 0 2px}
+.tnode{display:flex;justify-content:space-between;gap:8px;text-align:left;border:0;background:transparent;border-radius:8px;padding:6px 10px;cursor:pointer}
+.tnode:hover{background:var(--accent-soft)}.tnode[aria-current=true]{background:var(--accent);color:var(--accent-ink)}
+.bcard{border:1.5px solid var(--line);border-radius:var(--r);background:var(--card)}
+.bhead{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 12px;cursor:pointer}
+.bhead b{flex:1 1 180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bbody{padding:4px 14px 14px;display:grid;gap:10px;border-top:1px solid var(--line)}
+.ir{display:grid;gap:6px;align-items:center}
+.ir.v{grid-template-columns:52px 1fr 1fr 22px 32px}
+.ir.g{grid-template-columns:1fr 1fr 1.4fr 32px}
+.ir.s{grid-template-columns:70px 1fr 1fr 32px}
+.ir.h{grid-template-columns:1fr 22px 32px}
+.qbox{border:1px dashed var(--line);border-radius:10px;padding:10px;display:grid;gap:8px}
+.x{border:0;background:transparent;color:var(--bad);font-weight:700;cursor:pointer;font-size:1.1rem}
+.preview{padding:8px 12px;border-radius:10px;background:var(--accent-soft)}
+.savebar{position:sticky;bottom:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 -4px 14px rgba(20,33,61,.08)}
+/* trực tiếp */
+.big{font-size:2rem;font-weight:800;text-align:center;padding:14px;border-radius:12px;background:var(--accent-soft);color:var(--accent)}
+.stud{display:flex;align-items:center;gap:8px;padding:4px 0}
+.blist{display:grid;gap:6px}
+.brow{display:flex;gap:8px;align-items:center;padding:6px 10px;border:1px solid var(--line);border-radius:10px}
+.brow span.n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sub{display:grid;gap:8px}
+.subtxt{white-space:pre-wrap;background:var(--accent-soft);border-radius:10px;padding:10px;margin:0;font:inherit}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:3px 12px;cursor:pointer;font-size:.88rem}
+.modal{position:fixed;inset:0;background:rgba(10,15,30,.55);display:grid;place-items:center;z-index:50;padding:16px}
+.modal .card{max-width:640px;width:100%;max-height:84vh;overflow:auto}
+.brow .n{min-width:0}.brow .btn{flex:none}.blist{min-width:0}
+.filters{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}.filters select,.filters input{width:auto;min-width:140px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div id="app"></div>
 <script>
-/* ============ CẤU HÌNH ============
-   Đặt teacher.html cùng thư mục và cùng tên miền với roadmap.html, practice.html, index.html.
-   API_URL là địa chỉ Web App của Apps Script (giống dòng API_URL trong roadmap.html).
-   Để trống = chế độ thử: nhập tên bất kỳ và mã "gv". */
-var API_URL='https://script.google.com/macros/s/AKfycbzIUFqCdDuiQ84D_pi4RO_HowyWcSWmdx_Yk95F0Jt6Bu_y6XYwDsJe75hxo5Wzfe95bA/exec';
 (function(){
 "use strict";
-var SESSION='yle-session';      /* cùng khóa với index.html và roadmap.html để khung nhúng tự đăng nhập */
-var IC={
- home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
- edit:'<path d="M4 20l1-5L16 4l4 4L9 19zM14 6l4 4"/>',
- subs:'<path d="M5 12l4 4L19 6"/><rect x="3" y="3" width="18" height="18" rx="3"/>',
- class:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3-6 6.500-6s6 2 6.500 6"/><circle cx="17.500" cy="9" r="2.500"/><path d="M17 14c2.500 0 4 1.500 4.500 5"/>',
- practice:'<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10v5M4.500 12.500h5M16 11h.01M18.500 14h.01"/>'
-};
-var TABS={
- home:{t:'Tổng quan',title:'Tổng quan'},
- edit:{t:'Soạn lộ trình',title:'Soạn nội dung lộ trình học',frame:1},
- subs:{t:'Chấm bài',title:'Bài nộp của học sinh',frame:1},
- class:{t:'Học sinh',title:'Cả lớp',frame:1},
- practice:{t:'Luyện tập',title:'Trang luyện tập (xem thử)'}
-};
-var PRACTICE=[['Flashcard','practice.html?embed=1#cards'],['Ghép cặp','practice.html?embed=1#memory'],['Đua 60 giây','practice.html?embed=1#race'],['Truyện ngắn','stories.html?embed=1']];
-var U=null,cur='home',driveId=0,frLoaded=false;
-function $(i){return document.getElementById(i)}
-function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
-function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
-function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-function lsDel(k){try{localStorage.removeItem(k)}catch(e){}}
+var API_URL='https://script.google.com/macros/s/AKfycbzIUFqCdDuiQ84D_pi4RO_HowyWcSWmdx_Yk95F0Jt6Bu_y6XYwDsJe75hxo5Wzfe95bA/exec';
+var DEMO=/[?&]demo=1/.test(location.search);
+var SEED={"weeks":[{"id":1,"title":"Tuần 1","topic":"Daily routines và thì hiện tại đơn","sub":"Nói và viết về một ngày của em: get up, have breakfast, always, usually, sometimes, never","goals":["Nói và viết về thói quen hằng ngày bằng thì hiện tại đơn","Thêm đúng -s, -es với he, she, it: gets up, watches, goes, has","Dùng always, usually, often, sometimes, never đúng vị trí","Đọc đúng âm cuối -s: /s/, /z/ và /ɪz/"],"plan":"2 buổi (25 phút) và 4 bài về nhà (15 đến 20 phút), tất cả làm trực tiếp trên trang","sections":[{"id":"b1","tab":"Buổi 1","title":"Từ vựng, Ngữ pháp và Nói","mins":25,"blocks":[{"t":"text","html":"<b>Hôm nay em học:<\/b><ul><li>12 cụm từ về thói quen hằng ngày.<\/li><li>Thì hiện tại đơn: <b>I get up<\/b> nhưng <b>she gets up<\/b>.<\/li><li>Các từ chỉ mức độ thường xuyên: <b>always, usually, often, sometimes, never<\/b>.<\/li><li>Nhìn tranh lớp học và nói các bạn đang làm gì.<\/li><\/ul>"},{"t":"vocab","title":"12 cụm từ về một ngày của em","instr":"Bấm vào thẻ để nghe cô đọc, rồi đọc theo to và rõ.","items":[{"w":"get up","icon":"⏰","vi":"thức dậy","au":{"segs":[{"v":"f","t":"get up"}],"s":0}},{"w":"have breakfast","icon":"🥣","vi":"ăn sáng","au":{"segs":[{"v":"f","t":"have breakfast"}],"s":0}},{"w":"brush my teeth","icon":"🪥","vi":"đánh răng","au":{"segs":[{"v":"f","t":"brush my teeth"}],"s":0}},{"w":"go to school","icon":"🏫","vi":"đi học","au":{"segs":[{"v":"f","t":"go to school"}],"s":0}},{"w":"have lunch","icon":"🍱","vi":"ăn trưa","au":{"segs":[{"v":"f","t":"have lunch"}],"s":0}},{"w":"do my homework","icon":"✏️","vi":"làm bài tập về nhà","au":{"segs":[{"v":"f","t":"do my homework"}],"s":0}},{"w":"play badminton","icon":"🏸","vi":"chơi cầu lông","au":{"segs":[{"v":"f","t":"play badminton"}],"s":0}},{"w":"tidy my room","icon":"🧹","vi":"dọn phòng","au":{"segs":[{"v":"f","t":"tidy my room"}],"s":0}},{"w":"watch TV","icon":"📺","vi":"xem ti vi","au":{"segs":[{"v":"f","t":"watch TV"}],"s":0}},{"w":"have a shower","icon":"🚿","vi":"tắm vòi sen","au":{"segs":[{"v":"f","t":"have a shower"}],"s":0}},{"w":"read a comic","icon":"📖","vi":"đọc truyện tranh","au":{"segs":[{"v":"f","t":"read a comic"}],"s":0}},{"w":"go to bed","icon":"🛏️","vi":"đi ngủ","au":{"segs":[{"v":"f","t":"go to bed"}],"s":0}}]},{"t":"rule","title":"Thì hiện tại đơn: thêm -s với he, she, it","pics":[{"icon":"⏰","cap":"I get up at six.","au":{"segs":[{"v":"f","t":"I get up at six."}],"s":0}},{"icon":"🥣","cap":"She has breakfast.","au":{"segs":[{"v":"f","t":"She has breakfast."}],"s":0}},{"icon":"📺","cap":"He watches TV.","au":{"segs":[{"v":"f","t":"He watches TV."}],"s":0}},{"icon":"🏫","cap":"They go to school.","au":{"segs":[{"v":"f","t":"They go to school."}],"s":0}}],"head":["Chủ ngữ","Động từ","Ví dụ"],"rows":[["I / You / We / They","get up","We get up at six thirty.",{"segs":[{"v":"f","t":"We get up at six thirty."}],"s":0}],["He / She / It","gets up","She gets up at seven.",{"segs":[{"v":"f","t":"She gets up at seven."}],"s":0}],["He / She / It","plays","He plays badminton after school.",{"segs":[{"v":"f","t":"He plays badminton after school."}],"s":0}],["He / She / It","watches","My brother watches TV in the evening.",{"segs":[{"v":"f","t":"My brother watches TV in the evening."}],"s":0}],["He / She / It","goes","My dad goes to work by bus.",{"segs":[{"v":"f","t":"My dad goes to work by bus."}],"s":0}],["He / She / It","has","Linh has lunch at school.",{"segs":[{"v":"f","t":"Linh has lunch at school."}],"s":0}]],"note":"<b>Quy tắc:<\/b> thêm <b>-s<\/b> (gets, plays). Động từ tận cùng <b>-ch, -sh, -ss, -x, -o<\/b> thì thêm <b>-es<\/b> (watch → watches, brush → brushes, go → goes). Riêng <b>have → has<\/b>.<br><b>Câu hỏi và câu phủ định:<\/b> dùng do hoặc does, động từ trở về nguyên mẫu: <b>Does she get up early?<\/b> · <b>She doesn't get up early.<\/b> (không nói <i>She doesn't gets up<\/i>)."},{"t":"rule","title":"Từ chỉ mức độ thường xuyên","head":["Từ","Nghĩa","Ví dụ"],"rows":[["always","luôn luôn (100%)","I always brush my teeth before bed.",{"segs":[{"v":"f","t":"I always brush my teeth before bed."}],"s":0}],["usually","thường thường","She usually has noodles for breakfast.",{"segs":[{"v":"f","t":"She usually has noodles for breakfast."}],"s":0}],["often","hay, thường","We often play badminton at the weekend.",{"segs":[{"v":"f","t":"We often play badminton at the weekend."}],"s":0}],["sometimes","thỉnh thoảng","He sometimes reads a comic after dinner.",{"segs":[{"v":"f","t":"He sometimes reads a comic after dinner."}],"s":0}],["never","không bao giờ (0%)","I never watch TV before my homework.",{"segs":[{"v":"f","t":"I never watch TV before my homework."}],"s":0}]],"note":"<b>Vị trí:<\/b> đứng <b>trước động từ thường<\/b> (I <b>always<\/b> get up early) nhưng <b>sau am, is, are<\/b> (She is <b>never<\/b> late)."},{"t":"gap","title":"Điền dạng đúng của động từ","instr":"Gõ động từ trong ngoặc ở dạng đúng (nhớ -s hoặc -es với he, she, it), rồi bấm Kiểm tra.","qs":[{"pre":"She ","ans":["gets up"],"post":" at seven o'clock. (get up)"},{"pre":"I ","ans":["brush"],"post":" my teeth every morning. (brush)"},{"pre":"My brother ","ans":["watches"],"post":" TV in the evening. (watch)"},{"pre":"Linh ","ans":["has"],"post":" lunch at school. (have)"},{"pre":"We ","ans":["go"],"post":" to school by bike. (go)"},{"pre":"He ","ans":["does"],"post":" his homework after dinner. (do)"},{"pre":"My mum ","ans":["goes"],"post":" to work by bus. (go)"},{"pre":"They ","ans":["play"],"post":" badminton on Sundays. (play)"}]},{"t":"mcq","title":"Chọn câu đúng","instr":"Chọn một đáp án cho mỗi câu.","qs":[{"q":"Which sentence is correct?","opts":["He get up at six.","He gets up at six.","He getting up at six."],"ans":1,"why":"He là một người nên động từ thêm -s."},{"q":"Which sentence is correct?","opts":["I always am late.","I am always late.","I am late always."],"ans":1,"why":"Always đứng sau am, is, are."},{"q":"My sister ___ her teeth twice a day.","opts":["brush","brushes","brushing"],"ans":1,"why":"Brush tận cùng -sh nên thêm -es."},{"q":"Which sentence is correct?","opts":["She doesn't likes fish.","She doesn't like fish.","She don't like fish."],"ans":1,"why":"Sau doesn't, động từ trở về nguyên mẫu."},{"q":"___ your brother play football at the weekend?","opts":["Do","Does","Is"],"ans":1,"why":"Your brother là he nên dùng Does."},{"q":"I ___ watch TV before I do my homework. (0%)","opts":["always","sometimes","never"],"ans":2,"why":"Never nghĩa là không bao giờ."}]},{"t":"speak","title":"Nhìn tranh và nói","scene":"classroom","prompt":"Look at the picture. What are the children doing?","frames":["This is a ___. There are ___ children.","The girl with pigtails is ___ing a ___.","He / She is wearing ___.","The ___ is on / under / next to the ___."],"modelTitle":"Bài nói mẫu của cô","model":{"segs":[{"v":"f","t":"This is a classroom. There are five children. The girl with pigtails is reading a book. The boy next to her is writing. Jack is drawing and he is wearing glasses. Lucy is standing in front of the board. The clock is on the wall and the red bag is under the table."}],"s":0},"check":["Nói ít nhất 4 câu","Có There are và đếm đúng số bạn","Dùng đúng is/are + động từ-ing","Có từ chỉ vị trí (on, under, next to, in front of)"],"kw":[{"l":"There are / There is","re":"there (is|are)"},{"l":"Động từ -ing","re":"\\w+ing\\b"},{"l":"Vị trí (on, under, next to...)","re":"\\b(on|under|next to|in front of|behind)\\b"},{"l":"Màu sắc","re":"\\b(red|blue|green|brown|yellow|black|pink)\\b"}],"minWords":25},{"t":"teacher","html":"<b>Phân bổ 25 phút:<\/b> 0–3 chào hỏi, hỏi miệng \"What time do you get up?\" · 3–9 từ mới (đọc, đóng kịch động tác) · 9–15 thêm -s/-es, bảng tần suất · 15–20 điền động từ, chọn câu đúng · 20–25 nhìn tranh và nói (học sinh ghi âm và nộp ngay trên trang).<br><b>Lỗi hay gặp của học sinh lớp 4:<\/b> quên -s với he/she/it, thêm -s sau does/doesn't, đặt always sau động từ thường, nuốt âm cuối.<br><b>Cách sửa:<\/b> không ngắt lời. Nhắc lại câu đúng chậm rồi cho bé nói lại. Mục tiêu cuối buổi: 4 câu liên tiếp đúng cấu trúc."}]},{"id":"b2","tab":"Buổi 2","title":"Nghe, Đọc và Âm cuối -s","mins":25,"blocks":[{"t":"mcq","title":"Nghe và chọn đáp án","instr":"Bấm nút nghe (nghe được nhiều lần) rồi chọn.","qs":[{"q":"What time does Tom get up?","opts":["6:30","7:00","7:30"],"ans":1,"why":"","au":{"segs":[{"v":"f","t":"Tom gets up at seven o'clock every day."}],"s":0}},{"q":"What does Mia usually have for breakfast?","opts":["Noodles","Bread and eggs","Rice"],"ans":0,"why":"","au":{"segs":[{"v":"f","t":"Mia usually has noodles for breakfast."}],"s":0}},{"q":"How does Ben go to school?","opts":["By bus","By bike","On foot"],"ans":1,"why":"","au":{"segs":[{"v":"f","t":"Ben goes to school by bike because his school is near his house."}],"s":0}},{"q":"What does Lily never do before dinner?","opts":["Do homework","Watch TV","Read comics"],"ans":1,"why":"","au":{"segs":[{"v":"f","t":"Lily never watches TV before dinner. She always does her homework first."}],"s":0}}]},{"t":"mcq","title":"Nghe hội thoại","instr":"Nghe cuộc nói chuyện rồi chọn đáp án.","qs":[{"q":"What time does Nam go to bed?","opts":["8:30","9:00","9:30"],"ans":1,"why":"","au":{"segs":[{"v":"f","t":"What time do you go to bed, Nam?"},{"v":"m","t":"I usually go to bed at nine o'clock."}],"s":0}},{"q":"What does Anna do after school?","opts":["She plays badminton","She tidies her room","She reads a comic"],"ans":0,"why":"","au":{"segs":[{"v":"m","t":"What do you do after school, Anna?"},{"v":"f2","t":"I always play badminton with my cousin."}],"s":0}},{"q":"Who tidies the room on Saturdays?","opts":["Dad","Tom","Mum"],"ans":1,"why":"","au":{"segs":[{"v":"f","t":"Does your dad tidy the room?"},{"v":"m2","t":"No, he doesn't. I tidy it every Saturday."}],"s":0}},{"q":"How often does Lucy watch TV?","opts":["Every day","Sometimes","Never"],"ans":1,"why":"","au":{"segs":[{"v":"m","t":"Do you watch TV every day, Lucy?"},{"v":"f2","t":"No, I only watch it sometimes, at the weekend."}],"s":0}}]},{"t":"gap","title":"Nghe và điền từ còn thiếu","instr":"Nghe cả câu rồi gõ từ còn thiếu.","qs":[{"pre":"She ","ans":["usually"],"post":" gets up at six.","au":{"segs":[{"v":"f","t":"She usually gets up at six."}],"s":0}},{"pre":"My brother ","ans":["never"],"post":" tidies his room.","au":{"segs":[{"v":"f","t":"My brother never tidies his room."}],"s":0}},{"pre":"We ","ans":["sometimes"],"post":" have lunch at home.","au":{"segs":[{"v":"f","t":"We sometimes have lunch at home."}],"s":0}},{"pre":"He ","ans":["brushes"],"post":" his teeth twice a day.","au":{"segs":[{"v":"f","t":"He brushes his teeth twice a day."}],"s":0}},{"pre":"They ","ans":["always"],"post":" do their homework after school.","au":{"segs":[{"v":"f","t":"They always do their homework after school."}],"s":0}}]},{"t":"sounds","title":"Âm cuối -s, -es: ba cách đọc","instr":"Nghe từng cặp. Từ bên phải có thêm âm cuối. Hãy đọc to cả hai từ, đừng bỏ âm cuối.","head":["Nguyên mẫu","Thêm -s / -es"],"pairs":[["get","gets"],["play","plays"],["read","reads"],["watch","watches"],["brush","brushes"],["go","goes"]],"tip":"<b>Ba cách đọc:<\/b> sau âm vô thanh (p, t, k) đọc <b>/s/<\/b>: gets. Sau âm hữu thanh và nguyên âm đọc <b>/z/<\/b>: plays, reads, goes. Sau -ch, -sh, -s, -x đọc <b>/ɪz/<\/b> và thành hai âm tiết: watch – wa-tchiz, brush – bru-shiz.","aus":[[{"segs":[{"v":"f","t":"get"}],"s":0},{"segs":[{"v":"f","t":"gets"}],"s":0}],[{"segs":[{"v":"f","t":"play"}],"s":0},{"segs":[{"v":"f","t":"plays"}],"s":0}],[{"segs":[{"v":"f","t":"read"}],"s":0},{"segs":[{"v":"f","t":"reads"}],"s":0}],[{"segs":[{"v":"f","t":"watch"}],"s":0},{"segs":[{"v":"f","t":"watches"}],"s":0}],[{"segs":[{"v":"f","t":"brush"}],"s":0},{"segs":[{"v":"f","t":"brushes"}],"s":0}],[{"segs":[{"v":"f","t":"go"}],"s":0},{"segs":[{"v":"f","t":"goes"}],"s":0}]]},{"t":"mcq","title":"Nghe: có -s hay không?","instr":"Nghe một từ rồi chọn từ em nghe thấy.","qs":[{"q":"Em nghe thấy từ nào?","opts":["get","gets"],"ans":1,"why":"Từ là gets.","au":{"segs":[{"v":"f","t":"gets"}],"s":0}},{"q":"Em nghe thấy từ nào?","opts":["play","plays"],"ans":0,"why":"Từ là play.","au":{"segs":[{"v":"f","t":"play"}],"s":0}},{"q":"Em nghe thấy từ nào?","opts":["watch","watches"],"ans":1,"why":"Từ là watches (hai âm tiết).","au":{"segs":[{"v":"f","t":"watches"}],"s":0}},{"q":"Em nghe thấy từ nào?","opts":["brush","brushes"],"ans":0,"why":"Từ là brush.","au":{"segs":[{"v":"f","t":"brush"}],"s":0}},{"q":"Em nghe thấy từ nào?","opts":["go","goes"],"ans":1,"why":"Từ là goes.","au":{"segs":[{"v":"f","t":"goes"}],"s":0}},{"q":"Em nghe thấy từ nào?","opts":["read","reads"],"ans":1,"why":"Từ là reads.","au":{"segs":[{"v":"f","t":"reads"}],"s":0}}]},{"t":"mcq","title":"Đọc hiểu: Linh's day","instr":"Nghe hoặc đọc đoạn văn, rồi trả lời.","passage":"My name is Linh and I am ten years old. I live in Da Nang with my parents and my little brother. On school days I get up at half past six. I usually have noodles for breakfast, but on Sundays I sometimes have bread and eggs. I go to school by bike and my lessons start at a quarter to eight. After school I always do my homework and then I play badminton with my brother. I never watch TV before dinner. My dad cooks dinner and we eat together at seven. I go to bed at nine o'clock.","passageAu":{"segs":[{"v":"f","t":"My name is Linh and I am ten years old. I live in Da Nang with my parents and my little brother. On school days I get up at half past six. I usually have noodles for breakfast, but on Sundays I sometimes have bread and eggs. I go to school by bike and my lessons start at a quarter to eight. After school I always do my homework and then I play badminton with my brother. I never watch TV before dinner. My dad cooks dinner and we eat together at seven. I go to bed at nine o'clock."}],"s":0},"qs":[{"q":"What time does Linh get up on school days?","opts":["6:30","7:00","7:45"],"ans":0,"why":"Half past six là 6:30."},{"q":"What does Linh sometimes have for breakfast on Sundays?","opts":["Noodles","Bread and eggs","Rice and fish"],"ans":1,"why":"On Sundays I sometimes have bread and eggs."},{"q":"How does Linh go to school?","opts":["By bus","On foot","By bike"],"ans":2,"why":"I go to school by bike."},{"q":"Linh watches TV before dinner.","opts":["True","False"],"ans":1,"why":"Linh never watches TV before dinner."},{"q":"Who cooks dinner?","opts":["Linh","Her dad","Her brother"],"ans":1,"why":"My dad cooks dinner."}]},{"t":"teacher","html":"<b>Phân bổ 25 phút:<\/b> 0–5 ôn -s/-es và tần suất · 5–12 nghe chọn đáp án và nghe hội thoại · 12–18 âm cuối -s (đặt tay trước miệng cảm nhận hơi ra, vỗ tay số âm tiết) · 18–25 đọc hiểu.<br><b>Kiểm tra nhanh cuối buổi:<\/b> hỏi miệng 3 câu: \"What time do you get up?\" \"What do you usually have for breakfast?\" \"Does your dad cook dinner?\" Bé trả lời bằng câu đầy đủ.<br><b>Nếu bé sai nhiều ở nghe hội thoại:<\/b> bé chưa bắt được giờ giấc và từ tần suất khi nghe nhanh. Cho nghe lại và yêu cầu bé gạch chân giờ và từ always/usually/never."}]},{"id":"h1","tab":"Về nhà 1","title":"Viết về một ngày của em","mins":20,"blocks":[{"t":"text","html":"<b>Dạng bài: Viết.<\/b> Làm khởi động, rồi viết bài ngay trong khung bên dưới và bấm <b>Nộp cho cô<\/b>. Không cần viết vào vở."},{"t":"gap","title":"Khởi động","instr":"Điền dạng đúng của động từ.","qs":[{"pre":"My cousin ","ans":["watches"],"post":" TV every night. (watch)"},{"pre":"I ","ans":["brush"],"post":" my teeth after breakfast. (brush)"},{"pre":"Our teacher ","ans":["has"],"post":" lunch at twelve. (have)"},{"pre":"She ","ans":["goes"],"post":" to bed at nine. (go)"}]},{"t":"write","title":"Bài viết: A day in my life","instr":"Viết 6 đến 8 câu về một ngày đi học của em. Dùng ít nhất 2 từ chỉ mức độ (always, usually, often, sometimes, never) và giờ giấc (at six thirty).","frames":["On school days I get up at ___.","I usually have ___ for breakfast.","I go to school by ___.","After school I always ___.","I never ___ before ___.","I go to bed at ___."],"min":6,"kw":[{"l":"Có từ chỉ mức độ (always, usually, often, sometimes, never)","re":"\\b(always|usually|often|sometimes|never)\\b"},{"l":"Có giờ giấc (at six, at half past six...)","re":"\\bat (\\d|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|half|a quarter)"},{"l":"Có từ nối (and, but, then, after)","re":"\\b(and|but|then|after)\\b"}],"modelTitle":"Xem bài mẫu sau khi nộp","model":{"segs":[{"v":"f","t":"On school days I get up at half past six. I usually have noodles for breakfast. I go to school by bike. After school I always do my homework and then I play badminton. I never watch TV before dinner. I go to bed at nine o'clock."}],"s":0},"modelText":"On school days I get up at half past six. I usually have noodles for breakfast. I go to school by bike. After school I always do my homework and then I play badminton. I never watch TV before dinner. I go to bed at nine o'clock."}]},{"id":"h2","tab":"Về nhà 2","title":"Nghe và nhắc lại có chấm điểm","mins":15,"blocks":[{"t":"text","html":"<b>Dạng bài: Nghe và nói theo (shadowing).<\/b> Bấm nút loa để nghe một câu, rồi bấm <b>Nói<\/b> để đọc lại. Máy sẽ chấm từng câu. Chú ý các chữ <b>in đậm<\/b>, đó là âm cuối em hay bỏ sót. Cuối bài bấm <b>Nộp kết quả cho cô<\/b>."},{"t":"shadow","title":"8 câu nghe và nhắc lại","items":[{"h":"I <b>get<\/b> up at half <b>past<\/b> six.","au":{"segs":[{"v":"f","t":"I get up at half past six."}],"s":0}},{"h":"She <b>usually<\/b> has noodles for <b>breakfast<\/b>.","au":{"segs":[{"v":"f","t":"She usually has noodles for breakfast."}],"s":0}},{"h":"He <b>watches<\/b> TV in the <b>evening<\/b>.","au":{"segs":[{"v":"f","t":"He watches TV in the evening."}],"s":0}},{"h":"We <b>often<\/b> play <b>badminton<\/b> at the weekend.","au":{"segs":[{"v":"f","t":"We often play badminton at the weekend."}],"s":0}},{"h":"My dad <b>goes<\/b> to work by <b>bus<\/b>.","au":{"segs":[{"v":"f","t":"My dad goes to work by bus."}],"s":0}},{"h":"I <b>never<\/b> watch TV before my <b>homework<\/b>.","au":{"segs":[{"v":"f","t":"I never watch TV before my homework."}],"s":0}},{"h":"She <b>brushes<\/b> her <b>teeth<\/b> twice a day.","au":{"segs":[{"v":"f","t":"She brushes her teeth twice a day."}],"s":0}},{"h":"They <b>always<\/b> tidy their <b>rooms<\/b> on Saturday.","au":{"segs":[{"v":"f","t":"They always tidy their rooms on Saturday."}],"s":0}}]}]},{"id":"h3","tab":"Về nhà 3","title":"Nói và ghi âm 1 phút","mins":20,"blocks":[{"t":"text","html":"<b>Dạng bài: Nói.<\/b> Bấm <b>Ghi âm<\/b> và nói khoảng 1 phút. Nói chậm, rõ từng chữ. Nghe lại rồi bấm <b>Nộp cho cô<\/b>. Em có thể ghi âm lại nhiều lần trước khi nộp."},{"t":"speak","title":"Tell me about your day","prompt":"Tell me about your day. What do you do after school?","frames":["I get up at ___ and I ___.","I usually / always / sometimes ___.","After school I ___.","My brother / sister / friend ___s ... (he / she + s)","I never ___."],"modelTitle":"Bài nói mẫu của cô","model":{"segs":[{"v":"f","t":"I get up at half past six and I brush my teeth. I usually have noodles for breakfast. I go to school by bike. After school I always do my homework and then I play badminton with my brother. He plays very well. I never watch TV before dinner. I go to bed at nine o'clock."}],"s":0},"check":["Nói đủ ít nhất 6 câu","Có always, usually hoặc never","Thêm -s đúng với he, she","Nói chậm và rõ âm cuối","Không dùng tiếng Việt"],"kw":[{"l":"Từ chỉ mức độ (always, usually, never...)","re":"\\b(always|usually|often|sometimes|never)\\b"},{"l":"Giờ giấc","re":"\\bat (\\d|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|half|a quarter)"},{"l":"Hoạt động (get up, homework, school...)","re":"\\b(get up|breakfast|homework|school|bed|lunch|dinner)\\b"}],"minWords":30}]},{"id":"h4","tab":"Về nhà 4","title":"Từ vựng và đọc","mins":20,"blocks":[{"t":"text","html":"<b>Dạng bài: Từ vựng và đọc.<\/b> Ôn 12 cụm từ về thói quen hằng ngày và đọc một đoạn văn dài hơn."},{"t":"gap","title":"Nhìn hình và viết cụm từ","instr":"Nhìn biểu tượng, gõ cụm từ tiếng Anh tương ứng (ví dụ: get up).","qs":[{"pre":"","ans":["get up"],"post":"","icon":"⏰"},{"pre":"","ans":["have breakfast"],"post":"","icon":"🥣"},{"pre":"","ans":["brush my teeth"],"post":"","icon":"🪥"},{"pre":"","ans":["do my homework"],"post":"","icon":"✏️"},{"pre":"","ans":["watch TV"],"post":"","icon":"📺"},{"pre":"","ans":["go to bed"],"post":"","icon":"🛏️"}]},{"t":"mcq","title":"Chọn từ đúng","instr":"Chọn đáp án đúng.","qs":[{"q":"I ___ my room on Saturday morning.","opts":["tidy","brush","read"],"ans":0,"why":"Tidy my room nghĩa là dọn phòng."},{"q":"Which one is different?","opts":["get up","have a shower","badminton"],"ans":2,"why":"Badminton là môn thể thao, hai cụm kia là việc trong ngày."},{"q":"Linh has a shower ___ bed.","opts":["before","under","next"],"ans":0,"why":"Before nghĩa là trước khi."},{"q":"We ___ lunch at school at twelve.","opts":["have","has","having"],"ans":0,"why":"We đi với have."},{"q":"She ___ a comic every night.","opts":["read","reads","reading"],"ans":1,"why":"She nên thêm -s."},{"q":"How often do you go to the cinema? (once a month)","opts":["Always","Sometimes","Never"],"ans":1,"why":"Mỗi tháng một lần là sometimes."}]},{"t":"mcq","title":"Read and answer: Mai and her grandfather","instr":"Đọc đoạn văn rồi trả lời.","passage":"Mai's grandfather lives in a small village near the river. He gets up very early, at five o'clock, and he always does exercise in the garden before breakfast. He usually has rice soup and drinks green tea. Then he feeds the chickens and waters the vegetables. In the afternoon he sometimes reads the newspaper, but he never watches TV because he thinks it is boring. At the weekend Mai often visits him by bus and they cook lunch together. In the evening he goes to bed at eight thirty.","passageAu":{"segs":[{"v":"f","t":"Mai's grandfather lives in a small village near the river. He gets up very early, at five o'clock, and he always does exercise in the garden before breakfast. He usually has rice soup and drinks green tea. Then he feeds the chickens and waters the vegetables. In the afternoon he sometimes reads the newspaper, but he never watches TV because he thinks it is boring. At the weekend Mai often visits him by bus and they cook lunch together. In the evening he goes to bed at eight thirty."}],"s":0},"qs":[{"q":"What does Mai's grandfather always do before breakfast?","opts":["Feeds the chickens","Does exercise","Reads the newspaper"],"ans":1,"why":"He always does exercise in the garden before breakfast."},{"q":"What does he usually have for breakfast?","opts":["Rice soup","Noodles","Bread"],"ans":0,"why":"He usually has rice soup."},{"q":"He watches TV every day.","opts":["True","False"],"ans":1,"why":"He never watches TV."},{"q":"How does Mai visit her grandfather?","opts":["By bike","By bus","By car"],"ans":1,"why":"Mai often visits him by bus."},{"q":"What time does he go to bed?","opts":["8:00","8:30","9:00"],"ans":1,"why":"He goes to bed at eight thirty."}]}]}]},{"id":2,"title":"Tuần 2","topic":"Greetings, I'm from ... và Animals (phần 1)","sub":"Global Success Unit 1 (Nice to see you again), Unit 2 (I'm from Japan) và Get Ready for Movers chủ đề 1: Animals","goals":["Chào hỏi theo buổi trong ngày và hỏi thăm: How are you? I'm fine, thank you. And you?","Chào tạm biệt: Goodbye. See you tomorrow / later / soon.","Hỏi và trả lời quê hương, quốc tịch: Where are you from? I'm from Viet Nam. What nationality are you? I'm Vietnamese.","Nói tên 12 con vật theo mức Movers và đặt câu mô tả đơn giản"],"plan":"7 ngày: ngày 1 và 3 học Global Success, ngày 5 học Movers, ngày 2, 4, 6, 7 ôn tập (25 phút mỗi ngày, làm trực tiếp trên trang)","days":[{"s":"d1","k":"Bài học chính · Global Success"},{"s":"d2","k":"Ôn tập"},{"s":"d3","k":"Bài học chính · Global Success"},{"s":"d4","k":"Ôn tập"},{"s":"d5","k":"Bài học chính · Movers"},{"s":"d6","k":"Ôn tập"},{"s":"d7","k":"Ôn tập"}],"sections":[{"id":"d1","tab":"Ngày 1","title":"Unit 1: Nice to see you again","mins":25,"blocks":[{"t":"text","html":"<b>Hôm nay em học (Global Success Unit 1):<\/b><ul><li>Chào hỏi theo buổi: <b>Good morning, Good afternoon, Good evening<\/b>.<\/li><li>Hỏi thăm sức khỏe: <b>How are you? I'm fine, thank you. And you?<\/b><\/li><li>Gặp lại bạn: <b>Nice to see you again.<\/b><\/li><li>Chào tạm biệt: <b>Goodbye. See you tomorrow.<\/b><\/li><\/ul>"},{"t":"bookimg","src":"images/gs4-u1-lesson1.jpg","cap":"Tranh trong sách Global Success 4, Unit 1, Lesson 1"},{"t":"vocab","title":"12 từ và cụm từ chào hỏi","instr":"Bấm vào thẻ để nghe cô đọc, rồi đọc theo to và rõ.","items":[{"w":"Good morning","icon":"🌅","vi":"chào buổi sáng","au":{"segs":[{"v":"f","t":"Good morning"}],"s":0}},{"w":"Good afternoon","icon":"☀️","vi":"chào buổi chiều","au":{"segs":[{"v":"f","t":"Good afternoon"}],"s":0}},{"w":"Good evening","icon":"🌆","vi":"chào buổi tối","au":{"segs":[{"v":"f","t":"Good evening"}],"s":0}},{"w":"Good night","icon":"🌙","vi":"chúc ngủ ngon","au":{"segs":[{"v":"f","t":"Good night"}],"s":0}},{"w":"Goodbye","icon":"👋","vi":"tạm biệt","au":{"segs":[{"v":"f","t":"Goodbye"}],"s":0}},{"w":"See you tomorrow","icon":"📅","vi":"hẹn gặp ngày mai","au":{"segs":[{"v":"f","t":"See you tomorrow"}],"s":0}},{"w":"See you later","icon":"🕒","vi":"hẹn gặp lại sau","au":{"segs":[{"v":"f","t":"See you later"}],"s":0}},{"w":"See you soon","icon":"🔜","vi":"hẹn sớm gặp lại","au":{"segs":[{"v":"f","t":"See you soon"}],"s":0}},{"w":"Nice to see you again","icon":"🤝","vi":"rất vui được gặp lại","au":{"segs":[{"v":"f","t":"Nice to see you again"}],"s":0}},{"w":"How are you?","icon":"💬","vi":"bạn khỏe không?","au":{"segs":[{"v":"f","t":"How are you?"}],"s":0}},{"w":"I'm fine, thank you","icon":"😊","vi":"mình khỏe, cảm ơn","au":{"segs":[{"v":"f","t":"I'm fine, thank you"}],"s":0}},{"w":"And you?","icon":"❓","vi":"còn bạn thì sao?","au":{"segs":[{"v":"f","t":"And you?"}],"s":0}}]},{"t":"story","title":"Tình huống 1: Gặp lại cô giáo sau kỳ nghỉ","ctx":"Sáng thứ Hai, Nam đến trường và gặp cô Hoa ở cổng. Hai cô trò đã lâu không gặp.","lines":[["f","Good morning, Nam. Nice to see you again.","Chào buổi sáng, Nam. Cô rất vui được gặp lại em."],["m","Good morning, Miss Hoa. Nice to see you, too.","Chào cô Hoa. Em cũng rất vui được gặp cô."],["f","How are you?","Em khỏe không?"],["m","I'm fine, thank you. And you?","Em khỏe, cảm ơn cô. Còn cô ạ?"],["f","I'm fine, thank you. Let's go to class.","Cô khỏe, cảm ơn em. Mình vào lớp nhé."]],"use":"Dùng khi gặp lại người quen sau một thời gian. Nghe \"Nice to see you again\" thì đáp \"Nice to see you, too\".","lineAu":[{"segs":[{"v":"f","t":"Good morning, Nam. Nice to see you again."}],"s":0},{"segs":[{"v":"m","t":"Good morning, Miss Hoa. Nice to see you, too."}],"s":0},{"segs":[{"v":"f","t":"How are you?"}],"s":0},{"segs":[{"v":"m","t":"I'm fine, thank you. And you?"}],"s":0},{"segs":[{"v":"f","t":"I'm fine, thank you. Let's go to class."}],"s":0}],"allAu":{"segs":[{"v":"f","t":"Good morning, Nam. Nice to see you again."},{"v":"m","t":"Good morning, Miss Hoa. Nice to see you, too."},{"v":"f","t":"How are you?"},{"v":"m","t":"I'm fine, thank you. And you?"},{"v":"f","t":"I'm fine, thank you. Let's go to class."}],"s":0}},{"t":"story","title":"Tình huống 2: Cuối giờ học","ctx":"Tan học, Mai chào Tom ở cổng trường. Ngày mai hai bạn lại gặp nhau.","lines":[["f2","Goodbye, Tom. See you tomorrow.","Tạm biệt Tom. Mai gặp lại nhé."],["m","Bye, Mai. See you tomorrow.","Tạm biệt Mai. Mai gặp."],["f2","Have a good evening!","Chúc buổi tối vui vẻ!"],["m","You too. Goodbye!","Bạn cũng vậy. Tạm biệt!"]],"use":"Dùng khi chia tay. Biết sẽ gặp lại thì nói \"See you tomorrow / later / soon\".","lineAu":[{"segs":[{"v":"f2","t":"Goodbye, Tom. See you tomorrow."}],"s":0},{"segs":[{"v":"m","t":"Bye, Mai. See you tomorrow."}],"s":0},{"segs":[{"v":"f2","t":"Have a good evening!"}],"s":0},{"segs":[{"v":"m","t":"You too. Goodbye!"}],"s":0}],"allAu":{"segs":[{"v":"f2","t":"Goodbye, Tom. See you tomorrow."},{"v":"m","t":"Bye, Mai. See you tomorrow."},{"v":"f2","t":"Have a good evening!"},{"v":"m","t":"You too. Goodbye!"}],"s":0}},{"t":"rule","title":"Mẫu câu chào hỏi","pics":[{"icon":"🌅","cap":"Good morning!","au":{"segs":[{"v":"f","t":"Good morning!"}],"s":0}},{"icon":"💬","cap":"How are you?","au":{"segs":[{"v":"f","t":"How are you?"}],"s":0}},{"icon":"🤝","cap":"Nice to see you again.","au":{"segs":[{"v":"f","t":"Nice to see you again."}],"s":0}},{"icon":"👋","cap":"See you tomorrow.","au":{"segs":[{"v":"f","t":"See you tomorrow."}],"s":0}}],"head":["Khi nào","Nói","Ví dụ"],"rows":[["Trước 12 giờ trưa","Good morning","Good morning, Miss Hoa.",{"segs":[{"v":"f","t":"Good morning, Miss Hoa."}],"s":0}],["Từ 12 giờ đến chiều tối","Good afternoon","Good afternoon, class.",{"segs":[{"v":"f","t":"Good afternoon, class."}],"s":0}],["Buổi tối","Good evening","Good evening, Mum.",{"segs":[{"v":"f","t":"Good evening, Mum."}],"s":0}],["Hỏi thăm","How are you?","I'm fine, thank you. And you?",{"segs":[{"v":"f","t":"I'm fine, thank you. And you?"}],"s":0}],["Gặp lại","Nice to see you again.","Nice to see you, too.",{"segs":[{"v":"f","t":"Nice to see you, too."}],"s":0}],["Chia tay","Goodbye. / Bye.","Goodbye. See you tomorrow.",{"segs":[{"v":"f","t":"Goodbye. See you tomorrow."}],"s":0}]],"note":"<b>Lưu ý:<\/b> <b>Good night<\/b> chỉ nói khi chia tay vào buổi tối hoặc khi đi ngủ, không dùng để chào khi mới gặp. Trả lời <b>How are you?<\/b> xong nhớ hỏi lại <b>And you?<\/b>."},{"t":"gap","title":"Điền từ còn thiếu","instr":"Gõ từ còn thiếu rồi bấm Kiểm tra.","bank":["morning","afternoon","evening","fine","tomorrow","again"],"qs":[{"pre":"Good ","ans":["morning"],"post":", Miss Hoa. (8 giờ sáng)"},{"pre":"Good ","ans":["afternoon"],"post":", Tom. (2 giờ chiều)"},{"pre":"How are you? I'm ","ans":["fine"],"post":", thank you."},{"pre":"Nice to see you ","ans":["again"],"post":"."},{"pre":"Goodbye. See you ","ans":["tomorrow"],"post":"."},{"pre":"Good ","ans":["evening"],"post":", Dad. (8 giờ tối)"}]},{"t":"mcq","title":"Chọn câu đáp lại","instr":"Chọn câu trả lời đúng.","qs":[{"q":"How are you?","opts":["I'm fine, thank you.","I'm from Viet Nam.","See you tomorrow."],"ans":0,"why":"Hỏi thăm thì trả lời I'm fine."},{"q":"Nice to see you again.","opts":["Goodbye.","Nice to see you, too.","Good night."],"ans":1,"why":"Đáp lại bằng Nice to see you, too."},{"q":"You meet your teacher at 9 a.m. You say:","opts":["Good evening.","Good morning.","Good night."],"ans":1,"why":"9 giờ sáng là Good morning."},{"q":"You leave school. You say:","opts":["Good morning.","How are you?","Goodbye. See you tomorrow."],"ans":2,"why":"Chia tay thì nói Goodbye."},{"q":"I'm fine, thank you. ___","opts":["And you?","And me?","And are?"],"ans":0,"why":"Hỏi lại bạn: And you?"}]},{"t":"speak","title":"Nhìn tranh và nói chào hỏi","scene":"classroom","prompt":"Look at the picture. You meet your teacher in the classroom. What do you say?","frames":["Good ___, Miss ___.","Nice to see you again.","How are you? I'm fine, thank you. And you?","Goodbye. See you ___."],"modelTitle":"Bài nói mẫu của cô","model":{"segs":[{"v":"f","t":"Good morning, Miss Lan. Nice to see you again. How are you? I'm fine, thank you. And you? Now it is time for class. Goodbye. See you tomorrow."}],"s":0},"check":["Chào đúng buổi trong ngày","Có How are you? và And you?","Có Goodbye và See you ...","Nói chậm và rõ"],"kw":[{"l":"Good morning / afternoon / evening","re":"good (morning|afternoon|evening)"},{"l":"How are you / I'm fine","re":"how are you|i'?m fine"},{"l":"Goodbye hoặc See you","re":"goodbye|bye|see you"},{"l":"Nice to see you","re":"nice to see you"}],"minWords":20},{"t":"teacher","html":"<b>Bám theo Global Success 4 Unit 1.<\/b> Phân bổ 25 phút: 0–3 chào hỏi cả lớp · 3–9 từ mới (đóng vai chào theo giờ trên đồng hồ) · 9–14 hai tình huống, cho bé đọc theo từng câu · 14–20 điền từ, chọn câu đáp · 20–25 nhìn tranh nói.<br><b>Lỗi hay gặp:<\/b> dùng Good night để chào buổi tối, quên And you?, nhầm fine với five.<br><b>Gợi ý ảnh:<\/b> đặt ảnh trang sách vào thư mục images/ đúng tên ghi ở khung ảnh."}]},{"id":"d2","tab":"Ngày 2","title":"Ôn tập Unit 1","mins":20,"blocks":[{"t":"text","html":"<b>Ôn tập Unit 1.<\/b> Nghe, chọn, rồi nói theo. Cuối buổi viết một đoạn hội thoại ngắn."},{"t":"mcq","title":"Nghe và chọn đáp án","instr":"Bấm nút nghe (nghe được nhiều lần) rồi chọn.","qs":[{"q":"What does Nam say?","opts":["Good morning.","Good afternoon.","Good evening."],"ans":1,"why":"","au":{"segs":[{"v":"m","t":"Good afternoon, Miss Hoa."}],"s":0}},{"q":"How is Mai?","opts":["She is fine.","She is tired.","She is late."],"ans":0,"why":"","au":{"segs":[{"v":"m","t":"How are you, Mai?"},{"v":"f2","t":"I'm fine, thank you. And you?"}],"s":0}},{"q":"When will they meet again?","opts":["Today","Tomorrow","Next year"],"ans":1,"why":"","au":{"segs":[{"v":"f","t":"Goodbye, Ben."},{"v":"m","t":"Goodbye. See you tomorrow."}],"s":0}},{"q":"What does Linh say after \"Nice to see you again\"?","opts":["Nice to see you, too.","Goodbye.","I am nine."],"ans":0,"why":"","au":{"segs":[{"v":"m","t":"Hello, Linh. Nice to see you again."},{"v":"f2","t":"Nice to see you, too."}],"s":0}}]},{"t":"gap","title":"Nghe và điền từ","instr":"Nghe cả câu rồi gõ từ còn thiếu.","qs":[{"pre":"Good ","ans":["morning"],"post":", class.","au":{"segs":[{"v":"f","t":"Good morning, class."}],"s":0}},{"pre":"How ","ans":["are"],"post":" you?","au":{"segs":[{"v":"f","t":"How are you?"}],"s":0}},{"pre":"I'm ","ans":["fine"],"post":", thank you.","au":{"segs":[{"v":"f","t":"I'm fine, thank you."}],"s":0}},{"pre":"See you ","ans":["tomorrow"],"post":".","au":{"segs":[{"v":"f","t":"See you tomorrow."}],"s":0}},{"pre":"Nice to see you ","ans":["again"],"post":".","au":{"segs":[{"v":"f","t":"Nice to see you again."}],"s":0}}]},{"t":"shadow","title":"Nghe và nhắc lại (6 câu)","items":[{"h":"Good <b>morning<\/b>, Miss <b>Hoa<\/b>.","au":{"segs":[{"v":"f","t":"Good morning, Miss Hoa."}],"s":0}},{"h":"<b>How<\/b> are you?","au":{"segs":[{"v":"f","t":"How are you?"}],"s":0}},{"h":"I'm <b>fine<\/b>, thank you. And <b>you<\/b>?","au":{"segs":[{"v":"f","t":"I'm fine, thank you. And you?"}],"s":0}},{"h":"Nice to <b>see<\/b> you <b>again<\/b>.","au":{"segs":[{"v":"f","t":"Nice to see you again."}],"s":0}},{"h":"<b>Goodbye<\/b>. See you to<b>morrow<\/b>.","au":{"segs":[{"v":"f","t":"Goodbye. See you tomorrow."}],"s":0}},{"h":"Good <b>evening<\/b>, <b>Dad<\/b>.","au":{"segs":[{"v":"f","t":"Good evening, Dad."}],"s":0}}]},{"t":"write","title":"Viết hội thoại: Gặp bạn ở trường","instr":"Viết 6 câu hội thoại giữa em và một người bạn: chào, hỏi thăm, gặp lại, chia tay.","frames":["Good ___, ___.","How are you?","I'm fine, thank you. And you?","Nice to see you again.","Goodbye. See you ___."],"min":5,"kw":[{"l":"Có chào theo buổi (Good morning...)","re":"good (morning|afternoon|evening)"},{"l":"Có How are you / I'm fine","re":"how are you|i'?m fine"},{"l":"Có Goodbye hoặc See you","re":"goodbye|bye|see you"}],"modelTitle":"Xem bài mẫu sau khi nộp","model":{"segs":[{"v":"f","t":"Good morning, Linh. How are you? I'm fine, thank you. And you? I'm fine too. Nice to see you again. Goodbye. See you tomorrow."}],"s":0},"modelText":"Good morning, Linh. How are you? I'm fine, thank you. And you? I'm fine too. Nice to see you again. Goodbye. See you tomorrow."}]},{"id":"d3","tab":"Ngày 3","title":"Unit 2: I'm from Japan","mins":25,"blocks":[{"t":"text","html":"<b>Hôm nay em học (Global Success Unit 2):<\/b><ul><li>Tên nước và quốc tịch: <b>Viet Nam – Vietnamese, Japan – Japanese<\/b>.<\/li><li>Hỏi quê hương: <b>Where are you from? I'm from Viet Nam.<\/b><\/li><li>Hỏi quốc tịch: <b>What nationality are you? I'm Vietnamese.<\/b><\/li><\/ul>"},{"t":"bookimg","src":"images/gs4-u2-lesson1.jpg","cap":"Tranh trong sách Global Success 4, Unit 2, Lesson 1"},{"t":"vocab","title":"12 từ: nước và quốc tịch","instr":"Bấm vào thẻ để nghe. Chú ý: tên nước và quốc tịch đều viết hoa chữ cái đầu.","items":[{"w":"Viet Nam","icon":"🇻🇳","vi":"nước Việt Nam","au":{"segs":[{"v":"f","t":"Viet Nam"}],"s":0}},{"w":"Vietnamese","icon":"🇻🇳","vi":"người Việt Nam","au":{"segs":[{"v":"f","t":"Vietnamese"}],"s":0}},{"w":"Japan","icon":"🇯🇵","vi":"nước Nhật","au":{"segs":[{"v":"f","t":"Japan"}],"s":0}},{"w":"Japanese","icon":"🇯🇵","vi":"người Nhật","au":{"segs":[{"v":"f","t":"Japanese"}],"s":0}},{"w":"America","icon":"🇺🇸","vi":"nước Mỹ","au":{"segs":[{"v":"f","t":"America"}],"s":0}},{"w":"American","icon":"🇺🇸","vi":"người Mỹ","au":{"segs":[{"v":"f","t":"American"}],"s":0}},{"w":"England","icon":"🇬🇧","vi":"nước Anh","au":{"segs":[{"v":"f","t":"England"}],"s":0}},{"w":"English","icon":"🇬🇧","vi":"người Anh","au":{"segs":[{"v":"f","t":"English"}],"s":0}},{"w":"Australia","icon":"🇦🇺","vi":"nước Úc","au":{"segs":[{"v":"f","t":"Australia"}],"s":0}},{"w":"Australian","icon":"🇦🇺","vi":"người Úc","au":{"segs":[{"v":"f","t":"Australian"}],"s":0}},{"w":"Malaysia","icon":"🇲🇾","vi":"nước Ma-lai-xi-a","au":{"segs":[{"v":"f","t":"Malaysia"}],"s":0}},{"w":"Malaysian","icon":"🇲🇾","vi":"người Ma-lai-xi-a","au":{"segs":[{"v":"f","t":"Malaysian"}],"s":0}}]},{"t":"story","title":"Tình huống: Bạn mới trong lớp","ctx":"Lớp 4A có một bạn mới tên là Akira. Mai làm quen với bạn trong giờ ra chơi.","lines":[["f2","Hello. I'm Mai. What's your name?","Xin chào. Mình là Mai. Bạn tên là gì?"],["m","Hi, Mai. I'm Akira.","Chào Mai. Mình là Akira."],["f2","Nice to meet you, Akira. Where are you from?","Rất vui được làm quen. Bạn đến từ đâu?"],["m","I'm from Japan. What about you?","Mình đến từ Nhật Bản. Còn bạn?"],["f2","I'm from Viet Nam. I'm Vietnamese. What nationality are you?","Mình đến từ Việt Nam. Mình là người Việt. Bạn mang quốc tịch gì?"],["m","I'm Japanese.","Mình là người Nhật."]],"use":"Dùng khi làm quen bạn mới. Hỏi quê hương dùng \"Where are you from?\", hỏi quốc tịch dùng \"What nationality are you?\".","lineAu":[{"segs":[{"v":"f2","t":"Hello. I'm Mai. What's your name?"}],"s":0},{"segs":[{"v":"m","t":"Hi, Mai. I'm Akira."}],"s":0},{"segs":[{"v":"f2","t":"Nice to meet you, Akira. Where are you from?"}],"s":0},{"segs":[{"v":"m","t":"I'm from Japan. What about you?"}],"s":0},{"segs":[{"v":"f2","t":"I'm from Viet Nam. I'm Vietnamese. What nationality are you?"}],"s":0},{"segs":[{"v":"m","t":"I'm Japanese."}],"s":0}],"allAu":{"segs":[{"v":"f2","t":"Hello. I'm Mai. What's your name?"},{"v":"m","t":"Hi, Mai. I'm Akira."},{"v":"f2","t":"Nice to meet you, Akira. Where are you from?"},{"v":"m","t":"I'm from Japan. What about you?"},{"v":"f2","t":"I'm from Viet Nam. I'm Vietnamese. What nationality are you?"},{"v":"m","t":"I'm Japanese."}],"s":0}},{"t":"rule","title":"Mẫu câu về quê hương và quốc tịch","pics":[{"icon":"🇻🇳","cap":"I'm from Viet Nam.","au":{"segs":[{"v":"f","t":"I'm from Viet Nam."}],"s":0}},{"icon":"🇯🇵","cap":"I'm Japanese.","au":{"segs":[{"v":"f","t":"I'm Japanese."}],"s":0}},{"icon":"🇺🇸","cap":"She's American.","au":{"segs":[{"v":"f","t":"She's American."}],"s":0}},{"icon":"🇦🇺","cap":"He's from Australia.","au":{"segs":[{"v":"f","t":"He's from Australia."}],"s":0}}],"head":["Hỏi","Trả lời","Ví dụ"],"rows":[["Where are you from?","I'm from + nước","I'm from Japan.",{"segs":[{"v":"f","t":"I'm from Japan."}],"s":0}],["What nationality are you?","I'm + quốc tịch","I'm Vietnamese.",{"segs":[{"v":"f","t":"I'm Vietnamese."}],"s":0}],["Where is he from?","He's from + nước","He's from America.",{"segs":[{"v":"f","t":"He's from America."}],"s":0}],["What nationality is she?","She's + quốc tịch","She's Australian.",{"segs":[{"v":"f","t":"She's Australian."}],"s":0}],["Are you Japanese?","Yes, I am. / No, I'm not.","No, I'm not. I'm Malaysian.",{"segs":[{"v":"f","t":"No, I'm not. I'm Malaysian."}],"s":0}]],"note":"<b>Mẹo:<\/b> <b>from<\/b> đi với <b>tên nước<\/b> (from Japan). Quốc tịch đứng một mình sau <b>I'm / He's / She's<\/b> (I'm Japanese). Không nói <i>I'm from Japanese<\/i>."},{"t":"gap","title":"Điền từ còn thiếu","instr":"Gõ từ còn thiếu rồi bấm Kiểm tra.","bank":["from","Japan","Japanese","Vietnamese","American","England"],"qs":[{"pre":"I'm ","ans":["from"],"post":" Viet Nam."},{"pre":"He is from ","ans":["Japan"],"post":". He is Japanese."},{"pre":"She is from America. She is ","ans":["American"],"post":"."},{"pre":"Where are you ","ans":["from"],"post":"?"},{"pre":"I'm ","ans":["Vietnamese"],"post":". (quốc tịch)"},{"pre":"They are from ","ans":["England"],"post":". They are English."}]},{"t":"mcq","title":"Chọn đáp án đúng","instr":"Chọn một đáp án cho mỗi câu.","qs":[{"q":"Where are you from?","opts":["I'm from Viet Nam.","I'm Vietnam.","I'm fine."],"ans":0,"why":"Hỏi quê hương: I'm from + nước."},{"q":"What nationality are you?","opts":["I'm from Japan.","I'm Japanese.","I'm nine."],"ans":1,"why":"Hỏi quốc tịch: I'm + quốc tịch."},{"q":"Which sentence is correct?","opts":["He's from Japanese.","He's from Japan.","He from Japan."],"ans":1,"why":"from + tên nước."},{"q":"Akira is from Japan. He is ___.","opts":["Japan","Japanese","Japaneses"],"ans":1,"why":"Quốc tịch là Japanese."},{"q":"Are you Australian? (No)","opts":["No, I'm not.","No, I don't.","No, I aren't."],"ans":0,"why":"Are you ...? trả lời Yes, I am. / No, I'm not."}]},{"t":"speak","title":"Nhìn tranh và làm quen","scene":"classroom","prompt":"You meet a new friend in the classroom. Ask and answer: What is your name? Where are you from? What nationality are you?","frames":["Hello. I'm ___. What's your name?","Where are you from?","I'm from ___. I'm ___.","Nice to meet you."],"modelTitle":"Bài nói mẫu của cô","model":{"segs":[{"v":"f","t":"Hello. I'm Mai. What's your name? I'm Akira. Nice to meet you. Where are you from? I'm from Japan. I'm Japanese. I'm from Viet Nam. I'm Vietnamese."}],"s":0},"check":["Hỏi và nói tên","Hỏi Where are you from?","Nói đúng I'm from + nước","Nói đúng quốc tịch"],"kw":[{"l":"Where are you from / I'm from","re":"where are you from|i'?m from|he'?s from|she'?s from"},{"l":"Có quốc tịch (Vietnamese, Japanese...)","re":"vietnamese|japanese|american|english|australian|malaysian"},{"l":"Có tên (I'm ...)","re":"i'?m [a-z]+|my name is"}],"minWords":20},{"t":"teacher","html":"<b>Bám theo Global Success 4 Unit 2.<\/b> Phân bổ 25 phút: 0–3 ôn Unit 1 · 3–9 nước và quốc tịch (chỉ bản đồ, thẻ cờ) · 9–14 tình huống bạn mới · 14–20 điền từ, chọn đáp án · 20–25 làm quen theo cặp và nói.<br><b>Lỗi hay gặp:<\/b> I'm from Japanese, quên viết hoa, phát âm Vietnamese thiếu âm cuối."}]},{"id":"d4","tab":"Ngày 4","title":"Ôn tập Unit 1 và Unit 2","mins":20,"blocks":[{"t":"text","html":"<b>Ôn tập Unit 1 và 2.<\/b> Nghe hội thoại, điền, rồi nói theo."},{"t":"mcq","title":"Nghe hội thoại","instr":"Nghe rồi chọn đáp án.","qs":[{"q":"Where is Tom from?","opts":["America","England","Australia"],"ans":1,"why":"","au":{"segs":[{"v":"f","t":"Where are you from, Tom?"},{"v":"m","t":"I'm from England."}],"s":0}},{"q":"What nationality is Lan?","opts":["Japanese","Malaysian","Vietnamese"],"ans":2,"why":"","au":{"segs":[{"v":"m","t":"What nationality are you, Lan?"},{"v":"f2","t":"I'm Vietnamese."}],"s":0}},{"q":"How is Ben today?","opts":["Fine","Late","Sad"],"ans":0,"why":"","au":{"segs":[{"v":"f","t":"Good morning, Ben. How are you?"},{"v":"m","t":"I'm fine, thank you. And you?"}],"s":0}},{"q":"Where is Kenji from?","opts":["Japan","Malaysia","America"],"ans":0,"why":"","au":{"segs":[{"v":"f2","t":"Is Kenji from America?"},{"v":"m2","t":"No, he isn't. He's from Japan. He's Japanese."}],"s":0}}]},{"t":"gap","title":"Điền câu hoàn chỉnh","instr":"Gõ từ còn thiếu.","bank":["from","nationality","Japanese","Good","fine"],"qs":[{"pre":"","ans":["Good"],"post":" afternoon, Miss Hoa."},{"pre":"I'm ","ans":["fine"],"post":", thank you. And you?"},{"pre":"Where are you ","ans":["from"],"post":"?"},{"pre":"What ","ans":["nationality"],"post":" are you?"},{"pre":"He is from Japan. He is ","ans":["Japanese"],"post":"."}]},{"t":"shadow","title":"Nghe và nhắc lại (8 câu)","items":[{"h":"Good <b>afternoon<\/b>, <b>class<\/b>.","au":{"segs":[{"v":"f","t":"Good afternoon, class."}],"s":0}},{"h":"<b>Where<\/b> are you <b>from<\/b>?","au":{"segs":[{"v":"f","t":"Where are you from?"}],"s":0}},{"h":"I'm <b>from<\/b> Viet <b>Nam<\/b>.","au":{"segs":[{"v":"f","t":"I'm from Viet Nam."}],"s":0}},{"h":"What <b>nationality<\/b> are you?","au":{"segs":[{"v":"f","t":"What nationality are you?"}],"s":0}},{"h":"I'm <b>Vietnamese<\/b>.","au":{"segs":[{"v":"f","t":"I'm Vietnamese."}],"s":0}},{"h":"He's from <b>Japan<\/b>. He's <b>Japanese<\/b>.","au":{"segs":[{"v":"f","t":"He's from Japan. He's Japanese."}],"s":0}},{"h":"She is <b>American<\/b>.","au":{"segs":[{"v":"f","t":"She is American."}],"s":0}},{"h":"<b>Nice<\/b> to <b>meet<\/b> you.","au":{"segs":[{"v":"f","t":"Nice to meet you."}],"s":0}}]},{"t":"speak","title":"Nói 1 phút: Giới thiệu bản thân","prompt":"Say hello. Tell me your name, where you are from and your nationality. Then say goodbye.","frames":["Good ___. I'm ___.","I'm from ___. I'm ___.","How are you? I'm fine.","Goodbye. See you ___."],"modelTitle":"Bài nói mẫu của cô","model":{"segs":[{"v":"f","t":"Good morning. I'm Linh. I'm from Viet Nam. I'm Vietnamese. How are you? I'm fine, thank you. Goodbye. See you tomorrow."}],"s":0},"check":["Chào theo buổi","Nói tên, nước, quốc tịch","Có Goodbye","Nói chậm và rõ"],"kw":[{"l":"Chào (Good ...)","re":"good (morning|afternoon|evening)|hello|hi"},{"l":"Quê hương (from)","re":"from"},{"l":"Quốc tịch","re":"vietnamese|japanese|american|english|australian|malaysian"},{"l":"Tạm biệt","re":"goodbye|bye|see you"}],"minWords":22}]},{"id":"d5","tab":"Ngày 5","title":"Movers chủ đề 1: Animals (phần 1)","mins":25,"blocks":[{"t":"text","html":"<b>Hôm nay em học (Get Ready for Movers, chủ đề 1):<\/b><ul><li>12 con vật ở mức Movers.<\/li><li>Nghe và chọn tranh, đọc và điền từ, nhìn tranh sở thú và nói.<\/li><li>Câu mô tả: <b>It is big. It lives in Australia. It can jump.<\/b><\/li><\/ul>"},{"t":"bookimg","src":"images/movers-t1-p1.jpg","cap":"Tranh trong Get Ready for Movers, chủ đề 1"},{"t":"vocab","title":"12 con vật","instr":"Bấm vào thẻ để nghe cô đọc, rồi đọc theo.","items":[{"w":"kangaroo","icon":"🦘","vi":"chuột túi","au":{"segs":[{"v":"f","t":"kangaroo"}],"s":0}},{"w":"parrot","icon":"🦜","vi":"con vẹt","au":{"segs":[{"v":"f","t":"parrot"}],"s":0}},{"w":"crocodile","icon":"🐊","vi":"cá sấu","au":{"segs":[{"v":"f","t":"crocodile"}],"s":0}},{"w":"monkey","icon":"🐒","vi":"con khỉ","au":{"segs":[{"v":"f","t":"monkey"}],"s":0}},{"w":"elephant","icon":"🐘","vi":"con voi","au":{"segs":[{"v":"f","t":"elephant"}],"s":0}},{"w":"giraffe","icon":"🦒","vi":"hươu cao cổ","au":{"segs":[{"v":"f","t":"giraffe"}],"s":0}},{"w":"penguin","icon":"🐧","vi":"chim cánh cụt","au":{"segs":[{"v":"f","t":"penguin"}],"s":0}},{"w":"dolphin","icon":"🐬","vi":"cá heo","au":{"segs":[{"v":"f","t":"dolphin"}],"s":0}},{"w":"tiger","icon":"🐅","vi":"con hổ","au":{"segs":[{"v":"f","t":"tiger"}],"s":0}},{"w":"snake","icon":"🐍","vi":"con rắn","au":{"segs":[{"v":"f","t":"snake"}],"s":0}},{"w":"spider","icon":"🕷️","vi":"con nhện","au":{"segs":[{"v":"f","t":"spider"}],"s":0}},{"w":"bee","icon":"🐝","vi":"con ong","au":{"segs":[{"v":"f","t":"bee"}],"s":0}}]},{"t":"story","title":"Tình huống: Ở sở thú","ctx":"Cuối tuần, Nam và cô Hoa đi sở thú. Nam hỏi về những con vật em nhìn thấy.","lines":[["m","Look, Miss Hoa! What is that animal?","Cô Hoa nhìn kìa! Con vật đó là gì ạ?"],["f","It is a giraffe. It is very tall.","Đó là con hươu cao cổ. Nó rất cao."],["m","And what can it eat?","Thế nó ăn được gì?"],["f","It can eat leaves from the trees.","Nó ăn lá cây."],["m","Wow! I like the penguins too. They are small and funny.","Ồ! Em cũng thích chim cánh cụt. Chúng nhỏ và ngộ nghĩnh."]],"use":"Dùng khi hỏi và nói về con vật: What is that animal? It is a ... It is big / small / tall.","lineAu":[{"segs":[{"v":"m","t":"Look, Miss Hoa! What is that animal?"}],"s":0},{"segs":[{"v":"f","t":"It is a giraffe. It is very tall."}],"s":0},{"segs":[{"v":"m","t":"And what can it eat?"}],"s":0},{"segs":[{"v":"f","t":"It can eat leaves from the trees."}],"s":0},{"segs":[{"v":"m","t":"Wow! I like the penguins too. They are small and funny."}],"s":0}],"allAu":{"segs":[{"v":"m","t":"Look, Miss Hoa! What is that animal?"},{"v":"f","t":"It is a giraffe. It is very tall."},{"v":"m","t":"And what can it eat?"},{"v":"f","t":"It can eat leaves from the trees."},{"v":"m","t":"Wow! I like the penguins too. They are small and funny."}],"s":0}},{"t":"mcq","title":"Nghe và chọn con vật","instr":"Nghe mô tả rồi chọn con vật đúng.","qs":[{"q":"Which animal is it?","opts":["kangaroo","penguin","tiger"],"ans":0,"why":"","au":{"segs":[{"v":"f","t":"It is brown. It lives in Australia. It can jump very far."}],"s":0}},{"q":"Which animal is it?","opts":["monkey","elephant","snake"],"ans":1,"why":"","au":{"segs":[{"v":"f","t":"It is very big and grey. It has a long nose."}],"s":0}},{"q":"Which animal is it?","opts":["parrot","dolphin","spider"],"ans":0,"why":"","au":{"segs":[{"v":"f","t":"It can fly and it can talk. It is green and red."}],"s":0}},{"q":"Which animal is it?","opts":["crocodile","bee","giraffe"],"ans":2,"why":"","au":{"segs":[{"v":"f","t":"It is yellow and brown. Its neck is very long."}],"s":0}},{"q":"Which animal is it?","opts":["dolphin","tiger","penguin"],"ans":0,"why":"","au":{"segs":[{"v":"f","t":"It lives in the sea. It can swim and jump high."}],"s":0}}]},{"t":"gap","title":"Đọc và điền từ (kiểu Movers)","instr":"Điền tên con vật thích hợp. Gõ một từ.","bank":["kangaroo","parrot","spider","bee","crocodile","tiger"],"qs":[{"pre":"A ","ans":["bee"],"post":" makes honey and it can fly."},{"pre":"A ","ans":["spider"],"post":" has eight legs."},{"pre":"A ","ans":["crocodile"],"post":" lives in rivers and has big teeth."},{"pre":"A ","ans":["parrot"],"post":" can fly and talk."},{"pre":"A ","ans":["kangaroo"],"post":" lives in Australia and can jump."},{"pre":"A ","ans":["tiger"],"post":" is big, orange and black."}]},{"t":"speak","title":"Nhìn tranh sở thú và nói","scene":"zoo","prompt":"Look at the picture. Tell me about the animals at the zoo.","frames":["This is a zoo. There is a ___ and a ___.","The ___ is big / tall / small.","The ___ is in the tree / on the grass.","I like the ___ because ..."],"modelTitle":"Bài nói mẫu của cô","model":{"segs":[{"v":"f","t":"This is a zoo. There is a big elephant on the left. The giraffe is very tall. A monkey is under the tree and a parrot is in the tree. There is a penguin and a crocodile on the grass. I like the penguin because it is small and funny."}],"s":0},"check":["Nói ít nhất 5 câu","Gọi đúng tên con vật","Có từ chỉ vị trí (in, on, under)","Có tính từ (big, tall, small)"],"kw":[{"l":"There is / There are","re":"there (is|are)"},{"l":"Tên con vật","re":"elephant|giraffe|monkey|parrot|penguin|crocodile"},{"l":"Vị trí (in, on, under)","re":"\\b(in|on|under|next to)\\b"},{"l":"Tính từ (big, tall, small)","re":"\\b(big|tall|small|long|funny)\\b"}],"minWords":25},{"t":"teacher","html":"<b>Movers chủ đề 1 (phần 1).<\/b> Phân bổ 25 phút: 0–3 ôn Unit 1–2 · 3–9 con vật (đóng kịch động tác, đố \"Who am I?\") · 9–14 tình huống sở thú · 14–20 nghe chọn, điền từ · 20–25 tả tranh.<br><b>Gợi ý:<\/b> chủ đề này có thể đối chiếu với trang tương ứng trong sách Oxford, đặt ảnh trang đó vào thư mục images/."}]},{"id":"d6","tab":"Ngày 6","title":"Ôn tập: Viết và vận dụng","mins":20,"blocks":[{"t":"text","html":"<b>Ôn tập: viết.<\/b> Em viết một bức thư làm quen và tả một con vật em thích."},{"t":"gap","title":"Khởi động","instr":"Điền từ.","bank":["from","Japanese","fine","tall","tomorrow"],"qs":[{"pre":"I'm ","ans":["fine"],"post":", thank you."},{"pre":"She is ","ans":["Japanese"],"post":". She is from Japan."},{"pre":"Where are you ","ans":["from"],"post":"?"},{"pre":"A giraffe is ","ans":["tall"],"post":"."}]},{"t":"write","title":"Bài viết: Letter to a new friend","instr":"Viết 6 đến 8 câu gửi bạn mới. Chào, giới thiệu tên, quê hương, quốc tịch và con vật em thích.","frames":["Hello, ___! I'm ___.","I'm from ___. I'm ___.","How are you?","My favourite animal is the ___.","It is ___ and it can ___.","Goodbye. See you ___."],"min":6,"kw":[{"l":"Có chào (Hello, Hi, Good ...)","re":"hello|hi\\b|good (morning|afternoon|evening)"},{"l":"Có from và quốc tịch","re":"from"},{"l":"Có tên con vật","re":"kangaroo|parrot|crocodile|monkey|elephant|giraffe|penguin|dolphin|tiger|snake|spider|bee"},{"l":"Có Goodbye / See you","re":"goodbye|bye|see you"}],"modelTitle":"Xem bài mẫu sau khi nộp","model":{"segs":[{"v":"f","t":"Hello, Akira! I'm Mai. I'm from Viet Nam. I'm Vietnamese. How are you? My favourite animal is the elephant. It is big and grey. It can swim and it can eat grass. Goodbye. See you tomorrow."}],"s":0},"modelText":"Hello, Akira! I'm Mai. I'm from Viet Nam. I'm Vietnamese. How are you? My favourite animal is the elephant. It is big and grey. It can swim and it can eat grass. Goodbye. See you tomorrow."},{"t":"mcq","title":"Chọn câu đúng","instr":"Chọn một đáp án.","qs":[{"q":"Which is correct?","opts":["I'm from Vietnamese.","I'm from Viet Nam.","I from Viet Nam."],"ans":1,"why":"from + tên nước."},{"q":"Which animal has eight legs?","opts":["bee","spider","dolphin"],"ans":1,"why":"Spider có tám chân."},{"q":"It is 7 p.m. You say:","opts":["Good morning.","Good evening.","Good afternoon."],"ans":1,"why":"7 giờ tối là Good evening."},{"q":"A penguin ___ fly.","opts":["can","can't","cans"],"ans":1,"why":"Chim cánh cụt không bay được."}]}]},{"id":"d7","tab":"Ngày 7","title":"Ôn tập: Nói và tổng kết tuần","mins":20,"blocks":[{"t":"text","html":"<b>Ôn tập: nói.<\/b> Nghe, nhắc lại, rồi ghi âm khoảng 1 phút. Chấm điểm tự động, em nói chậm và rõ."},{"t":"shadow","title":"8 câu nghe và nhắc lại","items":[{"h":"Good <b>morning<\/b>. <b>Nice<\/b> to see you <b>again<\/b>.","au":{"segs":[{"v":"f","t":"Good morning. Nice to see you again."}],"s":0}},{"h":"I'm <b>from<\/b> Viet <b>Nam<\/b>. I'm <b>Vietnamese<\/b>.","au":{"segs":[{"v":"f","t":"I'm from Viet Nam. I'm Vietnamese."}],"s":0}},{"h":"<b>Where<\/b> is she <b>from<\/b>?","au":{"segs":[{"v":"f","t":"Where is she from?"}],"s":0}},{"h":"She's <b>from<\/b> Japan. She's <b>Japanese<\/b>.","au":{"segs":[{"v":"f","t":"She's from Japan. She's Japanese."}],"s":0}},{"h":"A <b>giraffe<\/b> is very <b>tall<\/b>.","au":{"segs":[{"v":"f","t":"A giraffe is very tall."}],"s":0}},{"h":"An <b>elephant<\/b> is <b>big<\/b> and <b>grey<\/b>.","au":{"segs":[{"v":"f","t":"An elephant is big and grey."}],"s":0}},{"h":"A <b>penguin<\/b> can <b>swim<\/b>.","au":{"segs":[{"v":"f","t":"A penguin can swim."}],"s":0}},{"h":"<b>Goodbye<\/b>. See you <b>tomorrow<\/b>.","au":{"segs":[{"v":"f","t":"Goodbye. See you tomorrow."}],"s":0}}]},{"t":"speak","title":"Tell me about you and your favourite animal","prompt":"Say hello. Tell me about yourself and your favourite animal. Say goodbye.","frames":["Hello. I'm ___. I'm from ___.","I'm ___ (quốc tịch).","My favourite animal is the ___.","It is ___ and it can ___.","Goodbye. See you ___."],"modelTitle":"Bài nói mẫu của cô","model":{"segs":[{"v":"f","t":"Hello. I'm Nam. I'm from Viet Nam. I'm Vietnamese. My favourite animal is the dolphin. It is grey and it can swim and jump. I like it because it is friendly. Goodbye. See you tomorrow."}],"s":0},"check":["Nói đủ ít nhất 6 câu","Có from và quốc tịch","Có con vật yêu thích","Có Goodbye","Nói chậm và rõ"],"kw":[{"l":"Quê hương","re":"from"},{"l":"Quốc tịch","re":"vietnamese|japanese|american|english|australian|malaysian"},{"l":"Con vật","re":"kangaroo|parrot|crocodile|monkey|elephant|giraffe|penguin|dolphin|tiger|snake|spider|bee"},{"l":"Tạm biệt","re":"goodbye|bye|see you"}],"minWords":30}]}]},{"id":3,"title":"Tuần 3","topic":"My week, my birthday và Animals (phần 2)","sub":"Global Success Unit 3 (What day is it today?), Unit 4 (When's your birthday?) và Get Ready for Movers chủ đề 1: Animals (tiếp)","goals":["Hỏi và trả lời ngày trong tuần: What day is it today? What do you do on Mondays?","Nói tháng và ngày sinh: When's your birthday? It's in May. It's on the twentieth of May.","Nói em muốn ăn uống gì: What do you want to eat / drink? I want some ...","Mô tả con vật với can / can't, has got, lives in và so sánh đơn giản"],"plan":"7 ngày: ngày 1 và 3 học Global Success, ngày 5 học Movers, ngày 2, 4, 6, 7 ôn tập (25 phút mỗi ngày, làm trực tiếp trên trang)","days":[{"s":"d1","k":"Bài học chính · Global Success"},{"s":"d2","k":"Ôn tập"},{"s":"d3","k":"Bài học chính · Global Success"},{"s":"d4","k":"Ôn tập"},{"s":"d5","k":"Bài học chính · Movers"},{"s":"d6","k":"Ôn tập"},{"s":"d7","k":"Ôn tập"}],"sections":[{"id":"d1","tab":"Ngày 1","title":"Unit 3: What day is it today?","mins":25,"blocks":[{"t":"text","html":"<b>Hôm nay em học (Global Success Unit 3):<\/b><ul><li>Các thứ trong tuần: <b>Monday ... Sunday<\/b>.<\/li><li>Hỏi thứ: <b>What day is it today? It's Thursday.<\/b><\/li><li>Hỏi hoạt động: <b>What do you do on Saturdays? I do housework.<\/b><\/li><\/ul>"},{"t":"bookimg","src":"images/gs4-u3-lesson1.jpg","cap":"Tranh trong sách Global Success 4, Unit 3, Lesson 1"},{"t":"vocab","title":"12 từ và cụm từ","instr":"Bấm vào thẻ để nghe cô đọc, rồi đọc theo.","items":[{"w":"Monday","icon":"1️⃣","vi":"thứ Hai","au":{"segs":[{"v":"f","t":"Monday"}],"s":0}},{"w":"Tuesday","icon":"2️⃣","vi":"thứ Ba","au":{"segs":[{"v":"f","t":"Tuesday"}],"s":0}},{"w":"Wednesday","icon":"3️⃣","vi":"thứ Tư","au":{"segs":[{"v":"f","t":"Wednesday"}],"s":0}},{"w":"Thursday","icon":"4️⃣","vi":"thứ Năm","au":{"segs":[{"v":"f","t":"Thursday"}],"s":0}},{"w":"Friday","icon":"5️⃣","vi":"thứ Sáu","au":{"segs":[{"v":"f","t":"Friday"}],"s":0}},{"w":"Saturday","icon":"6️⃣","vi":"thứ Bảy","au":{"segs":[{"v":"f","t":"Saturday"}],"s":0}},{"w":"Sunday","icon":"7️⃣","vi":"Chủ nhật","au":{"segs":[{"v":"f","t":"Sunday"}],"s":0}},{"w":"study at school","icon":"📚","vi":"học ở trường","au":{"segs":[{"v":"f","t":"study at school"}],"s":0}},{"w":"do housework","icon":"🧽","vi":"làm việc nhà","au":{"segs":[{"v":"f","t":"do housework"}],"s":0}},{"w":"listen to music","icon":"🎧","vi":"nghe nhạc","au":{"segs":[{"v":"f","t":"listen to music"}],"s":0}},{"w":"visit my grandparents","icon":"👵","vi":"thăm ông bà","au":{"segs":[{"v":"f","t":"visit my grandparents"}],"s":0}},{"w":"watch TV","icon":"📺","vi":"xem ti vi","au":{"segs":[{"v":"f","t":"watch TV"}],"s":0}}]},{"t":"story","title":"Tình huống: Hỏi bạn làm gì cuối tuần","ctx":"Giờ ra chơi, Mai hỏi Tom về lịch trong tuần.","lines":[["f2","What day is it today, Tom?","Hôm nay là thứ mấy vậy Tom?"],["m","It's Friday. We have English today.","Hôm nay thứ Sáu. Hôm nay mình có tiết tiếng Anh."],["f2","What do you do on Saturdays?","Thứ Bảy bạn làm gì?"],["m","I do housework with my mum.","Mình làm việc nhà với mẹ."],["f2","And what do you do on Sundays?","Còn Chủ nhật thì sao?"],["m","I visit my grandparents.","Mình thăm ông bà."]],"use":"Dùng khi hỏi ngày và thói quen: What day is it today? What do you do on + thứ (số nhiều)?","lineAu":[{"segs":[{"v":"f2","t":"What day is it today, Tom?"}],"s":0},{"segs":[{"v":"m","t":"It's Friday. We have English today."}],"s":0},{"segs":[{"v":"f2","t":"What do you do on Saturdays?"}],"s":0},{"segs":[{"v":"m","t":"I do housework with my mum."}],"s":0},{"segs":[{"v":"f2","t":"And what do you do on Sundays?"}],"s":0},{"segs":[{"v":"m","t":"I visit my grandparents."}],"s":0}],"allAu":{"segs":[{"v":"f2","t":"What day is it today, Tom?"},{"v":"m","t":"It's Friday. We have English today."},{"v":"f2","t":"What do you do on Saturdays?"},{"v":"m","t":"I do housework with my mum."},{"v":"f2","t":"And what do you do on Sundays?"},{"v":"m","t":"I visit my grandparents."}],"s":0}},{"t":"rule","title":"Hai mẫu câu của Unit 3","pics":[{"icon":"1️⃣","cap":"It's Monday.","au":{"segs":[{"v":"f","t":"It's Monday."}],"s":0}},{"icon":"🧽","cap":"I do housework.","au":{"segs":[{"v":"f","t":"I do housework."}],"s":0}},{"icon":"🎧","cap":"I listen to music.","au":{"segs":[{"v":"f","t":"I listen to music."}],"s":0}},{"icon":"📚","cap":"I study at school.","au":{"segs":[{"v":"f","t":"I study at school."}],"s":0}}],"head":["Hỏi","Trả lời","Ví dụ"],"rows":[["What day is it today?","It's + thứ","It's Thursday.",{"segs":[{"v":"f","t":"It's Thursday."}],"s":0}],["What do you do on Saturdays?","I + hoạt động","I do housework on Saturdays.",{"segs":[{"v":"f","t":"I do housework on Saturdays."}],"s":0}],["What do you do on Sundays?","I + hoạt động","I listen to music on Sundays.",{"segs":[{"v":"f","t":"I listen to music on Sundays."}],"s":0}],["What does she do on Mondays?","She + hoạt động(s)","She studies at school on Mondays.",{"segs":[{"v":"f","t":"She studies at school on Mondays."}],"s":0}]],"note":"<b>Chú ý:<\/b> thứ luôn <b>viết hoa<\/b> và dùng <b>on<\/b>: on Monday, on Mondays (mọi thứ Hai). Với she, he thì động từ thêm -s: She <b>studies<\/b>, he <b>does<\/b> housework."},{"t":"gap","title":"Điền từ còn thiếu","instr":"Gõ một từ rồi bấm Kiểm tra.","bank":["on","Monday","housework","music","today","does"],"qs":[{"pre":"What day is it ","ans":["today"],"post":"?"},{"pre":"I study at school ","ans":["on"],"post":" Mondays."},{"pre":"I do ","ans":["housework"],"post":" on Saturdays."},{"pre":"I listen to ","ans":["music"],"post":" on Sundays."},{"pre":"It's ","ans":["Monday"],"post":". We have English."},{"pre":"What ","ans":["does"],"post":" she do on Fridays?"}]},{"t":"mcq","title":"Chọn đáp án đúng","instr":"Chọn một đáp án cho mỗi câu.","qs":[{"q":"What day is it today?","opts":["It's Thursday.","It's in May.","I'm fine."],"ans":0,"why":"Hỏi thứ thì trả lời It's + thứ."},{"q":"What do you do on Sundays?","opts":["It is Sunday.","I listen to music.","I am nine."],"ans":1,"why":"Hỏi hoạt động."},{"q":"Which is correct?","opts":["on monday","On Monday","In Monday"],"ans":1,"why":"Thứ viết hoa và dùng on."},{"q":"I study at school ___ Mondays.","opts":["in","at","on"],"ans":2,"why":"Dùng on với thứ."}]},{"t":"speak","title":"Nhìn tranh và nói","scene":"classroom","prompt":"Look at the picture. Tell me what day it is and what you do on this day.","frames":["It's ___ today.","I study ___ on ___.","On Saturdays I ___.","On Sundays I ___."],"modelTitle":"Bài nói mẫu của cô","model":{"segs":[{"v":"f","t":"It's Monday today. We study at school on Mondays. On Saturdays I do housework with my mum. On Sundays I listen to music and visit my grandparents."}],"s":0},"check":["Nói đúng thứ","Dùng on đúng","Nói ít nhất 4 câu","Nói chậm và rõ"],"kw":[{"l":"Có thứ trong tuần","re":"monday|tuesday|wednesday|thursday|friday|saturday|sunday"},{"l":"Có on","re":"\\bon\\b"},{"l":"Có hoạt động","re":"housework|music|study|grandparents|tv"}],"minWords":22},{"t":"teacher","html":"<b>Bám theo Global Success 4 Unit 3.<\/b> Phân bổ 25 phút: 0–3 ôn tuần 2 · 3–9 thứ trong tuần (bài hát, thẻ) · 9–14 tình huống · 14–20 điền từ, chọn đáp án · 20–25 tả tranh.<br><b>Lỗi hay gặp:<\/b> không viết hoa thứ, nói in Monday, quên -s với she/he."}]},{"id":"d2","tab":"Ngày 2","title":"Ôn tập Unit 3","mins":20,"blocks":[{"t":"mcq","title":"Nghe và chọn đáp án","instr":"Bấm nút nghe rồi chọn.","qs":[{"q":"What does Nam do on Saturdays?","opts":["He does housework","He listens to music","He studies at school"],"ans":0,"why":"","au":{"segs":[{"v":"f","t":"On Saturdays Nam does housework, but on Sundays he listens to music."}],"s":0}},{"q":"What day is it today?","opts":["Monday","Thursday","Saturday"],"ans":1,"why":"","au":{"segs":[{"v":"f","t":"What day is it today, Tom?"},{"v":"m","t":"It is Thursday. We have English today."}],"s":0}},{"q":"What does Mai do on Sundays?","opts":["Visits her grandparents","Watches TV","Studies at school"],"ans":0,"why":"","au":{"segs":[{"v":"f","t":"On Sundays Mai visits her grandparents in the village."}],"s":0}},{"q":"When does Ben study at school?","opts":["On Mondays","On Saturdays","On Sundays"],"ans":0,"why":"","au":{"segs":[{"v":"f","t":"Ben studies at school on Mondays, Tuesdays, Wednesdays, Thursdays and Fridays."}],"s":0}}]},{"t":"gap","title":"Nghe và điền từ","instr":"Nghe cả câu rồi gõ từ còn thiếu.","qs":[{"pre":"We study at school ","ans":["on"],"post":" Mondays.","au":{"segs":[{"v":"f","t":"We study at school on Mondays."}],"s":0}},{"pre":"I do ","ans":["housework"],"post":" on Saturdays.","au":{"segs":[{"v":"f","t":"I do housework on Saturdays."}],"s":0}},{"pre":"It is ","ans":["Friday"],"post":" today.","au":{"segs":[{"v":"f","t":"It is Friday today."}],"s":0}},{"pre":"She listens to ","ans":["music"],"post":" on Sundays.","au":{"segs":[{"v":"f","t":"She listens to music on Sundays."}],"s":0}}]},{"t":"shadow","title":"Nghe và nhắc lại (6 câu)","items":[{"h":"What <b>day<\/b> is it <b>today<\/b>?","au":{"segs":[{"v":"f","t":"What day is it today?"}],"s":0}},{"h":"It's <b>Thursday<\/b>.","au":{"segs":[{"v":"f","t":"It's Thursday."}],"s":0}},{"h":"I study at <b>school<\/b> on <b>Mondays<\/b>.","au":{"segs":[{"v":"f","t":"I study at school on Mondays."}],"s":0}},{"h":"I do <b>housework<\/b> on <b>Saturdays<\/b>.","au":{"segs":[{"v":"f","t":"I do housework on Saturdays."}],"s":0}},{"h":"She <b>listens<\/b> to <b>music<\/b>.","au":{"segs":[{"v":"f","t":"She listens to music."}],"s":0}},{"h":"He <b>visits<\/b> his <b>grandparents<\/b>.","au":{"segs":[{"v":"f","t":"He visits his grandparents."}],"s":0}}]},{"t":"write","title":"Viết: My week","instr":"Viết 5 đến 6 câu về một tuần của em. Dùng On Mondays..., On Saturdays..., On Sundays....","frames":["On Mondays I ___.","On Saturdays I ___.","On Sundays I ___.","I like ___ because ___."],"min":5,"kw":[{"l":"Có thứ trong tuần","re":"monday|tuesday|wednesday|thursday|friday|saturday|sunday"},{"l":"Có on","re":"\\bon\\b"},{"l":"Có hoạt động","re":"housework|music|study|grandparents|tv|play|read"}],"modelTitle":"Xem bài mẫu sau khi nộp","model":{"segs":[{"v":"f","t":"On Mondays I study at school. On Wednesdays I play badminton. On Saturdays I do housework with my mum. On Sundays I listen to music. I like Sundays because I visit my grandparents."}],"s":0},"modelText":"On Mondays I study at school. On Wednesdays I play badminton. On Saturdays I do housework with my mum. On Sundays I listen to music. I like Sundays because I visit my grandparents."}]},{"id":"d3","tab":"Ngày 3","title":"Unit 4: When's your birthday?","mins":25,"blocks":[{"t":"text","html":"<b>Hôm nay em học (Global Success Unit 4):<\/b><ul><li>12 tháng: <b>January ... December<\/b>.<\/li><li>Hỏi sinh nhật: <b>When's your birthday? It's in May.<\/b><\/li><li>Mời bạn đến tiệc và nói món muốn ăn: <b>I want some chips and some lemonade.<\/b><\/li><\/ul>"},{"t":"bookimg","src":"images/gs4-u4-lesson1.jpg","cap":"Tranh trong sách Global Success 4, Unit 4, Lesson 1"},{"t":"vocab","title":"12 tháng","instr":"Bấm vào thẻ để nghe. Tháng luôn viết hoa chữ cái đầu.","items":[{"w":"January","icon":"❄️","vi":"tháng Một","au":{"segs":[{"v":"f","t":"January"}],"s":0}},{"w":"February","icon":"💝","vi":"tháng Hai","au":{"segs":[{"v":"f","t":"February"}],"s":0}},{"w":"March","icon":"🌱","vi":"tháng Ba","au":{"segs":[{"v":"f","t":"March"}],"s":0}},{"w":"April","icon":"🌧️","vi":"tháng Tư","au":{"segs":[{"v":"f","t":"April"}],"s":0}},{"w":"May","icon":"🌸","vi":"tháng Năm","au":{"segs":[{"v":"f","t":"May"}],"s":0}},{"w":"June","icon":"☀️","vi":"tháng Sáu","au":{"segs":[{"v":"f","t":"June"}],"s":0}},{"w":"July","icon":"🏖️","vi":"tháng Bảy","au":{"segs":[{"v":"f","t":"July"}],"s":0}},{"w":"August","icon":"🍉","vi":"tháng Tám","au":{"segs":[{"v":"f","t":"August"}],"s":0}},{"w":"September","icon":"🎒","vi":"tháng Chín","au":{"segs":[{"v":"f","t":"September"}],"s":0}},{"w":"October","icon":"🎃","vi":"tháng Mười","au":{"segs":[{"v":"f","t":"October"}],"s":0}},{"w":"November","icon":"🍂","vi":"tháng Mười một","au":{"segs":[{"v":"f","t":"November"}],"s":0}},{"w":"December","icon":"🎄","vi":"tháng Mười hai","au":{"segs":[{"v":"f","t":"December"}],"s":0}}]},{"t":"vocab","title":"8 món ăn và thức uống ở tiệc","instr":"Bấm vào thẻ để nghe.","items":[{"w":"birthday party","icon":"🎉","vi":"tiệc sinh nhật","au":{"segs":[{"v":"f","t":"birthday party"}],"s":0}},{"w":"chips","icon":"🍟","vi":"khoai tây chiên","au":{"segs":[{"v":"f","t":"chips"}],"s":0}},{"w":"grapes","icon":"🍇","vi":"nho","au":{"segs":[{"v":"f","t":"grapes"}],"s":0}},{"w":"jam","icon":"🍓","vi":"mứt","au":{"segs":[{"v":"f","t":"jam"}],"s":0}},{"w":"lemonade","icon":"🍋","vi":"nước chanh","au":{"segs":[{"v":"f","t":"lemonade"}],"s":0}},{"w":"cake","icon":"🎂","vi":"bánh gato","au":{"segs":[{"v":"f","t":"cake"}],"s":0}},{"w":"juice","icon":"🧃","vi":"nước ép","au":{"segs":[{"v":"f","t":"juice"}],"s":0}},{"w":"water","icon":"💧","vi":"nước lọc","au":{"segs":[{"v":"f","t":"water"}],"s":0}}]},{"t":"story","title":"Tình huống: Mời bạn đến tiệc sinh nhật","ctx":"Sắp đến sinh nhật Lily. Lily mời Nam đến dự và hỏi Nam muốn ăn uống gì.","lines":[["f2","Nam, my birthday is in May. It's on the twentieth of May.","Nam ơi, sinh nhật mình vào tháng Năm, ngày hai mươi."],["m","When is the party?","Khi nào có tiệc vậy?"],["f2","It's on Saturday at six o'clock. Can you come?","Tiệc vào thứ Bảy lúc sáu giờ. Bạn đến được không?"],["m","Yes, I can. Thank you!","Được chứ. Cảm ơn bạn!"],["f2","What do you want to eat and drink?","Bạn muốn ăn và uống gì?"],["m","I want some grapes and some lemonade, please.","Cho mình nho và nước chanh nhé."]],"use":"Dùng khi mời bạn dự tiệc: When's your birthday? Can you come? What do you want to eat / drink? I want some ...","lineAu":[{"segs":[{"v":"f2","t":"Nam, my birthday is in May. It's on the twentieth of May."}],"s":0},{"segs":[{"v":"m","t":"When is the party?"}],"s":0},{"segs":[{"v":"f2","t":"It's on Saturday at six o'clock. Can you come?"}],"s":0},{"segs":[{"v":"m","t":"Yes, I can. Thank you!"}],"s":0},{"segs":[{"v":"f2","t":"What do you want to eat and drink?"}],"s":0},{"segs":[{"v":"m","t":"I want some grapes and some lemonade, please."}],"s":0}],"allAu":{"segs":[{"v":"f2","t":"Nam, my birthday is in May. It's on the twentieth of May."},{"v":"m","t":"When is the party?"},{"v":"f2","t":"It's on Saturday at six o'clock. Can you come?"},{"v":"m","t":"Yes, I can. Thank you!"},{"v":"f2","t":"What do you want to eat and drink?"},{"v":"m","t":"I want some grapes and some lemonade, please."}],"s":0}},{"t":"rule","title":"Mẫu câu của Unit 4","head":["Hỏi","Trả lời","Ví dụ"],"rows":[["When's your birthday?","It's in + tháng","It's in May.",{"segs":[{"v":"f","t":"It's in May."}],"s":0}],["What's the date?","It's the + số thứ tự of + tháng","It's the twentieth of May.",{"segs":[{"v":"f","t":"It's the twentieth of May."}],"s":0}],["What do you want to eat?","I want some + món","I want some chips and some grapes.",{"segs":[{"v":"f","t":"I want some chips and some grapes."}],"s":0}],["What do you want to drink?","I want some + thức uống","I want some lemonade.",{"segs":[{"v":"f","t":"I want some lemonade."}],"s":0}],["Come to my party!","Giờ: at + giờ","The party starts at six o'clock.",{"segs":[{"v":"f","t":"The party starts at six o'clock."}],"s":0}]],"note":"<b>Mẹo on, in, at:<\/b> <b>on<\/b> + ngày cụ thể (on the 5th of March, on Saturday) · <b>in<\/b> + tháng (in May) · <b>at<\/b> + giờ (at six). <b>Số thứ tự:<\/b> first, second, third, fourth, fifth, ... tenth, ... twentieth."},{"t":"gap","title":"Điền từ còn thiếu","instr":"Gõ một từ rồi bấm Kiểm tra.","bank":["on","in","at","want","some"],"qs":[{"pre":"My birthday is ","ans":["in"],"post":" March."},{"pre":"The party is ","ans":["on"],"post":" Saturday."},{"pre":"It starts ","ans":["at"],"post":" six o'clock."},{"pre":"I ","ans":["want"],"post":" some juice and some chips."},{"pre":"Her birthday is ","ans":["on"],"post":" the fifth of June."},{"pre":"I want ","ans":["some"],"post":" grapes, please."}]},{"t":"mcq","title":"Chọn đáp án đúng","instr":"Chọn một đáp án cho mỗi câu.","qs":[{"q":"When's your birthday?","opts":["It's Monday.","It's in April.","It's at six."],"ans":1,"why":"Hỏi sinh nhật thì trả lời bằng tháng."},{"q":"What do you want to drink?","opts":["I want some jam.","I want some grapes.","I want some lemonade."],"ans":2,"why":"Drink là thức uống."},{"q":"Which is correct?","opts":["My birthday is on May.","My birthday is in May.","My birthday is at May."],"ans":1,"why":"in + tháng."},{"q":"The month after April is ___.","opts":["March","May","June"],"ans":1,"why":"April, May, June."}]},{"t":"speak","title":"Nhìn tranh tiệc sinh nhật và nói","scene":"party","prompt":"Look at the picture. Tell me about the birthday party.","frames":["It's ___'s birthday party.","There is a big cake with ___ candles.","___ is holding ___ balloons.","The dog is under the ___."],"modelTitle":"Bài nói mẫu của cô","model":{"segs":[{"v":"f","t":"It is Kim's birthday party. Kim is standing behind the table and waving. There is a big cake with three candles on the table. Leo is jumping and he is wearing a party hat. Ben is holding three balloons. Zoe is holding a red present. The dog is under the table."}],"s":0},"check":["Nói ít nhất 4 câu","Đếm đúng số nến, số bóng bay","Dùng is + động từ-ing","Có vị trí hoặc màu sắc"],"kw":[{"l":"There is / There are","re":"there (is|are)"},{"l":"Động từ -ing","re":"\\w+ing\\b"},{"l":"Vị trí","re":"\\b(on|under|behind|next to|in front of)\\b"},{"l":"Màu hoặc số lượng","re":"\\b(red|blue|green|yellow|pink|two|three|four|five)\\b"}],"minWords":25},{"t":"teacher","html":"<b>Bám theo Global Success 4 Unit 4.<\/b> Phân bổ 25 phút: 0–3 ôn Unit 3 · 3–9 tháng và món ăn · 9–15 tình huống mời tiệc · 15–20 điền từ, chọn đáp án · 20–25 tả tranh tiệc.<br><b>Lỗi hay gặp:<\/b> nói on May, nhầm eat và drink, đọc sai số thứ tự."}]},{"id":"d4","tab":"Ngày 4","title":"Ôn tập Unit 3 và Unit 4","mins":20,"blocks":[{"t":"mcq","title":"Nghe hội thoại","instr":"Nghe rồi chọn đáp án.","qs":[{"q":"When is the party?","opts":["On Friday at 5:00","On Saturday at 4:00","On Saturday at 6:00"],"ans":2,"why":"","au":{"segs":[{"v":"f2","t":"Can you come to my birthday party, Nam?"},{"v":"m","t":"Yes! When is it?"},{"v":"f2","t":"It is on Saturday at six o'clock."}],"s":0}},{"q":"What does Anna want to eat?","opts":["Chips","Grapes","Jam"],"ans":1,"why":"","au":{"segs":[{"v":"m","t":"What do you want to eat, Anna?"},{"v":"f","t":"I want some grapes, please. I do not like chips."}],"s":0}},{"q":"When's Lily's birthday?","opts":["In March","In May","In July"],"ans":1,"why":"","au":{"segs":[{"v":"f","t":"My name is Lily and my birthday is in May. It is on the twentieth of May."}],"s":0}},{"q":"What day is it today?","opts":["Monday","Wednesday","Sunday"],"ans":1,"why":"","au":{"segs":[{"v":"f","t":"What day is it today?"},{"v":"m","t":"It's Wednesday."}],"s":0}}]},{"t":"gap","title":"Nghe và điền từ","instr":"Nghe cả câu rồi gõ từ còn thiếu.","qs":[{"pre":"My birthday is ","ans":["in"],"post":" November.","au":{"segs":[{"v":"f","t":"My birthday is in November."}],"s":0}},{"pre":"I want some ","ans":["grapes"],"post":" and some water.","au":{"segs":[{"v":"f","t":"I want some grapes and some water."}],"s":0}},{"pre":"Come to my party ","ans":["at"],"post":" six o'clock.","au":{"segs":[{"v":"f","t":"Come to my party at six o'clock."}],"s":0}},{"pre":"We study at school ","ans":["on"],"post":" Mondays.","au":{"segs":[{"v":"f","t":"We study at school on Mondays."}],"s":0}}]},{"t":"shadow","title":"Nghe và nhắc lại (8 câu)","items":[{"h":"What <b>day<\/b> is it <b>today<\/b>?","au":{"segs":[{"v":"f","t":"What day is it today?"}],"s":0}},{"h":"I do <b>housework<\/b> and listen to <b>music<\/b> on <b>Sundays<\/b>.","au":{"segs":[{"v":"f","t":"I do housework and listen to music on Sundays."}],"s":0}},{"h":"<b>When's<\/b> your <b>birthday<\/b>?","au":{"segs":[{"v":"f","t":"When's your birthday?"}],"s":0}},{"h":"My birthday is in <b>July<\/b>.","au":{"segs":[{"v":"f","t":"My birthday is in July."}],"s":0}},{"h":"It's on the <b>twentieth<\/b> of <b>May<\/b>.","au":{"segs":[{"v":"f","t":"It's on the twentieth of May."}],"s":0}},{"h":"I want some <b>jam<\/b> and some <b>water<\/b>.","au":{"segs":[{"v":"f","t":"I want some jam and some water."}],"s":0}},{"h":"Come to my <b>party<\/b> at <b>six<\/b> o'clock.","au":{"segs":[{"v":"f","t":"Come to my party at six o'clock."}],"s":0}},{"h":"What do you <b>want<\/b> to <b>drink<\/b>?","au":{"segs":[{"v":"f","t":"What do you want to drink?"}],"s":0}}]},{"t":"speak","title":"Trả lời như giám khảo","prompt":"What day is it today? What do you do on Saturdays and Sundays? When is your birthday? What do you want to eat and drink at your party?","frames":["It's ___. / On Saturdays I ___.","My birthday is in ___.","I want some ___ and some ___."],"modelTitle":"Bài nói mẫu của cô","model":{"segs":[{"v":"f","t":"Today is Monday. On Saturdays I do housework and on Sundays I listen to music. My birthday is in June. It is on the fifteenth of June. At my party I want some chips, some grapes and some lemonade."}],"s":0},"check":["Trả lời đủ các câu hỏi","Nói đúng on, in, at","Nói chậm và rõ","Không dùng tiếng Việt"],"kw":[{"l":"Có thứ trong tuần","re":"monday|tuesday|wednesday|thursday|friday|saturday|sunday"},{"l":"Có tháng sinh nhật","re":"january|february|march|april|may|june|july|august|september|october|november|december"},{"l":"Có I want some","re":"want some"}],"minWords":28}]},{"id":"d5","tab":"Ngày 5","title":"Movers chủ đề 1: Animals (phần 2)","mins":25,"blocks":[{"t":"text","html":"<b>Hôm nay em học (Get Ready for Movers, chủ đề 1, tiếp):<\/b><ul><li>Mô tả con vật: <b>can / can't<\/b>, <b>has got<\/b>, <b>lives in<\/b>.<\/li><li>So sánh đơn giản: <b>bigger than, taller than, faster than<\/b>.<\/li><li>Đọc một đoạn văn và viết 5 câu về con vật em thích.<\/li><\/ul>"},{"t":"bookimg","src":"images/movers-t1-p2.jpg","cap":"Tranh trong Get Ready for Movers, chủ đề 1 (trang tiếp)"},{"t":"story","title":"Tình huống: Đố vui con vật","ctx":"Ở câu lạc bộ tiếng Anh, Linh và Ben chơi trò đố: một bạn tả, bạn kia đoán con vật.","lines":[["f2","It has got a long neck and four long legs.","Nó có cổ dài và bốn chân dài."],["m","Is it a giraffe?","Có phải hươu cao cổ không?"],["f2","Yes! It lives in Africa. It can run fast.","Đúng rồi! Nó sống ở châu Phi. Nó chạy nhanh."],["m","My turn. It lives in the sea. It can swim and jump but it can't fly.","Đến lượt mình. Nó sống ở biển. Nó bơi và nhảy được nhưng không bay được."],["f2","A dolphin!","Cá heo!"]],"use":"Dùng khi tả con vật cho bạn đoán: It has got ... It lives in ... It can / can't ...","lineAu":[{"segs":[{"v":"f2","t":"It has got a long neck and four long legs."}],"s":0},{"segs":[{"v":"m","t":"Is it a giraffe?"}],"s":0},{"segs":[{"v":"f2","t":"Yes! It lives in Africa. It can run fast."}],"s":0},{"segs":[{"v":"m","t":"My turn. It lives in the sea. It can swim and jump but it can't fly."}],"s":0},{"segs":[{"v":"f2","t":"A dolphin!"}],"s":0}],"allAu":{"segs":[{"v":"f2","t":"It has got a long neck and four long legs."},{"v":"m","t":"Is it a giraffe?"},{"v":"f2","t":"Yes! It lives in Africa. It can run fast."},{"v":"m","t":"My turn. It lives in the sea. It can swim and jump but it can't fly."},{"v":"f2","t":"A dolphin!"}],"s":0}},{"t":"rule","title":"Mẫu câu mô tả con vật","pics":[{"icon":"🦘","cap":"A kangaroo can jump.","au":{"segs":[{"v":"f","t":"A kangaroo can jump."}],"s":0}},{"icon":"🐧","cap":"A penguin can't fly.","au":{"segs":[{"v":"f","t":"A penguin can't fly."}],"s":0}},{"icon":"🦒","cap":"A giraffe is taller than a tiger.","au":{"segs":[{"v":"f","t":"A giraffe is taller than a tiger."}],"s":0}},{"icon":"🐬","cap":"It lives in the sea.","au":{"segs":[{"v":"f","t":"It lives in the sea."}],"s":0}}],"head":["Ý nghĩa","Cấu trúc","Ví dụ"],"rows":[["Làm được / không làm được","can / can't + động từ","A parrot can talk but it can't swim.",{"segs":[{"v":"f","t":"A parrot can talk but it can't swim."}],"s":0}],["Có (đặc điểm)","has got / have got","A giraffe has got a long neck.",{"segs":[{"v":"f","t":"A giraffe has got a long neck."}],"s":0}],["Sống ở đâu","lives in + nơi","A kangaroo lives in Australia.",{"segs":[{"v":"f","t":"A kangaroo lives in Australia."}],"s":0}],["So sánh hơn","tính từ-er + than","An elephant is bigger than a tiger.",{"segs":[{"v":"f","t":"An elephant is bigger than a tiger."}],"s":0}],["Ăn gì","eats + thức ăn","A monkey eats bananas.",{"segs":[{"v":"f","t":"A monkey eats bananas."}],"s":0}]],"note":"<b>Chú ý:<\/b> sau <b>can<\/b> luôn là động từ nguyên mẫu (a parrot can <b>fly<\/b>, không nói <i>can flies<\/i>). Với một con vật (it): <b>has got<\/b>, <b>lives<\/b>, <b>eats<\/b> có -s."},{"t":"mcq","title":"Đọc hiểu (kiểu Movers): Animals at the zoo","instr":"Nghe hoặc đọc đoạn văn rồi trả lời.","passage":"There are many animals at the zoo. The elephant is the biggest animal. It has got a long nose and it can swim. The giraffe is taller than the elephant. It lives in Africa and it eats leaves. The penguins are small. They can swim very fast but they can't fly. The monkeys are funny. They can climb trees and they eat bananas. My favourite animal is the dolphin. It can jump very high.","passageAu":{"segs":[{"v":"f","t":"There are many animals at the zoo. The elephant is the biggest animal. It has got a long nose and it can swim. The giraffe is taller than the elephant. It lives in Africa and it eats leaves. The penguins are small. They can swim very fast but they can't fly. The monkeys are funny. They can climb trees and they eat bananas. My favourite animal is the dolphin. It can jump very high."}],"s":0},"qs":[{"q":"Which animal is the biggest?","opts":["The giraffe","The elephant","The penguin"],"ans":1,"why":"The elephant is the biggest animal."},{"q":"What does the giraffe eat?","opts":["Leaves","Bananas","Fish"],"ans":0,"why":"It eats leaves."},{"q":"Penguins can fly.","opts":["True","False"],"ans":1,"why":"They can't fly."},{"q":"What do monkeys eat?","opts":["Leaves","Bananas","Grass"],"ans":1,"why":"They eat bananas."},{"q":"What is the writer's favourite animal?","opts":["The dolphin","The monkey","The tiger"],"ans":0,"why":"My favourite animal is the dolphin."}]},{"t":"gap","title":"Điền từ còn thiếu","instr":"Gõ một từ rồi bấm Kiểm tra.","bank":["can","can't","lives","has","taller"],"qs":[{"pre":"A kangaroo ","ans":["can"],"post":" jump very high."},{"pre":"A penguin ","ans":["can't"],"post":" fly."},{"pre":"A giraffe ","ans":["has"],"post":" got a long neck."},{"pre":"A kangaroo ","ans":["lives"],"post":" in Australia."},{"pre":"A giraffe is ","ans":["taller"],"post":" than a monkey."}]},{"t":"speak","title":"Tả con vật và nói","scene":"zoo","prompt":"Choose one animal in the picture. Tell me what it looks like, what it can do and where it lives.","frames":["It is a ___.","It is ___ (big, small, tall).","It can ___ but it can't ___.","It lives in ___."],"modelTitle":"Bài nói mẫu của cô","model":{"segs":[{"v":"f","t":"It is a giraffe. It is very tall. It has got a long neck and four long legs. It can run fast but it can't swim. It lives in Africa. It eats leaves from the trees."}],"s":0},"check":["Nói tên con vật","Có can và can't","Có has got hoặc lives in","Nói ít nhất 5 câu"],"kw":[{"l":"Có can / can't","re":"can'?t?\\b"},{"l":"Có has got / lives","re":"has got|have got|lives"},{"l":"Tên con vật","re":"elephant|giraffe|monkey|parrot|penguin|crocodile"},{"l":"Tính từ","re":"\\b(big|small|tall|long|fast)\\b"}],"minWords":28},{"t":"teacher","html":"<b>Movers chủ đề 1 (phần 2).<\/b> Phân bổ 25 phút: 0–3 ôn con vật tuần 2 · 3–9 trò chơi đố con vật · 9–15 mẫu câu mô tả · 15–21 đọc hiểu · 21–25 tả con vật.<br><b>Lỗi hay gặp:<\/b> thêm -s sau can, nói It have, quên than khi so sánh."}]},{"id":"d6","tab":"Ngày 6","title":"Ôn tập: Viết và vận dụng","mins":20,"blocks":[{"t":"gap","title":"Khởi động","instr":"Điền từ.","bank":["on","in","at","can","want"],"qs":[{"pre":"My birthday is ","ans":["in"],"post":" August."},{"pre":"The party is ","ans":["on"],"post":" Sunday."},{"pre":"It starts ","ans":["at"],"post":" four o'clock."},{"pre":"A parrot ","ans":["can"],"post":" talk."}]},{"t":"write","title":"Bài viết: Come to my birthday party!","instr":"Viết thư mời sinh nhật gửi bạn, 6 đến 8 câu. Nói rõ ngày, giờ, em muốn ăn uống gì và ở tiệc có thể làm gì.","frames":["Dear ___, my birthday is in ___.","Please come to my party on ___ at ___ o'clock.","I want some ___ and some ___.","We can ___ and we can ___.","Write to me soon."],"min":6,"kw":[{"l":"Có tháng hoặc thứ","re":"january|february|march|april|may|june|july|august|september|october|november|december|monday|tuesday|wednesday|thursday|friday|saturday|sunday"},{"l":"Có giờ (at six o'clock)","re":"\\bat (\\d|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|half|a quarter)"},{"l":"Có want some","re":"want some"},{"l":"Có can","re":"can'?t?\\b"}],"modelTitle":"Xem bài mẫu sau khi nộp","model":{"segs":[{"v":"f","t":"Dear Linh, my birthday is in October. Please come to my party on Saturday at five o'clock. The party is at my house. I want some chips, some grapes and some lemonade. We can play games and listen to music. Write to me soon."}],"s":0},"modelText":"Dear Linh, my birthday is in October. Please come to my party on Saturday at five o'clock. The party is at my house. I want some chips, some grapes and some lemonade. We can play games and listen to music. Write to me soon."},{"t":"write","title":"Bài viết: My favourite animal","instr":"Viết 5 câu về con vật em thích: tên, màu sắc hoặc kích thước, nó làm được gì, nó sống ở đâu.","frames":["My favourite animal is the ___.","It is ___ and ___.","It can ___ but it can't ___.","It lives in ___.","I like it because ___."],"min":5,"kw":[{"l":"Có tên con vật","re":"kangaroo|parrot|crocodile|monkey|elephant|giraffe|penguin|dolphin|tiger|snake|spider|bee"},{"l":"Có can / can't","re":"can'?t?\\b"},{"l":"Có lives in","re":"lives in"}],"modelTitle":"Xem bài mẫu sau khi nộp","model":{"segs":[{"v":"f","t":"My favourite animal is the kangaroo. It is brown and strong. It can jump very far but it can't fly. It lives in Australia. I like it because it is funny."}],"s":0},"modelText":"My favourite animal is the kangaroo. It is brown and strong. It can jump very far but it can't fly. It lives in Australia. I like it because it is funny."}]},{"id":"d7","tab":"Ngày 7","title":"Ôn tập: Nói và tổng kết 3 tuần","mins":20,"blocks":[{"t":"shadow","title":"8 câu nghe và nhắc lại","items":[{"h":"What <b>day<\/b> is it <b>today<\/b>?","au":{"segs":[{"v":"f","t":"What day is it today?"}],"s":0}},{"h":"I study at <b>school<\/b> on <b>Mondays<\/b>.","au":{"segs":[{"v":"f","t":"I study at school on Mondays."}],"s":0}},{"h":"My <b>birthday<\/b> is in <b>July<\/b>.","au":{"segs":[{"v":"f","t":"My birthday is in July."}],"s":0}},{"h":"I want some <b>jam<\/b> and some <b>water<\/b>.","au":{"segs":[{"v":"f","t":"I want some jam and some water."}],"s":0}},{"h":"A <b>kangaroo<\/b> can <b>jump<\/b>.","au":{"segs":[{"v":"f","t":"A kangaroo can jump."}],"s":0}},{"h":"A <b>penguin<\/b> <b>can't<\/b> fly.","au":{"segs":[{"v":"f","t":"A penguin can't fly."}],"s":0}},{"h":"A <b>giraffe<\/b> is <b>taller<\/b> than a <b>tiger<\/b>.","au":{"segs":[{"v":"f","t":"A giraffe is taller than a tiger."}],"s":0}},{"h":"It <b>lives<\/b> in <b>Australia<\/b>.","au":{"segs":[{"v":"f","t":"It lives in Australia."}],"s":0}}]},{"t":"speak","title":"Tell me about yourself","prompt":"Say hello. Tell me your name and where you are from. What do you do on Saturdays? When is your birthday? What is your favourite animal and what can it do?","frames":["Hello. I'm ___. I'm from ___.","On Saturdays I ___.","My birthday is in ___.","My favourite animal is the ___. It can ___."],"modelTitle":"Bài nói mẫu của cô","model":{"segs":[{"v":"f","t":"Hello. I'm Mai. I'm from Viet Nam. On Saturdays I do housework with my mum. My birthday is in June. It is on the fifteenth of June. At my party I want some chips and some lemonade. My favourite animal is the dolphin. It can swim and jump very high."}],"s":0},"check":["Nói đủ ít nhất 8 câu","Có from và quốc tịch hoặc tên nước","Có thứ trong tuần và tháng","Có can","Nói chậm và rõ"],"kw":[{"l":"Quê hương","re":"from"},{"l":"Thứ trong tuần","re":"monday|tuesday|wednesday|thursday|friday|saturday|sunday"},{"l":"Tháng sinh nhật","re":"january|february|march|april|may|june|july|august|september|october|november|december"},{"l":"Con vật và can","re":"can"}],"minWords":35}]}]}],"fc":{"get up":["vp","You do this in the morning, when you wake up and leave your bed.","I get up at six.","We get up at six thirty."],"have breakfast":["vp","You eat this meal in the morning.","I have breakfast at six thirty.","He has breakfast with his family."],"brush my teeth":["vp","You do this with a toothbrush to clean your mouth.","I always brush my teeth before bed.","He brushes his teeth twice a day."],"go to school":["vp","You go to a place to study with your teacher and your friends.","They go to school.","We go to school at seven."],"have lunch":["vp","You eat this meal in the middle of the day.","We sometimes have lunch at home.","I have lunch at school."],"do my homework":["vp","You do this at home after school, for your teacher.","They always do their homework after school.","I do my homework in the evening."],"play badminton":["vp","You play this sport with a racket and a shuttlecock.","He plays badminton after school.","We often play badminton at the weekend."],"tidy my room":["vp","You put your toys and books in the right places.","My brother never tidies his room.","I tidy my room on Saturdays."],"watch TV":["vp","You look at programmes on a screen at home.","He watches TV.","My brother watches TV in the evening."],"have a shower":["vp","You wash your body with water from above.","I have a shower before bed.","He has a shower in the morning."],"read a comic":["vp","You do this with a book that has pictures and short stories.","He sometimes reads a comic after dinner.","I read a comic after dinner."],"go to bed":["vp","You do this at night, when you are tired and want to sleep.","I go to bed at nine.","She goes to bed at nine thirty."],"Good morning":["gr","You say this to your teacher when you see her at eight in the morning.","Good morning, Miss Hoa.","Good morning, class."],"Good afternoon":["gr","You say this to someone after lunch, at two o'clock.","Good afternoon, class.","Good afternoon, Mr Nam."],"Good evening":["gr","You say this to someone at seven in the evening.","Good evening, Mum.","Good evening, Dad."],"Good night":["gr","You say this to someone before they go to sleep.","Good night, Dad.","Good night! See you tomorrow."],"Goodbye":["gr","You say this when you leave.","Goodbye, Miss Hoa.","Goodbye! See you soon."],"See you tomorrow":["gr","You say this when you will meet your friend on the next day.","See you tomorrow.","Goodbye! See you tomorrow."],"See you later":["gr","You say this when you will meet again today or very soon.","Bye! See you later.","I'm going to the shop. See you later!"],"See you soon":["gr","You say this when you hope to meet again in a short time.","Goodbye, Grandma. See you soon.","See you soon, Lan!"],"Nice to see you again":["gr","You say this when you meet a friend again and you are happy.","Nice to see you again.","Hi, Nam! Nice to see you again."],"How are you?":["q","You ask this question to know if a person is well or happy.","How are you?","Hello, Lan. How are you?"],"And you?":["q","You ask this after your answer, to ask the same question back.","I'm fine, thanks. And you?","I'm good. And you?"],"Viet Nam":["n","This is the country where we live. Its capital city is Ha Noi.","I'm from Viet Nam.","Viet Nam is a beautiful country."],"Vietnamese":["adj|n","A person from Viet Nam is this.","I'm Vietnamese.","She is Vietnamese. She is from Ha Noi."],"Japan":["n","This country is in Asia. Its capital city is Tokyo.","I'm from Japan.","He's from Japan."],"Japanese":["adj|n","A person from Japan is this.","My friend is Japanese.","She's Japanese. She's from Tokyo."],"America":["n","This is a very big country. Its capital city is Washington, D.C.","He's from America.","My cousin is from America."],"American":["adj|n","A person from America is this.","She is American.","He's American."],"England":["n","This country is in Europe. Its capital city is London.","I'm from England.","London is in England."],"English":["adj|n","A person from England is this. We are also learning this language.","She's English.","I'm learning English."],"Australia":["n","This big country is full of kangaroos. Its capital city is Canberra.","He's from Australia.","A kangaroo lives in Australia."],"Australian":["adj|n","A person from Australia is this.","She's Australian.","My friend Tom is Australian."],"Malaysia":["n","This country is in Asia, near Viet Nam. Its capital city is Kuala Lumpur.","I'm from Malaysia.","Kuala Lumpur is in Malaysia."],"Malaysian":["adj|n","A person from Malaysia is this.","He's Malaysian.","Her friend is Malaysian."],"kangaroo":["n","This animal jumps a lot and carries its baby in a pocket.","A kangaroo can jump.","The kangaroo lives in Australia."],"parrot":["n","This colourful bird can talk like people.","A parrot can talk but it can't swim.","A parrot can talk."],"crocodile":["n","This big animal lives in the water and has sharp teeth.","A crocodile can swim.","The crocodile has big teeth."],"monkey":["n","This animal climbs trees and likes bananas.","A monkey eats bananas.","A monkey can climb."],"elephant":["n","This very big animal has a long nose and big ears.","An elephant is big and grey.","An elephant is bigger than a tiger."],"giraffe":["n","This animal has a very long neck.","A giraffe is very tall.","A giraffe is taller than a tiger."],"penguin":["n","This black and white bird can't fly, but it can swim.","A penguin can swim.","A penguin can't fly."],"dolphin":["n","This clever animal swims and jumps in the sea.","A dolphin can swim fast.","The dolphin is clever."],"tiger":["n","This big cat has orange fur with black stripes.","A tiger can run fast.","A tiger is stronger than a monkey."],"snake":["n","This long animal has no legs and moves along the ground.","A snake can't walk.","The snake is long."],"spider":["n","This small animal has eight legs and makes a web.","A spider has eight legs.","The spider is on the wall."],"bee":["n","This small insect makes honey.","A bee can fly.","The bee is on the flower."],"Monday":["n","This is the first school day of the week. It comes after Sunday.","She studies at school on Mondays.","Ben studies at school on Mondays, Tuesdays, Wednesdays, Thursdays and Fridays."],"Tuesday":["n","This is the day after Monday.","I play badminton on Tuesdays.","Today is Tuesday."],"Wednesday":["n","This is the day in the middle of the school week.","We have music on Wednesday.","I visit my uncle on Wednesdays."],"Thursday":["n","This is the day after Wednesday.","I do my homework on Thursdays.","Thursday is my favourite day."],"Friday":["n","This is the last school day of the week.","It is Friday today.","I go swimming on Fridays."],"Saturday":["n","This is a weekend day with no school. It comes before Sunday.","They always tidy their rooms on Saturday.","I do housework on Saturdays."],"Sunday":["n","This is the last day of the week. It comes after Saturday.","I listen to music on Sundays.","On Saturdays Nam does housework, but on Sundays he listens to music."],"study at school":["vp","You learn lessons with your teacher in a classroom.","I study at school.","We study at school on Mondays."],"do housework":["vp","You clean and help at home, for example you wash the dishes.","I do housework.","I do housework and listen to music on Sundays."],"listen to music":["vp","You do this with your ears when songs are playing.","I listen to music.","She listens to music on Sundays."],"visit my grandparents":["vp","You go to see your mum's parents or your dad's parents.","On Sundays Mai visits her grandparents in the village.","He visits his grandparents."],"January":["n","This is the first month of the year.","My birthday is in January.","It's cold in January."],"February":["n","This is the second month of the year. It is the shortest month.","My birthday is in February.","Tet is often in February."],"March":["n","This is the third month of the year.","Spring starts in March.","We have a trip in March."],"April":["n","This is the fourth month. It comes after March.","It rains a lot in April.","My birthday is in April."],"May":["n","This is the fifth month. It comes before June.","It's in May.","It's the twentieth of May."],"June":["n","This is the sixth month. The summer holidays often start in this month.","We have holidays in June.","My brother's birthday is in June."],"July":["n","This is the seventh month. It is in the middle of summer.","My birthday is in July.","It's very hot in July."],"August":["n","This is the eighth month. It comes after July.","My sister's birthday is in August.","We play outside in August."],"September":["n","This is the ninth month. School starts in Viet Nam in this month.","School starts in September.","My birthday is in September."],"October":["n","This is the tenth month. It comes after September.","It's cool in October.","My party is in October."],"November":["n","This is the eleventh month of the year.","My birthday is in November.","Teachers' Day is in November."],"December":["n","This is the last month of the year.","Christmas is in December.","My birthday is in December."],"birthday party":["n","This is a happy event with cake, friends and presents on your special day.","I have a birthday party in May.","We sing at the birthday party."],"chips":["n","You can eat these long, fried pieces of potato.","I want some chips and some grapes.","I like chips."],"grapes":["n","These small, round fruits grow in bunches. They are green or purple.","I want some grapes and some water.","She eats some grapes."],"jam":["n","This sweet food is made from fruit. You put it on bread.","I want some jam and some water.","I have bread and jam."],"lemonade":["n","This is a cold drink. It is sweet and sour, and it is made from lemons.","I want some lemonade.","I'd like some lemonade."],"cake":["n","This sweet food is baked. You eat it at a birthday party.","I want some cake.","The cake is on the table."],"juice":["n","This is a drink made from fruit.","I drink orange juice.","Would you like some juice?"],"water":["n","You drink this clear liquid every day.","I drink water.","Can I have some water, please?"]},"audioKeys":["a-dolphin-8ke5jg","a-giraffe-has-got-a-long-n-1v19fp","a-giraffe-is-taller-than-a-1oohj6c","a-giraffe-is-very-tall-14bvlb0","a-kangaroo-can-jump-103kxll","a-kangaroo-lives-in-austra-fqkmtn","a-monkey-eats-bananas-pnz6zx","a-parrot-can-talk-but-it-c-zmgsk","a-penguin-can-swim-1tevhs1","a-penguin-can-t-fly-dd83zb","america-1v2hibg","american-rj646i","an-elephant-is-big-and-gre-1awc1gw","an-elephant-is-bigger-than-1drdb4b","and-what-can-it-eat-wlobj4","and-what-do-you-do-on-sund-6kiwx5","and-you-qrgb09","april-1lagjs2","august-1briz6r","australia-12qs15c","australian-g7a39a","bee-w6u79y","ben-goes-to-school-by-bike-17tflbe","ben-studies-at-school-on-m-fuo3g","birthday-party-nadqwh","brush-5ddo5q","brush-my-teeth-bx013i","brushes-1yx7n5y","bye-mai-see-you-tomorrow-1dgd05v","bye-nam-see-you-later-19vg05v","cake-18zevoe","can-you-come-to-my-birthda-1jjfxb3","chips-1nbnmox","come-to-my-party-at-six-o--1jr8b0g","crocodile-19xn1pa","dear-linh-my-birthday-is-i-yf1gnj","december-1bba3up","do-housework-11lbe2s","do-my-homework-d6iyvj","do-you-watch-tv-every-day--1yx7h2y","does-your-dad-tidy-the-roo-1c2dkvz","dolphin-1fq2f3s","elephant-1jcg90b","england-pik4ub","english-1qgrvck","february-vj50fe","friday-p1cxd5","get-1m2o42y","get-up-gkmrdb","gets-1ls1a3h","giraffe-195zdr2","go-fvjf0g","go-to-bed-oi7mum","go-to-school-16w47gr","goes-38s2ig","good-afternoon-2o64u7","good-afternoon-class-185orqn","good-afternoon-miss-hoa-14xcnh0","good-afternoon-nam-1djo4mt","good-afternoon-tom-ubh7ih","good-evening-dad-y8e7c2","good-evening-grandma-1rp94hf","good-evening-mum-ykrjyg","good-evening-nam-goodbye-s-97umva","good-evening-xvgp9b","good-morning-1olmdp","good-morning-1rqwq8e","good-morning-ben-how-are-y-dcixac","good-morning-class-l1utx9","good-morning-good-evening-1uljxjy","good-morning-i-m-linh-i-m--t9njrq","good-morning-linh-how-are--g0xbsw","good-morning-miss-hoa-1th55gb","good-morning-miss-hoa-nice-124xm8a","good-morning-miss-hoa-nice-1yky6bn","good-morning-miss-lan-nice-b4zvo4","good-morning-nam-nice-to-s-1h7gp4d","good-morning-nam-nice-to-s-1jebsfd","good-morning-nice-to-see-y-aqyhtx","good-night-mum-tjon12","good-night-nam-vpuuxv","good-night-zk7j1p","goodbye-1gipr9v","goodbye-ben-cjm4j9","goodbye-nam-see-you-tomorr-19po8sa","goodbye-see-you-tomorrow-1j5cdaq","goodbye-tom-see-you-tomorr-537lj4","goodbye-tom-see-you-tomorr-r4dplc","grapes-uueqy4","have-a-good-evening-2tvjrr","have-a-shower-d4bejr","have-breakfast-zp6r7l","have-lunch-1dat12g","he-brushes-his-teeth-twice-qceul6","he-plays-badminton-1hld1qi","he-plays-badminton-after-s-11lwcqs","he-s-from-america-ellnmt","he-s-from-australia-wk1tdl","he-s-from-japan-he-s-japan-8tywu1","he-sometimes-reads-a-comic-2vp15i","he-sometimes-reads-a-comic-9aegrs","he-visits-his-grandparents-ow5nqs","he-watches-tv-2elh26","he-watches-tv-in-the-eveni-1maa80y","hello-akira-i-m-mai-i-m-fr-t7obgz","hello-i-m-mai-i-m-from-vie-1lsdcec","hello-i-m-mai-what-s-your--1b326eb","hello-i-m-mai-what-s-your--1v22b1z","hello-i-m-mai-what-s-your--xrq3el","hello-i-m-nam-i-m-from-vie-1ia5k7a","hello-linh-nice-to-see-you-1mnn382","hi-mai-i-m-akira-1k4r4ti","how-are-you-mai-9rd2pz","how-are-you-n1c8x8","i-always-brush-my-teeth-be-6txe1g","i-always-brush-my-teeth-pe1qs6","i-do-housework-and-listen--1rj5891","i-do-housework-d1v74r","i-do-housework-on-saturday-1eh64u0","i-do-housework-with-my-mum-u0almb","i-get-up-at-half-past-six--7k3pxl","i-get-up-at-half-past-six-16i2mrm","i-get-up-at-six-wu58cv","i-listen-to-music-on-sunda-1btu248","i-listen-to-music-uli0es","i-m-fine-thank-you-1h816ba","i-m-fine-thank-you-1ufetl4","i-m-fine-thank-you-and-you-1k0xzt1","i-m-fine-thank-you-and-you-1nqzirw","i-m-fine-thank-you-let-s-g-14m14du","i-m-from-japan-1kb1z1v","i-m-from-japan-what-about--gd5bxh","i-m-from-viet-nam-i-m-viet-1yzrnj","i-m-from-viet-nam-i-m-viet-axxxfd","i-m-from-viet-nam-ugpcal","i-m-japanese-155x3cz","i-m-japanese-1xmy29o","i-m-vietnamese-1w66sbq","i-never-watch-tv-before-my-k9zhlz","i-study-at-school-ofu6jb","i-study-at-school-on-monda-u2xg9b","i-visit-my-grandparents-1jq7tba","i-want-some-chips-and-some-1qoexjj","i-want-some-grapes-and-som-185hff","i-want-some-grapes-and-som-fteft6","i-want-some-jam-and-some-w-y7fjkh","i-want-some-lemonade-m384xg","is-it-a-giraffe-15thi72","is-kenji-from-america-6klb9f","it-can-eat-leaves-from-the-27s20p","it-can-fly-and-it-can-talk-ix9apy","it-has-got-a-long-neck-and-10w4vd","it-has-got-a-long-neck-and-1uqqfzh","it-is-a-giraffe-it-is-very-1494yl","it-is-a-giraffe-it-is-very-1d0jp7k","it-is-brown-it-lives-in-au-7lhz5o","it-is-friday-today-5pleoh","it-is-kim-s-birthday-party-oyvjbw","it-is-very-big-and-grey-it-i283xc","it-is-yellow-and-brown-its-13j2c0p","it-lives-in-australia-1ux7s8l","it-lives-in-the-sea-it-can-1g2aevp","it-lives-in-the-sea-w680q1","it-s-friday-we-have-englis-gqcfri","it-s-in-may-6swkr1","it-s-monday-axu8t3","it-s-monday-today-we-study-judw4u","it-s-on-saturday-at-six-o--jerfqg","it-s-on-the-twentieth-of-m-1lspwpx","it-s-the-twentieth-of-may-gezq3s","it-s-thursday-1cxdt0j","jack-is-drawing-and-he-is--u59ygk","jam-nvtk9u","january-1p2v5k4","japan-1wp8pv8","japanese-65l00h","juice-11meffe","july-1aqsyb2","june-185hsnw","kangaroo-1x9z0l8","lemonade-1cap59r","lily-never-watches-tv-befo-m3znqz","linh-has-lunch-at-school-2tbvdi","listen-to-music-1iy1s8t","look-miss-hoa-what-is-that-111i8gp","look-miss-hoa-what-is-that-19bwu3h","lucy-is-standing-in-front--k6rddz","mai-s-grandfather-lives-in-smps3r","malaysia-14yh7q3","malaysian-i892ax","march-1hsxe2d","may-16cv8sx","mia-usually-has-noodles-fo-v101mw","monday-1u2eaya","monkey-rsefbx","my-birthday-is-in-july-77h9ik","my-birthday-is-in-november-1x9mih2","my-brother-never-tidies-hi-u3r1mf","my-brother-watches-tv-in-t-q72t2p","my-dad-goes-to-work-by-bus-13a8i9s","my-favourite-animal-is-the-ian3zk","my-name-is-lily-and-my-bir-bb9nng","my-name-is-linh-and-i-am-t-3n85z6","my-turn-it-lives-in-the-se-54d9vd","nam-my-birthday-is-in-may--1868cib","nam-my-birthday-is-in-may--a9v3us","nice-to-meet-you-akira-whe-po5r8r","nice-to-meet-you-qu5f4y","nice-to-see-you-again-d87mwk","nice-to-see-you-again-uryvba","nice-to-see-you-too-1e0ldqq","no-i-m-not-i-m-malaysian-497r5l","november-178ncaw","october-v795x4","on-mondays-i-study-at-scho-y99cu3","on-saturdays-nam-does-hous-1bfl2j5","on-school-days-i-get-up-at-15pa5nt","on-sundays-mai-visits-her--1ts6wpl","parrot-lnfeq","penguin-pfrpgg","play-13qfvmo","play-badminton-ijnx0c","plays-ktdyz7","read-1ssejie","read-a-comic-byfbxu","reads-1u9x9bt","saturday-1yshahj","see-you-later-1n2kfdo","see-you-soon-3046kj","see-you-tomorrow-bvxl59","see-you-tomorrow-t51t5n","september-1osbq35","she-brushes-her-teeth-twic-1aqoa14","she-gets-up-at-seven-jd25ba","she-has-breakfast-gjduvb","she-is-american-zdh5dg","she-listens-to-music-9wbtpa","she-listens-to-music-on-su-7ojxj6","she-s-american-whbpsi","she-s-australian-3lwlgm","she-s-from-japan-she-s-jap-1baqldr","she-studies-at-school-on-m-10md05q","she-usually-gets-up-at-six-18h4gco","she-usually-has-noodles-1bciik7","she-usually-has-noodles-fo-11seoup","snake-1dntat8","spider-o7wtyp","study-at-school-1a5dnts","sunday-325mf2","the-board-is-green-lgqf8u","the-boy-is-writing-with-a--k0pi2j","the-clock-is-on-the-wall-16qkyi7","the-girl-with-long-hair-is-1tlz0cd","the-girl-with-pigtails-is--t7ivc2","the-party-starts-at-six-o--7uaxth","the-red-bag-is-under-the-t-16uz8e9","the-window-is-on-the-left-1qt42ra","there-are-many-animals-at--8p8n2y","they-always-do-their-homew-1hb7rco","they-always-tidy-their-roo-1fw7bn7","they-go-to-school-5o7drn","this-is-a-classroom-there--17u9waz","this-is-a-zoo-there-is-a-b-1cxstdu","thursday-lv4iim","tidy-my-room-l1gi1z","tiger-1b8h0o5","today-is-monday-on-saturda-b637ho","tom-gets-up-at-seven-o-clo-1snq5dt","tuesday-1vawsp","viet-nam-1x0gaou","vietnamese-fiuit7","visit-my-grandparents-1m9hw3s","watch-br8yzl","watch-tv-1qjuqdn","watches-1rg0uvt","water-1hsrm99","we-get-up-at-six-thirty-1ja1v6u","we-often-play-badminton-1t9opb6","we-often-play-badminton-at-l8cxq3","we-sometimes-have-lunch-at-oji9t2","we-study-at-school-on-mond-3txj8i","wednesday-o55hu6","what-day-is-it-today-13f33yt","what-day-is-it-today-hdh8nd","what-day-is-it-today-tom-1na4gdf","what-day-is-it-today-tom-cvuomo","what-day-is-it-today-tom-izlu6c","what-do-you-do-after-schoo-9jvbpq","what-do-you-do-on-saturday-m77iof","what-do-you-want-to-drink-8vxxaa","what-do-you-want-to-eat-an-11ny1sx","what-do-you-want-to-eat-an-76at0d","what-nationality-are-you-100898e","what-nationality-are-you-l-160jfa6","what-time-do-you-go-to-bed-1fzde5a","when-is-the-party-czfjyn","when-s-your-birthday-1jwrm9n","where-are-you-from-fhosbx","where-are-you-from-tom-1me29os","where-is-she-from-1estjys","wow-i-like-the-penguins-to-1s7yc5f","yes-i-can-thank-you-nyraiz","yes-it-lives-in-africa-it--18r1myh","you-too-goodbye-1d0d0pk"],"games":["📘 Học công thức động từ","🔊 Nghe và chọn cách đọc đuôi -s / -es","✍️ Chia động từ (-s, -es, am / is / are + V-ing)","🔤 am, is hay are?","🃏 Thẻ học từ mới","🔁 Thẻ ôn từ","🔊 Nghe và chạm vào hình","🃏 Lật thẻ ghép chữ với hình","🔤 Đánh vần từ","🧩 Sắp xếp từ thành câu","🎧 Nghe và xếp câu","✏️ Điền từ còn thiếu","👂 Nghe và chọn câu đúng"]};
+var AK=new Set(SEED.audioKeys);
+var TYPES={text:'Văn bản',vocab:'Từ vựng',rule:'Ngữ pháp',gap:'Điền từ',mcq:'Trắc nghiệm',speak:'Nói',teacher:'Ghi chú giáo viên',sounds:'Âm cuối',write:'Viết',shadow:'Nghe và nhắc lại',bookimg:'Ảnh sách',story:'Truyện, hội thoại',scene:'Tranh',pics:'Tranh',model:'Bài mẫu',check:'Tự kiểm tra'};
+var POS=[['vp','Cụm động từ'],['n','Danh từ'],['adj|n','Tính từ (hoặc danh từ)'],['adj','Tính từ'],['gr','Lời chào'],['q','Câu hỏi']];
+var S={user:null,tab:'live',content:{sec:{},fc:{},games:{}},live:{on:false,seq:0},cls:null,seen:{},skew:0,subs:null,cur:null,dirty:false,warned:false,fcEdit:{},fcQ:'',subsF:{kind:'',status:'',q:''}};
+var $=function(s,r){return (r||document).querySelector(s)};
+function el(tag,at,kids){
+  var e=document.createElement(tag);
+  for(var k in (at||{})){var v=at[k];
+    if(k==='class'){e.className=v}else if(k==='text'){e.textContent=v}else if(k==='html'){e.innerHTML=v}
+    else if(k.slice(0,2)==='on'){e.addEventListener(k.slice(2),v)}
+    else if(v!==false&&v!=null){e.setAttribute(k,v===true?'':v)}}
+  (kids||[]).forEach(function(c){if(c!=null){e.appendChild(typeof c==='string'?document.createTextNode(c):c)}});
+  return e;
+}
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function strip(h){return String(h||'').replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim()}
+function hash(s){var h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))|0}return (h>>>0).toString(36)}
+function aid(t){var key=JSON.stringify({segs:[{v:'f',t:t}],s:0});var slug=t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,26);return slug+'-'+hash(key)}
+function hasAudio(t){return !!t&&AK.has(aid(t))}
+function audDot(text){
+  var d=el('span',{class:'dot'});
+  function set(t){var ok=hasAudio(t);d.className='dot '+(t?(ok?'on':'off'):'');d.title=t?(ok?'Có giọng đọc thu sẵn trong file':'Chưa có giọng thu sẵn, sẽ dùng giọng của trình duyệt'):''}
+  set(text);d.set=set;return d;
+}
+function A(t){return {segs:[{v:'f',t:t}],s:0}}
+function toast(msg,kind){
+  var t=el('div',{class:'note '+(kind||'ok'),role:'status',style:'position:fixed;right:16px;bottom:16px;z-index:80;max-width:360px',text:msg});
+  document.body.appendChild(t);setTimeout(function(){t.remove()},3200);
+}
 
-/* ---------- gọi Apps Script ---------- */
+/* ---------------- API (có chế độ thử ?demo=1 lưu trong trình duyệt) ---------------- */
+function ls(k,def){try{var v=JSON.parse(localStorage.getItem(k));return v==null?def:v}catch(e){return def}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function mock(p){
+  var a=p.action;
+  if(a==='lr_login'){return p.code==='gv'?{ok:true,student:{name:p.name,role:'teacher'}}:{ok:false,error:'Chế độ thử: nhập mã gv.'}}
+  if(a==='lr_content_get'){return {ok:true,content:ls('dd-content',{sec:{},fc:{},games:{}})}}
+  if(a==='lr_content_save'){var c=ls('dd-content',{sec:{},fc:{},games:{}}),v=JSON.parse(p.json);
+    if(p.key.indexOf('sec:')===0){c.sec[p.key.slice(4)]=v}else{c[p.key]=v}
+    lsSet('dd-content',c);var h=ls('dd-hist',[]);h.push({key:p.key,json:p.json,at:new Date().toLocaleString('vi-VN'),by:p.name});lsSet('dd-hist',h);return {ok:true}}
+  if(a==='lr_content_del'){var c2=ls('dd-content',{sec:{},fc:{},games:{}});delete c2.sec[p.key.slice(4)];lsSet('dd-content',c2);return {ok:true}}
+  if(a==='lr_history'){return {ok:true,items:ls('dd-hist',[]).filter(function(x){return x.key===p.key}).reverse().slice(0,20)}}
+  if(a==='lr_live_get'){return {ok:true,live:ls('dd-live',{on:false,seq:0}),now:Date.now()}}
+  if(a==='lr_live_set'){var l=ls('dd-live',{on:false,seq:0}),pt=p.patch||{};
+    ['on','w','sec','focus','msg','endsAt','lock','meet'].forEach(function(k){if(k in pt){l[k]=pt[k]}});if(pt.bump){l.seq=(l.seq||0)+1}lsSet('dd-live',l);return {ok:true,live:l}}
+  if(a==='lr_presence'){var seen={},now=Date.now();(p.names||[]).forEach(function(n,i){if(i%3!==2){seen[n]=now-i*1000}});return {ok:true,seen:seen,now:now}}
+  if(a==='lr_list'){return {ok:true,students:['Nguyễn Minh Anh','Trần Gia Bảo','Lê Khánh Chi','Phạm Đức Dũng','Võ Thu Hà'].map(function(n,i){return {name:n,unlockWeek:2+(i%2),doneCount:3+i,updatedAt:'11/11 1'+i+':20'}})}}
+  if(a==='lr_subs'){var cm=ls('dd-cm',{});return {ok:true,subs:[
+    {name:'Nguyễn Minh Anh',kind:'write',key:'w2.d6.3',title:'Bài viết: A day in my life',at:'11/11 19:02',score:'Tiêu chí 3/4 · 7 câu · 52 từ',text:'On school days I get up at six thirty. I usually have noodles for breakfast. I go to school by bike.',comment:cm['Nguyễn Minh Anh|w2.d6.3']||''},
+    {name:'Trần Gia Bảo',kind:'speak',key:'w2.d1.5',title:'Nhìn tranh và nói chào hỏi',at:'11/11 18:40',score:'82%',tr:'good morning miss hoa nice to see you again',comment:cm['Trần Gia Bảo|w2.d1.5']||''},
+    {name:'Lê Khánh Chi',kind:'shadow',key:'w2.d2.4',title:'8 câu nghe và nhắc lại',at:'11/10 20:11',score:'Trung bình 76% · 8/8 câu',comment:cm['Lê Khánh Chi|w2.d2.4']||''}]}}
+  if(a==='lr_comment'){var cc=ls('dd-cm',{});cc[p.student+'|'+p.key]=p.comment;lsSet('dd-cm',cc);return {ok:true}}
+  return {ok:false,error:'Chế độ thử chưa hỗ trợ '+a}
+}
 function api(p){
+  if(S.user){p.name=p.name||S.user.name;p.code=p.code||S.user.code}
+  if(DEMO){return Promise.resolve(mock(p))}
   return fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(p)}).then(function(r){return r.json()});
 }
-function cred(extra){var o={name:U.name,code:U.code};for(var k in extra){o[k]=extra[k]}return o}
 
-/* ---------- đăng nhập ---------- */
-function setMsg(t,bad){var m=$('lgMsg');m.textContent=t||'';m.className='msg'+(bad?' bad':'')}
-function enter(name,code){
-  U={name:name,code:code};
-  lsSet(SESSION,JSON.stringify({name:name,code:code}));
-  $('gate').hidden=true;$('app').hidden=false;
-  $('uname').textContent=name;$('ava').textContent=(name.trim().charAt(0)||'G').toUpperCase();
-  buildNav();route();
+/* ---------------- dữ liệu bài học ---------------- */
+function effWeeks(){
+  var W=clone(SEED.weeks);
+  W.forEach(function(w){w.sections.forEach(function(s){
+    var o=S.content.sec['w'+w.id+'.'+s.id];s._ovr=!!o;
+    if(o){['title','mins','tab'].forEach(function(k){if(o[k]!=null&&o[k]!==''){s[k]=o[k]}});if(Array.isArray(o.blocks)){s.blocks=o.blocks}}
+  })});
+  return W;
 }
-function showGate(msg,bad){
-  U=null;$('app').hidden=true;$('gate').hidden=false;
-  $('lgBtn').disabled=false;setMsg(msg,bad);
+function findSec(wid,sid){var W=effWeeks();for(var i=0;i<W.length;i++){if(W[i].id===wid){for(var j=0;j<W[i].sections.length;j++){if(W[i].sections[j].id===sid){return {w:W[i],s:W[i].sections[j]}}}}}return null}
+function seedSec(wid,sid){for(var i=0;i<SEED.weeks.length;i++){if(SEED.weeks[i].id===wid){for(var j=0;j<SEED.weeks[i].sections.length;j++){if(SEED.weeks[i].sections[j].id===sid){return SEED.weeks[i].sections[j]}}}}return null}
+function bsum(b){
+  if(b.title){return b.title}
+  if(b.html){return strip(b.html).slice(0,60)}
+  if(b.cap){return b.cap}
+  return TYPES[b.t]||b.t;
 }
-function login(name,code,silent){
-  name=String(name||'').trim();code=String(code||'').trim();
-  if(!name||!code){showGate('');return Promise.resolve()}
-  if(!API_URL){
-    if(code.toLowerCase()==='gv'){enter(name,code)}
-    else{showGate('Chế độ thử: nhập mã gv.',true)}
-    return Promise.resolve();
+
+/* ---------------- khung trang ---------------- */
+function render(){
+  var app=$('#app');app.innerHTML='';
+  if(!S.user){app.appendChild(loginView());return}
+  var tabs=[['live','Lớp học trực tiếp'],['grade','Chấm bài'],['content','Nội dung bài'],['fc','Flashcard từ vựng'],['games','Trò chơi'],['class','Tiến độ lớp']];
+  var nav=el('div',{class:'tabs',role:'tablist'},tabs.map(function(t){
+    return el('button',{class:'tab',role:'tab','aria-selected':String(S.tab===t[0]),onclick:function(){go(t[0])}},[
+      t[0]==='live'&&S.live.on?el('span',{class:'live-dot'}):null,t[1]]);
+  }));
+  app.appendChild(el('header',{class:'top'},[el('h1',{text:'Bảng điều khiển giáo viên'}),el('span',{class:'muted',text:S.user.name+(DEMO?' · chế độ thử':'')}),el('button',{class:'btn ghost sm',onclick:logout,text:'Đăng xuất'}),nav]));
+  var body=el('main',{class:'wrap'});app.appendChild(body);
+  ({live:liveView,grade:gradeView,content:contentView,fc:fcView,games:gamesView,class:classView})[S.tab](body);
+}
+function go(t){
+  if(S.dirty&&!confirm('Em chưa lưu thay đổi ở ngày học đang sửa. Rời trang này sẽ mất thay đổi. Tiếp tục?')){return}
+  S.dirty=false;S.tab=t;render();
+}
+function loginView(){
+  var msg=el('div',{class:'note',hidden:true,role:'alert'});
+  var f=el('form',{onsubmit:function(e){
+    e.preventDefault();var name=$('#ln').value.trim(),code=$('#lc').value.trim();
+    msg.hidden=false;msg.className='note';msg.textContent='Đang kiểm tra...';
+    S.user={name:name,code:code};
+    api({action:'lr_login'}).then(function(j){
+      if(!j.ok){S.user=null;msg.className='note bad';msg.textContent=j.error||'Tên hoặc mã chưa đúng.';return}
+      if(!j.student||j.student.role!=='teacher'){S.user=null;msg.className='note bad';msg.textContent='Tài khoản này không phải giáo viên. Cột Vai trò trong sheet Hoc sinh phải là teacher.';return}
+      try{sessionStorage.setItem('dd-sess',JSON.stringify(S.user))}catch(e){}
+      boot();
+    }).catch(function(){S.user=null;msg.className='note bad';msg.textContent='Chưa kết nối được Apps Script. Hãy kiểm tra địa chỉ Web App và thử lại.'});
+  }},[
+    el('label',{class:'f'},[el('span',{text:'Tên giáo viên'}),el('input',{type:'text',id:'ln',required:true,autocomplete:'username'})]),
+    el('label',{class:'f'},[el('span',{text:'Mã giáo viên'}),el('input',{type:'password',id:'lc',required:true,autocomplete:'current-password'})]),
+    el('button',{class:'btn',type:'submit',text:'Vào bảng điều khiển'}),msg,
+    DEMO?el('p',{class:'muted',text:'Chế độ thử: nhập tên bất kỳ và mã gv. Dữ liệu chỉ lưu trong trình duyệt này.'}):null]);
+  return el('div',{class:'login'},[el('h1',{text:'Bảng điều khiển giáo viên'}),el('p',{class:'muted',text:'Chỉnh bài học, chấm bài và dạy trực tiếp cùng lớp.'}),f]);
+}
+function logout(){S.user=null;try{sessionStorage.removeItem('dd-sess')}catch(e){}stopPoll();render()}
+function boot(){
+  Promise.all([api({action:'lr_content_get'}),api({action:'lr_live_get'}),api({action:'lr_list'})]).then(function(r){
+    if(r[0]&&r[0].ok){S.content=Object.assign({sec:{},fc:{},games:{}},r[0].content)}
+    if(r[1]&&r[1].ok){S.live=r[1].live;S.skew=(r[1].now||Date.now())-Date.now()}
+    if(r[2]&&r[2].ok){S.cls=r[2].students}
+    S.backendOk=!!(r[0]&&r[0].ok);
+    render();startPoll();
+  }).catch(function(){S.backendOk=false;render()});
+}
+
+/* ---------------- tab: lớp học trực tiếp ---------------- */
+var pollT=null;
+function startPoll(){stopPoll();pollT=setInterval(refreshPresence,6000);refreshPresence()}
+function stopPoll(){if(pollT){clearInterval(pollT);pollT=null}}
+function refreshPresence(){
+  if(!S.user||!S.cls){return}
+  api({action:'lr_presence',names:S.cls.map(function(x){return x.name})}).then(function(j){
+    if(!j||!j.ok){return}S.seen=j.seen||{};S.skew=(j.now||Date.now())-Date.now();
+    if(S.tab==='live'||S.tab==='class'){paintPresence()}
+  }).catch(function(){});
+}
+function isOnline(n){var t=S.seen[n];return !!t&&(Date.now()+S.skew-t)<20000}
+function liveSet(patch,okMsg){
+  return api({action:'lr_live_set',patch:patch}).then(function(j){
+    if(j.ok){S.live=j.live;if(okMsg){toast(okMsg)}if(S.tab==='live'){paintLive()}}else{toast(j.error||'Chưa gửi được lệnh.','bad')}
+    return j;
+  }).catch(function(){toast('Chưa kết nối được Apps Script.','bad')});
+}
+var liveBox=null;
+function liveView(body){
+  if(S.backendOk===false){body.appendChild(el('div',{class:'note bad',text:'Chưa đọc được dữ liệu từ Apps Script. Hãy dán file Lotrinh.gs mới (đã gộp phần bảng điều khiển) vào dự án Apps Script rồi triển khai phiên bản mới.'}))}
+  liveBox=el('div',{class:'stack'});body.appendChild(liveBox);paintLive();
+}
+function paintLive(){
+  if(!liveBox||S.tab!=='live'){return}
+  var L=S.live,W=effWeeks();
+  liveBox.innerHTML='';
+  var meet=el('input',{type:'url',id:'meet',placeholder:'https://meet.google.com/abc-defg-hij',value:L.meet||''});
+  var ctl=el('section',{class:'card stack'},[
+    el('div',{class:'row'},[el('h2',{text:L.on?'Lớp đang học trực tiếp':'Chưa bắt đầu lớp học'}),L.on?el('span',{class:'pill bad',text:'● Đang phát'}):el('span',{class:'pill',text:'Đang tắt'})]),
+    el('p',{class:'muted',text:'Học sinh mở trang học và đăng nhập sẽ tự theo cô: cô chuyển bài hoặc chiếu một khối thì máy các em cũng chuyển theo. Cô vẫn nói và giảng bài qua Google Meet.'}),
+    el('label',{class:'f'},[el('span',{text:'Link Google Meet của lớp'}),meet]),
+    el('div',{class:'row'},[
+      el('a',{class:'btn ghost sm',href:'https://meet.google.com/new',target:'_blank',rel:'noopener',text:'Tạo cuộc họp Meet mới'}),
+      el('button',{class:'btn ghost sm',onclick:function(){var v=meet.value.trim();if(v&&!/^https:\/\/meet\.google\.com\//.test(v)){toast('Link phải bắt đầu bằng https://meet.google.com/','bad');return}liveSet({meet:v},'Đã lưu link Meet')},text:'Lưu link'}),
+      L.on?el('button',{class:'btn danger',onclick:function(){if(confirm('Kết thúc lớp học trực tiếp? Máy học sinh sẽ về chế độ tự học.')){liveSet({on:false,endsAt:0,msg:''},'Đã kết thúc lớp')}},text:'Kết thúc lớp'})
+        :el('button',{class:'btn',onclick:function(){var v=meet.value.trim();liveSet({on:true,meet:v,msg:'Lớp học bắt đầu. Các em mở Meet và nghe cô nhé.',bump:true},'Đã bắt đầu lớp')},text:'Bắt đầu lớp học'})
+    ]),
+    el('label',{class:'row'},[el('input',{type:'checkbox',checked:!!L.lock,onchange:function(e){liveSet({lock:e.target.checked},e.target.checked?'Học sinh bị giữ theo cô':'Học sinh được tự chuyển bài')}}),el('span',{text:'Giữ học sinh ở đúng bài cô chiếu (các em không tự chuyển bài được)'})])
+  ]);
+  /* chiếu bài */
+  var wSel=el('select',{id:'pw'},W.map(function(w){return el('option',{value:w.id,text:w.title+': '+w.topic.slice(0,40)})}));
+  var sSel=el('select',{id:'ps'});
+  var list=el('div',{class:'blist'});
+  var curW=(L.w&&W.some(function(w){return w.id===L.w}))?L.w:W[0].id;wSel.value=curW;
+  function fillS(){
+    var w=W.filter(function(x){return x.id===parseInt(wSel.value,10)})[0];sSel.innerHTML='';
+    w.sections.forEach(function(s){sSel.appendChild(el('option',{value:s.id,text:(s.tab||s.id)+' · '+s.title}))});
+    if(L.w===w.id&&L.sec){sSel.value=L.sec}
+    fillB();
   }
-  setMsg('Đang kiểm tra...');$('lgBtn').disabled=true;
-  return api({action:'lr_login',name:name,code:code}).then(function(j){
-    if(!j||!j.ok){lsDel(SESSION);showGate(silent?'':((j&&j.error)||'Tên hoặc mã chưa đúng.'),!silent);return}
-    if(j.student.role!=='teacher'){lsDel(SESSION);showGate('Tài khoản này là của học sinh. Trang này chỉ dành cho giáo viên.',true);return}
-    enter(j.student.name||name,code);
-  }).catch(function(){showGate('Chưa kết nối được. Hãy kiểm tra mạng rồi thử lại.',true)});
-}
-$('lg').addEventListener('submit',function(e){e.preventDefault();login($('lgName').value,$('lgCode').value,false)});
-function logout(){
-  if(dirty()&&!confirm('Có chỗ đang sửa chưa lưu lên lớp. Vẫn đăng xuất?')){return}
-  lsDel(SESSION);
-  try{history.replaceState(null,'',location.pathname)}catch(e){}
-  location.reload();
-}
-$('logout').addEventListener('click',logout);
-
-/* ---------- menu và định tuyến ---------- */
-function buildNav(){
-  $('nav').innerHTML=Object.keys(TABS).map(function(k){
-    return '<a href="#'+k+'" data-r="'+k+'" title="'+TABS[k].t+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+IC[k]+'</svg><span>'+TABS[k].t+'</span></a>';
-  }).join('');
-}
-function route(){
-  if(!U){return}
-  var r=location.hash.slice(1);if(!TABS[r]){r='home'}
-  cur=r;
-  [].forEach.call(document.querySelectorAll('#nav a'),function(a){a.classList.toggle('on',a.getAttribute('data-r')===r)});
-  $('ptitle').textContent=TABS[r].title;
-  $('native').hidden=!(r==='home');
-  $('frwrap').hidden=!TABS[r].frame;
-  $('prwrap').hidden=!(r==='practice');
-  if(r==='home'){renderHome()}
-  else if(r==='practice'){showPractice(PRACTICE_I)}
-  else{drive(r)}
-}
-window.addEventListener('hashchange',route);
-
-/* Cảnh báo khi rời khỏi màn hình đang sửa mà chưa lưu (chỉ phát hiện được tuần đang mở). */
-function frDoc(){try{return $('fr').contentDocument}catch(e){return null}}
-function dirty(){var d=frDoc();return !!(d&&d.querySelector('.ed-flag'))}
-document.addEventListener('click',function(e){
-  var a=e.target.closest&&e.target.closest('#nav a');
-  if(a&&TABS[cur]&&TABS[cur].frame&&a.getAttribute('data-r')!==cur&&dirty()){
-    if(!confirm('Tuần đang sửa chưa lưu lên lớp. Chuyển sang mục khác thì bản sửa vẫn được giữ trên màn hình, nhưng sẽ mất nếu em đóng trang. Tiếp tục?')){e.preventDefault()}
+  function fillB(){
+    var wid=parseInt(wSel.value,10),sid=sSel.value,f=findSec(wid,sid);list.innerHTML='';
+    (f.s.blocks||[]).forEach(function(b,i){
+      if(b.t==='teacher'){return}
+      list.appendChild(el('div',{class:'brow'},[el('span',{class:'pill',text:TYPES[b.t]||b.t}),el('span',{class:'n',text:bsum(b)}),
+        el('button',{class:'btn ghost sm',disabled:!L.on,onclick:function(){liveSet({w:wid,sec:sid,focus:i,bump:true},'Đã chiếu khối '+(i+1)+' cho cả lớp')},text:'Chiếu khối này'})]));
+    });
   }
-});
-window.addEventListener('beforeunload',function(e){if(U&&dirty()){e.preventDefault();e.returnValue=''}});
+  wSel.addEventListener('change',fillS);sSel.addEventListener('change',fillB);
+  var show=el('section',{class:'card stack'},[
+    el('h2',{text:'Chiếu bài cho cả lớp'}),
+    L.on&&L.w?el('p',{class:'muted',text:'Đang chiếu: '+(function(){var f=findSec(L.w,L.sec);return f?(f.w.title+' · '+f.s.title):''})()}):null,
+    el('div',{class:'grid2 sm'},[el('label',{class:'f'},[el('span',{text:'Tuần'}),wSel]),el('label',{class:'f'},[el('span',{text:'Ngày học'}),sSel])]),
+    el('button',{class:'btn',disabled:!L.on,onclick:function(){liveSet({w:parseInt(wSel.value,10),sec:sSel.value,focus:-1,bump:true},'Đã đưa cả lớp tới ngày này')},text:'Đưa cả lớp tới ngày này'}),
+    el('p',{class:'muted',text:L.on?'Hoặc chiếu riêng một khối (máy học sinh sẽ tự cuộn tới và tô viền cam):':'Bấm Bắt đầu lớp học trước khi chiếu bài.'}),list
+  ]);
+  /* tin nhắn, đồng hồ */
+  var msg=el('input',{type:'text',id:'lmsg',placeholder:'Ví dụ: Cả lớp đọc to câu 3',value:L.msg||''});
+  var say=el('section',{class:'card stack'},[
+    el('h2',{text:'Nhắn cả lớp và đồng hồ'}),
+    el('div',{class:'row'},[msg,el('button',{class:'btn sm',disabled:!L.on,onclick:function(){liveSet({msg:msg.value.trim()},'Đã gửi tin nhắn')},text:'Gửi'})]),
+    el('div',{class:'chips'},['Cả lớp đọc to','Các em tắt mic nhé','Làm bài trong 3 phút','Bật mic khi cô gọi tên','Xong rồi bấm Hoàn thành ngày học'].map(function(t){
+      return el('button',{class:'chip',type:'button',onclick:function(){msg.value=t;if(L.on){liveSet({msg:t})}},text:t})})),
+    el('div',{class:'row'},[el('span',{class:'muted',text:'Đồng hồ:'})].concat([1,3,5,10].map(function(m){
+      return el('button',{class:'btn ghost sm',disabled:!L.on,onclick:function(){liveSet({endsAt:Date.now()+S.skew+m*60000},'Bắt đầu đếm '+m+' phút')},text:m+' phút'})
+    })).concat([el('button',{class:'btn ghost sm',disabled:!L.on,onclick:function(){liveSet({endsAt:0},'Đã dừng đồng hồ')},text:'Dừng'})])),
+    el('div',{class:'big',id:'ltimer','aria-live':'polite'})
+  ]);
+  /* ai đang online */
+  var pick=el('div',{class:'big',id:'lpick',hidden:true});
+  var pres=el('section',{class:'card stack'},[
+    el('div',{class:'row'},[el('h2',{text:'Học sinh online'}),el('span',{class:'muted',id:'lcount'})]),
+    el('button',{class:'btn',onclick:function(){
+      var names=(S.cls||[]).map(function(x){return x.name}),on=names.filter(isOnline),pool=on.length?on:names;
+      if(!pool.length){toast('Chưa có danh sách học sinh.','bad');return}
+      var n=pool[Math.floor(Math.random()*pool.length)];pick.hidden=false;pick.textContent='Cô gọi: '+n;
+      if(S.live.on){liveSet({msg:'Cô gọi: '+n})}
+    },text:'Gọi học sinh ngẫu nhiên'}),pick,el('div',{id:'lpres'})
+  ]);
+  liveBox.appendChild(ctl);
+  liveBox.appendChild(el('div',{class:'grid2'},[show,el('div',{class:'stack'},[say,pres])]));
+  fillS();paintPresence();paintTimer();
+}
+var timerT=null;
+function paintTimer(){
+  if(timerT){clearInterval(timerT);timerT=null}
+  function p(){
+    var t=$('#ltimer');if(!t){if(timerT){clearInterval(timerT);timerT=null}return}
+    var left=Math.round(((S.live.endsAt||0)-(Date.now()+S.skew))/1000);
+    t.textContent=S.live.endsAt&&left>0?Math.floor(left/60)+':'+('0'+left%60).slice(-2):(S.live.endsAt?'Hết giờ':'');
+  }
+  p();timerT=setInterval(p,1000);
+}
+function paintPresence(){
+  var box=$('#lpres');if(box&&S.cls){
+    box.innerHTML='';
+    var rows=S.cls.slice().sort(function(a,b){return (isOnline(b.name)-isOnline(a.name))||a.name.localeCompare(b.name,'vi')});
+    var n=0;rows.forEach(function(r){var on=isOnline(r.name);if(on){n++}box.appendChild(el('div',{class:'stud'},[el('span',{class:'dot '+(on?'on':'')}),el('span',{text:r.name}),on?null:el('span',{class:'muted',text:'offline'})]))});
+    var c=$('#lcount');if(c){c.textContent=n+'/'+rows.length+' đang online'}
+  }
+  var tb=$('#cpres');if(tb&&S.cls){S.cls.forEach(function(r,i){var d=tb.querySelector('[data-i="'+i+'"]');if(d){d.className='dot '+(isOnline(r.name)?'on':'')}})}
+}
 
-/* ---------- khung nhúng roadmap.html: dùng lại bảng điều khiển có sẵn trong đó ---------- */
-var FR_CSS='.top,.secbar,.ed-tabs,.yle-spd{display:none!important}';   /* menu trái của trang này thay cho các thanh tab trong roadmap.html */
-function frInit(){
-  var fr=$('fr');
-  if(fr.getAttribute('src')){return}
-  fr.addEventListener('load',function(){
-    var d=frDoc();
-    if(d&&d.body){
-      var l=d.createElement('link');l.rel='stylesheet';l.href='roadmap-theme.css';d.body.appendChild(l);
-      var s=d.createElement('style');s.textContent=FR_CSS;d.body.appendChild(s);
-    }
-    frLoaded=true;
-    if(TABS[cur]&&TABS[cur].frame){drive(cur)}
+/* ---------------- tab: chấm bài ---------------- */
+var GRADE_RX=/^\[(\d+(?:[.,]\d+)?)\/10\]\s*/;
+function loadSubs(){
+  S.subs=null;api({action:'lr_subs'}).then(function(j){
+    if(j.ok){S.subs=j.subs||[]}else{S.subs=[];S.subsErr=j.error||'Không tải được bài nộp.'}
+    if(S.tab==='grade'){render()}
+  }).catch(function(){S.subs=[];S.subsErr='Chưa kết nối được Google Sheet.';if(S.tab==='grade'){render()}});
+}
+function gradeView(body){
+  if(S.subs===null){body.appendChild(el('p',{class:'muted',text:'Đang tải bài nộp...'}));if(!S.subsLoading){S.subsLoading=true;loadSubs()}return}
+  S.subsLoading=false;
+  var F=S.subsF;
+  var kind=el('select',{onchange:function(e){F.kind=e.target.value;render()}},[['','Tất cả loại bài'],['speak','Nói'],['write','Viết'],['shadow','Nghe và nhắc lại']].map(function(o){return el('option',{value:o[0],text:o[1],selected:F.kind===o[0]})}));
+  var st=el('select',{onchange:function(e){F.status=e.target.value;render()}},[['','Tất cả'],['todo','Chưa nhận xét'],['done','Đã nhận xét']].map(function(o){return el('option',{value:o[0],text:o[1],selected:F.status===o[0]})}));
+  var q=el('input',{type:'text',placeholder:'Tìm theo tên học sinh',value:F.q,oninput:function(e){F.q=e.target.value;clearTimeout(q._t);q._t=setTimeout(function(){render();var n=$('#sq');if(n){n.focus();n.setSelectionRange(99,99)}},350)},id:'sq'});
+  var list=S.subs.filter(function(s){
+    if(F.kind&&s.kind!==F.kind){return false}
+    if(F.status==='todo'&&s.comment){return false}
+    if(F.status==='done'&&!s.comment){return false}
+    if(F.q&&s.name.toLowerCase().indexOf(F.q.toLowerCase())<0){return false}
+    return true;
   });
-  fr.src='roadmap.html';
+  var todo=S.subs.filter(function(s){return !s.comment}).length;
+  body.appendChild(el('div',{class:'row',style:'margin-bottom:14px'},[el('h2',{text:'Chấm bài'}),el('span',{class:'pill '+(todo?'warn':'ok'),text:todo+' bài chưa nhận xét'}),
+    el('div',{class:'filters'},[kind,st,q,el('button',{class:'btn ghost sm',onclick:function(){S.subs=null;render()},text:'Tải lại'})])]));
+  if(S.subsErr){body.appendChild(el('div',{class:'note bad',text:S.subsErr}))}
+  if(!list.length){body.appendChild(el('div',{class:'card muted',text:'Không có bài nộp phù hợp.'}));return}
+  var grid=el('div',{class:'stack'});body.appendChild(grid);
+  list.forEach(function(s){grid.appendChild(subCard(s))});
 }
-function busy(html){var b=$('busy');b.hidden=!html;b.innerHTML=html||''}
-function failCard(title,body,btn){
-  busy('<div class="card"><h2>'+title+'</h2><p class="mut">'+body+'</p>'+(btn||'')+'</div>');
+var QUICK=['Con làm rất tốt!','Nhớ thêm -s với he, she, it nhé.','Phát âm rõ ràng, con cố gắng thêm âm cuối.','Con viết đủ ý, nhớ dùng từ chỉ mức độ.','Con hãy làm lại bài này nhé.'];
+function subCard(s){
+  var m=GRADE_RX.exec(s.comment||''),grade=m?m[1].replace(',','.'):'',text=(s.comment||'').replace(GRADE_RX,'');
+  var kindName=s.kind==='speak'?'Nói':(s.kind==='write'?'Viết':'Nghe và nhắc lại');
+  var audBox=el('div');
+  if(s.kind==='speak'){
+    if(s.fileId){audBox.appendChild(el('button',{class:'btn ghost sm',onclick:function(e){
+      var b=e.target;b.disabled=true;b.textContent='Đang tải...';
+      api({action:'lr_audio',id:s.fileId}).then(function(j){
+        if(!j.ok){audBox.innerHTML='';audBox.appendChild(el('span',{class:'muted',text:j.error||'Không tải được file.'}));return}
+        var bin=atob(j.data),u=new Uint8Array(bin.length);for(var k=0;k<bin.length;k++){u[k]=bin.charCodeAt(k)}
+        audBox.innerHTML='';audBox.appendChild(el('audio',{controls:true,autoplay:true,src:URL.createObjectURL(new Blob([u],{type:j.mime||'audio/webm'}))}));
+      }).catch(function(){b.disabled=false;b.textContent='▶ Tải và nghe bài nói'});
+    },text:'▶ Tải và nghe bài nói'}))}else{audBox.appendChild(el('span',{class:'muted',text:'Không có file ghi âm.'}))}
+  }
+  var gi=el('input',{type:'number',min:0,max:10,step:0.5,value:grade,style:'width:90px',placeholder:'/10'});
+  var ta=el('textarea',{rows:2,placeholder:'Nhận xét cho học sinh'});ta.value=text;
+  var st=el('span',{class:'muted'});
+  var card=el('section',{class:'card sub'},[
+    el('div',{class:'row'},[el('b',{text:s.name}),el('span',{class:'pill',text:kindName}),el('span',{class:'muted',text:s.at||''}),s.comment?el('span',{class:'pill ok',text:'Đã nhận xét'}):el('span',{class:'pill warn',text:'Chưa nhận xét'})]),
+    el('div',{text:s.title}),s.score?el('div',{class:'muted',text:'Điểm máy: '+s.score}):null,
+    s.kind==='speak'?audBox:null,
+    s.tr?el('div',{html:''},[el('b',{text:'Máy nghe được: '}),'"'+s.tr+'"']):null,
+    s.text?el('pre',{class:'subtxt',text:s.text}):null,
+    el('div',{class:'chips'},QUICK.map(function(t){return el('button',{class:'chip',type:'button',onclick:function(){ta.value=(ta.value?ta.value+' ':'')+t},text:t})})),
+    el('div',{class:'row'},[el('label',{class:'f'},[el('span',{text:'Điểm (0 đến 10)'}),gi]),el('div',{style:'flex:1 1 280px'},[el('label',{class:'f'},[el('span',{text:'Nhận xét'}),ta])])]),
+    el('div',{class:'row'},[el('button',{class:'btn sm',onclick:function(){
+      var g=gi.value.trim(),c=ta.value.trim();
+      if(!g&&!c){st.textContent='Cô nhập điểm hoặc nhận xét trước nhé.';return}
+      var full=(g?'['+g+'/10] ':'')+c;st.textContent='Đang lưu...';
+      api({action:'lr_comment',student:s.name,key:s.key,comment:full}).then(function(j){
+        if(j.ok){s.comment=full;st.textContent='Đã lưu. Học sinh sẽ thấy nhận xét này.';card.querySelectorAll('.pill')[1].className='pill ok';card.querySelectorAll('.pill')[1].textContent='Đã nhận xét'}
+        else{st.textContent=j.error||'Chưa lưu được'}
+      }).catch(function(){st.textContent='Chưa lưu được'});
+    },text:'Lưu điểm và nhận xét'}),st])
+  ]);
+  return card;
 }
-/* Điều khiển khung: đưa roadmap.html tới đúng màn hình (soạn nội dung, bài nộp, cả lớp) bằng cách bấm các nút của chính nó. */
-function drive(target){
-  var my=++driveId,tries=0;
-  frInit();
-  busy('<p class="mut">Đang mở...</p>');
-  if(!frLoaded){return}
-  function click(el){if(el){el.click()}}
-  function tick(){
-    if(my!==driveId){return}
-    var d=frDoc();
-    if(!d||!d.body){failCard('Chưa mở được khung soạn nội dung','Trình duyệt không cho trang này điều khiển roadmap.html. Thường là do mở bằng file trên máy. Hãy đưa các file lên cùng một địa chỉ web rồi mở lại, hoặc mở trực tiếp bảng điều khiển trong roadmap.html.','<a class="btn" href="roadmap.html" target="_blank" rel="noopener">Mở roadmap.html</a>');return}
-    if(d.getElementById('lgName')){failCard('Phiên đăng nhập đã hết','Em đăng nhập lại để tiếp tục.','<button type="button" class="btn" id="reLogin">Đăng nhập lại</button>');var rb=$('reLogin');if(rb){rb.onclick=function(){lsDel(SESSION);location.reload()}}return}
-    tries++;
-    if(tries>60){failCard('Chưa mở được','Trang đang tải chậm hoặc mất kết nối.','<button type="button" class="btn" id="retry">Thử lại</button>');var b2=$('retry');if(b2){b2.onclick=function(){frLoaded=false;$('fr').contentWindow.location.reload();busy('<p class="mut">Đang tải lại...</p>')}}return}
-    var el=d.getElementById('edBack');
-    if(el){click(el);return setTimeout(tick,250)}
-    var tabBtn=function(v){return d.querySelector('[data-ed="tab"][data-v="'+v+'"]')};
-    if(d.querySelector('.ed-wrap')){
-      var on=function(v){var b=tabBtn(v);return b&&b.getAttribute('aria-selected')==='true'};
-      if(target==='edit'){
-        if(on('edit')){return busy('')}
-        click(tabBtn('edit'));
-      }else{
-        if(!on('home')){click(tabBtn('home'))}
-        else{click(d.querySelector('[data-act="'+target+'"]'))}
+
+/* ---------------- tab: tiến độ lớp ---------------- */
+function classView(body){
+  if(!S.cls){body.appendChild(el('div',{class:'card muted',text:'Chưa có danh sách học sinh. Hãy kiểm tra kết nối Google Sheet.'}));return}
+  var rows=S.cls.slice().sort(function(a,b){return a.name.localeCompare(b.name,'vi')});
+  var tb=el('tbody',{id:'cpres'});
+  rows.forEach(function(r,i){tb.appendChild(el('tr',{},[el('td',{},[el('span',{class:'dot','data-i':S.cls.indexOf(r)}),' ',el('b',{text:r.name})]),el('td',{text:r.unlockWeek}),el('td',{text:r.doneCount}),el('td',{text:r.updatedAt||''})]))});
+  body.appendChild(el('div',{class:'card stack'},[el('div',{class:'row'},[el('h2',{text:'Tiến độ cả lớp'}),
+    el('button',{class:'btn ghost sm',onclick:function(){
+      var csv='Họ tên,Tuần đã mở,Ngày đã xong,Cập nhật\n'+rows.map(function(r){return [r.name,r.unlockWeek,r.doneCount,r.updatedAt||''].map(function(x){return '"'+String(x).replace(/"/g,'""')+'"'}).join(',')}).join('\n');
+      var a=el('a',{href:URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'})),download:'tien-do-lop.csv'});document.body.appendChild(a);a.click();a.remove();
+    },text:'Tải CSV'})]),
+    el('table',{},[el('thead',{},[el('tr',{},['Học sinh','Tuần đã mở','Ngày đã xong','Cập nhật'].map(function(t){return el('th',{text:t})}))]),tb])]));
+  paintPresence();
+}
+
+/* ---------------- tab: trò chơi ---------------- */
+function gamesView(body){
+  var off=(S.content.games&&S.content.games.off)||[],cur=off.slice();
+  var box=el('div',{class:'stack'});
+  var note=el('span',{class:'muted'});
+  SEED.games.forEach(function(g){
+    box.appendChild(el('label',{class:'row'},[el('input',{type:'checkbox',checked:cur.indexOf(g)<0,onchange:function(e){
+      var i=cur.indexOf(g);if(e.target.checked){if(i>=0){cur.splice(i,1)}}else if(i<0){cur.push(g)}
+    }}),el('span',{text:g})]));
+  });
+  body.appendChild(el('div',{class:'card stack'},[el('h2',{text:'Trò chơi học sinh được chơi'}),
+    el('p',{class:'muted',text:'Bỏ chọn trò nào thì trò đó biến mất khỏi nút "Đổi trò chơi" của học sinh. Nội dung của các trò lấy từ từ vựng, câu và truyện trong tab Nội dung bài và Flashcard, nên sửa ở đó là trò chơi tự đổi theo.'}),
+    box,el('div',{class:'row'},[el('button',{class:'btn',onclick:function(){
+      api({action:'lr_content_save',key:'games',json:JSON.stringify({off:cur})}).then(function(j){
+        if(j.ok){S.content.games={off:cur};note.textContent='';toast('Đã lưu. Học sinh thấy thay đổi ở lần mở trang tiếp theo.')}else{toast(j.error||'Chưa lưu được','bad')}
+      }).catch(function(){toast('Chưa kết nối được Apps Script.','bad')});
+    },text:'Lưu'}),note])]));
+}
+
+/* ---------------- tab: flashcard từ vựng ---------------- */
+function fcView(body){
+  var seen={},words=[];
+  effWeeks().forEach(function(w){w.sections.forEach(function(s){(s.blocks||[]).forEach(function(b){if(b.t==='vocab'){(b.items||[]).forEach(function(it){if(it.w&&!seen[it.w]){seen[it.w]=1;words.push({w:it.w,vi:it.vi||''})}})}})})});
+  var q=S.fcQ.toLowerCase();
+  var shown=words.filter(function(x){return !q||x.w.toLowerCase().indexOf(q)>=0||x.vi.toLowerCase().indexOf(q)>=0});
+  var tb=el('tbody');
+  shown.forEach(function(x){
+    var base=S.fcEdit[x.w]||S.content.fc[x.w]||SEED.fc[x.w]||['','','',''];
+    var cur=base.slice();
+    function ch(i,v){cur[i]=v;S.fcEdit[x.w]=cur;S.fcDirty=true;sv.disabled=false}
+    var pos=el('select',{onchange:function(e){ch(0,e.target.value)}},[el('option',{value:'',text:'(chọn)'})].concat(POS.map(function(p){return el('option',{value:p[0],text:p[1],selected:cur[0]===p[0]})})));
+    var d1=audDot(cur[2]),d2=audDot(cur[3]);
+    var clue=el('textarea',{rows:2,oninput:function(e){ch(1,e.target.value)}});clue.value=cur[1]||'';
+    var e1=el('input',{type:'text',value:cur[2]||'',oninput:function(e){ch(2,e.target.value);d1.set(e.target.value)}});
+    var e2=el('input',{type:'text',value:cur[3]||'',oninput:function(e){ch(3,e.target.value);d2.set(e.target.value)}});
+    tb.appendChild(el('tr',{},[el('td',{},[el('b',{text:x.w}),el('div',{class:'muted',text:x.vi}),!(S.content.fc[x.w]||SEED.fc[x.w])?el('span',{class:'pill warn',text:'Chưa có thẻ'}):null]),
+      el('td',{},[pos]),el('td',{},[clue]),el('td',{},[el('div',{class:'row'},[e1,d1])]),el('td',{},[el('div',{class:'row'},[e2,d2])])]));
+  });
+  var sv=el('button',{class:'btn',disabled:!S.fcDirty,onclick:function(){
+    var out=Object.assign({},S.content.fc);Object.keys(S.fcEdit).forEach(function(k){out[k]=S.fcEdit[k]});
+    var json=JSON.stringify(out);
+    api({action:'lr_content_save',key:'fc',json:json}).then(function(j){
+      if(j.ok){S.content.fc=out;S.fcEdit={};S.fcDirty=false;sv.disabled=true;toast('Đã lưu flashcard.')}else{toast(j.error||'Chưa lưu được','bad')}
+    }).catch(function(){toast('Chưa kết nối được Apps Script.','bad')});
+  },text:'Lưu flashcard'});
+  body.appendChild(el('div',{class:'card stack'},[
+    el('div',{class:'row'},[el('h2',{text:'Flashcard từ vựng'}),el('span',{class:'muted',text:words.length+' từ'}),el('div',{style:'margin-left:auto;display:flex;gap:8px'},[
+      el('input',{type:'text',id:'fq',placeholder:'Tìm từ',value:S.fcQ,oninput:function(e){S.fcQ=e.target.value;clearTimeout(S.fcT);S.fcT=setTimeout(function(){var keep=S.fcEdit;render();var n=$('#fq');if(n){n.focus();n.setSelectionRange(99,99)}},300)}}),sv])]),
+    el('p',{class:'muted',text:'Mặt trước thẻ là từ tiếng Anh cùng một câu giải thích đơn giản để học sinh đoán. Mặt sau là nghĩa, loại từ và 1 đến 2 câu ví dụ. Chấm xanh nghĩa là câu đã có giọng đọc thu sẵn, chấm cam là sẽ dùng giọng của trình duyệt.'}),
+    el('div',{style:'overflow:auto'},[el('table',{},[el('thead',{},[el('tr',{},['Từ','Loại từ','Câu giải thích (tiếng Anh)','Ví dụ 1','Ví dụ 2'].map(function(t){return el('th',{text:t})}))]),tb])])]));
+}
+
+/* ---------------- tab: nội dung bài ---------------- */
+function dirty(){S.dirty=true;var b=$('#savebtn');if(b){b.disabled=false}var m=$('#savemsg');if(m){m.textContent='Chưa lưu'}}
+function fld(label,val,fn,o){
+  o=o||{};var inp=o.rows?el('textarea',{rows:o.rows}):el('input',{type:o.type||'text'});
+  inp.value=val==null?'':val;if(o.ph){inp.placeholder=o.ph}
+  inp.addEventListener('input',function(){fn(inp.value);dirty()});
+  return el('label',{class:'f'},[el('span',{text:label}),inp]);
+}
+function xbtn(fn,title){return el('button',{class:'x',type:'button',title:title||'Xóa',onclick:fn,'aria-label':title||'Xóa',text:'×'})}
+function wrapSel(ta,a,b){var s=ta.selectionStart,e=ta.selectionEnd,v=ta.value;ta.value=v.slice(0,s)+a+v.slice(s,e)+b+v.slice(e);ta.dispatchEvent(new Event('input'));ta.focus()}
+var ED={};
+ED.text=ED.teacher=function(b){
+  var ta=el('textarea',{rows:7});ta.value=b.html||'';
+  var pv=el('div',{class:'preview',html:b.html||''});
+  ta.addEventListener('input',function(){b.html=ta.value;pv.innerHTML=ta.value;dirty()});
+  return [el('div',{class:'row'},[el('button',{class:'btn ghost sm',type:'button',onclick:function(){wrapSel(ta,'<b>','</b>')},text:'In đậm'}),
+    el('button',{class:'btn ghost sm',type:'button',onclick:function(){wrapSel(ta,'<ul><li>','</li></ul>')},text:'Danh sách'}),
+    el('button',{class:'btn ghost sm',type:'button',onclick:function(){wrapSel(ta,'','<br>')},text:'Xuống dòng'})]),
+    el('label',{class:'f'},[el('span',{text:'Nội dung (HTML đơn giản)'}),ta]),el('div',{class:'muted',text:'Xem trước:'}),pv];
+};
+ED.vocab=function(b){
+  b.items=b.items||[];var box=el('div',{class:'stack'});
+  function draw(){
+    box.innerHTML='';
+    b.items.forEach(function(it,i){
+      var d=audDot(it.w);
+      box.appendChild(el('div',{class:'ir v'},[
+        el('input',{type:'text',value:it.icon||'',placeholder:'Icon',oninput:function(e){it.icon=e.target.value;dirty()},'aria-label':'Icon'}),
+        el('input',{type:'text',value:it.w||'',placeholder:'Từ hoặc cụm từ',oninput:function(e){it.w=e.target.value;it.au=A(e.target.value.trim());d.set(e.target.value.trim());dirty()},'aria-label':'Từ tiếng Anh'}),
+        el('input',{type:'text',value:it.vi||'',placeholder:'Nghĩa tiếng Việt',oninput:function(e){it.vi=e.target.value;dirty()},'aria-label':'Nghĩa'}),d,
+        xbtn(function(){b.items.splice(i,1);dirty();draw()})]));
+    });
+    box.appendChild(el('button',{class:'btn ghost sm',type:'button',onclick:function(){b.items.push({w:'',icon:'',vi:'',au:A('')});dirty();draw()},text:'+ Thêm từ'}));
+  }
+  draw();
+  return [fld('Tiêu đề',b.title,function(v){b.title=v}),fld('Hướng dẫn',b.instr,function(v){b.instr=v}),box,
+    el('p',{class:'muted',text:'Từ mới thêm sẽ tự có thẻ trong các trò chơi. Hãy vào tab Flashcard từ vựng để viết câu giải thích và ví dụ cho thẻ.'})];
+};
+ED.gap=function(b){
+  b.qs=b.qs||[];var box=el('div',{class:'stack'});
+  function draw(){
+    box.innerHTML='';
+    b.qs.forEach(function(q,i){
+      box.appendChild(el('div',{class:'ir g'},[
+        el('input',{type:'text',value:q.pre||'',placeholder:'Phần trước ô trống',oninput:function(e){q.pre=e.target.value;dirty()},'aria-label':'Phần trước'}),
+        el('input',{type:'text',value:(q.ans||[]).join(' | '),placeholder:'Đáp án (nhiều đáp án ngăn bởi |)',oninput:function(e){q.ans=e.target.value.split('|').map(function(x){return x.trim()}).filter(Boolean);dirty()},'aria-label':'Đáp án'}),
+        el('input',{type:'text',value:q.post||'',placeholder:'Phần sau ô trống',oninput:function(e){q.post=e.target.value;dirty()},'aria-label':'Phần sau'}),
+        xbtn(function(){b.qs.splice(i,1);dirty();draw()})]));
+    });
+    box.appendChild(el('button',{class:'btn ghost sm',type:'button',onclick:function(){b.qs.push({pre:'',ans:[''],post:''});dirty();draw()},text:'+ Thêm câu'}));
+  }
+  draw();return [fld('Tiêu đề',b.title,function(v){b.title=v}),fld('Hướng dẫn',b.instr,function(v){b.instr=v}),box];
+};
+ED.mcq=function(b){
+  b.qs=b.qs||[];var box=el('div',{class:'stack'});
+  function draw(){
+    box.innerHTML='';
+    b.qs.forEach(function(q,i){
+      var sel=el('select',{onchange:function(e){q.ans=parseInt(e.target.value,10);dirty()}});
+      function fillSel(){sel.innerHTML='';(q.opts||[]).forEach(function(o,k){sel.appendChild(el('option',{value:k,text:String.fromCharCode(65+k)+'. '+o,selected:q.ans===k}))})}
+      var ta=el('textarea',{rows:3});ta.value=(q.opts||[]).join('\n');
+      ta.addEventListener('input',function(){q.opts=ta.value.split('\n').map(function(x){return x.trim()}).filter(Boolean);if(q.ans>=q.opts.length){q.ans=0}fillSel();dirty()});
+      fillSel();
+      box.appendChild(el('div',{class:'qbox'},[el('div',{class:'row'},[el('b',{text:'Câu '+(i+1)}),xbtn(function(){b.qs.splice(i,1);dirty();draw()})]),
+        fld('Câu hỏi',q.q,function(v){q.q=v}),el('label',{class:'f'},[el('span',{text:'Các lựa chọn (mỗi dòng một lựa chọn)'}),ta]),
+        el('label',{class:'f'},[el('span',{text:'Đáp án đúng'}),sel]),fld('Giải thích khi học sinh làm sai (không bắt buộc)',q.why,function(v){q.why=v})]));
+    });
+    box.appendChild(el('button',{class:'btn ghost sm',type:'button',onclick:function(){b.qs.push({q:'',opts:['',''],ans:0,why:''});dirty();draw()},text:'+ Thêm câu hỏi'}));
+  }
+  draw();return [fld('Tiêu đề',b.title,function(v){b.title=v}),fld('Hướng dẫn',b.instr,function(v){b.instr=v}),box];
+};
+ED.shadow=function(b){
+  b.items=b.items||[];var box=el('div',{class:'stack'});
+  function draw(){
+    box.innerHTML='';
+    b.items.forEach(function(it,i){
+      var d=audDot(strip(it.h));
+      box.appendChild(el('div',{class:'ir h'},[el('input',{type:'text',value:it.h||'',placeholder:'Câu (dùng <b>từ</b> để tô đậm từ cần đọc kỹ)',oninput:function(e){it.h=e.target.value;var t=strip(e.target.value);it.au=A(t);d.set(t);dirty()},'aria-label':'Câu'}),d,xbtn(function(){b.items.splice(i,1);dirty();draw()})]));
+    });
+    box.appendChild(el('button',{class:'btn ghost sm',type:'button',onclick:function(){b.items.push({h:'',au:A('')});dirty();draw()},text:'+ Thêm câu'}));
+  }
+  draw();return [fld('Tiêu đề',b.title,function(v){b.title=v}),box];
+};
+ED.story=function(b){
+  b.lines=b.lines||[];var box=el('div',{class:'stack'});
+  function draw(){
+    box.innerHTML='';
+    b.lines.forEach(function(l,i){
+      var d=audDot(l[1]);
+      box.appendChild(el('div',{class:'ir s'},[
+        el('select',{onchange:function(e){l[0]=e.target.value;dirty()},'aria-label':'Giọng đọc'},[['f','Cô (f)'],['m','Nam (m)']].map(function(o){return el('option',{value:o[0],text:o[1],selected:l[0]===o[0]})})),
+        el('div',{class:'row'},[el('input',{type:'text',value:l[1]||'',placeholder:'Câu tiếng Anh',oninput:function(e){l[1]=e.target.value;d.set(e.target.value.trim());dirty()},'aria-label':'Tiếng Anh',style:'flex:1'}),d]),
+        el('input',{type:'text',value:l[2]||'',placeholder:'Nghĩa tiếng Việt',oninput:function(e){l[2]=e.target.value;dirty()},'aria-label':'Tiếng Việt'}),
+        xbtn(function(){b.lines.splice(i,1);dirty();draw()})]));
+    });
+    box.appendChild(el('button',{class:'btn ghost sm',type:'button',onclick:function(){b.lines.push([b.lines.length%2?'m':'f','','']);dirty();draw()},text:'+ Thêm câu thoại'}));
+  }
+  draw();return [fld('Tiêu đề tình huống',b.title,function(v){b.title=v}),fld('Bối cảnh (tiếng Việt)',b.ctx,function(v){b.ctx=v},{rows:2}),box];
+};
+function jsonEd(b,replace){
+  var ta=el('textarea',{rows:14,style:'font-family:ui-monospace,Menlo,monospace;font-size:.85rem'});ta.value=JSON.stringify(b,null,1);
+  var msg=el('div',{class:'muted',text:'Khối này có cấu trúc phức tạp nên sửa ở dạng dữ liệu. Giữ nguyên các dấu ngoặc và dấu phẩy.'});
+  ta.addEventListener('input',function(){
+    try{var o=JSON.parse(ta.value);if(!o||o.t!==b.t){throw new Error('Không được đổi trường "t".')}replace(o);msg.className='muted';msg.textContent='Dữ liệu hợp lệ.';dirty()}
+    catch(e){msg.className='note bad';msg.textContent='Dữ liệu chưa hợp lệ: '+e.message+' (thay đổi này chưa được ghi nhận)'}
+  });
+  return [msg,ta];
+}
+function newBlock(t){
+  var tpl={text:{t:'text',html:'<b>Tiêu đề</b><ul><li>Ý 1</li></ul>'},teacher:{t:'teacher',html:'<b>Ghi chú giáo viên.</b> '},
+    vocab:{t:'vocab',title:'Từ vựng mới',instr:'Bấm vào thẻ để nghe cô đọc, rồi đọc theo to và rõ.',items:[]},
+    gap:{t:'gap',title:'Điền từ',instr:'Gõ từ còn thiếu rồi bấm Kiểm tra.',qs:[]},mcq:{t:'mcq',title:'Chọn đáp án đúng',instr:'Chọn một đáp án cho mỗi câu.',qs:[]},
+    shadow:{t:'shadow',title:'Nghe và nhắc lại',items:[]},story:{t:'story',title:'Tình huống mới',ctx:'',lines:[]}};
+  if(tpl[t]){return tpl[t]}
+  for(var i=0;i<SEED.weeks.length;i++){var W=SEED.weeks[i];for(var j=0;j<W.sections.length;j++){var bl=W.sections[j].blocks;for(var k=0;k<bl.length;k++){if(bl[k].t===t){return clone(bl[k])}}}}
+  return {t:t};
+}
+function contentView(body){
+  var W=effWeeks();
+  if(!S.cur){S.cur={w:W[0].id,sid:W[0].sections[0].id,draft:null,open:{}}}
+  var cur=S.cur;
+  var f=findSec(cur.w,cur.sid);
+  if(!cur.draft){cur.draft={title:f.s.title,mins:f.s.mins,tab:f.s.tab,blocks:clone(f.s.blocks||[])};cur.open={};S.warned=false}
+  var D=cur.draft;
+  var tree=el('nav',{class:'card tree','aria-label':'Danh sách ngày học'});
+  W.forEach(function(w){
+    tree.appendChild(el('h3',{text:w.title+': '+w.topic.slice(0,32)}));
+    w.sections.forEach(function(s){
+      tree.appendChild(el('button',{class:'tnode','aria-current':String(w.id===cur.w&&s.id===cur.sid),onclick:function(){
+        if(S.dirty&&!confirm('Em chưa lưu thay đổi ở ngày học này. Chuyển sang ngày khác sẽ mất thay đổi. Tiếp tục?')){return}
+        S.dirty=false;cur.w=w.id;cur.sid=s.id;cur.draft=null;render();
+      }},[el('span',{text:(s.tab||s.id)+' · '+s.title}),s._ovr?el('span',{class:'pill',text:'đã sửa'}):null]));
+    });
+  });
+  var blocks=el('div',{class:'stack'});
+  function draw(){
+    blocks.innerHTML='';
+    D.blocks.forEach(function(b,i){
+      var open=!!cur.open[i];
+      var head=el('div',{class:'bhead',onclick:function(){cur.open[i]=!cur.open[i];draw()},role:'button',tabindex:0,'aria-expanded':String(open),onkeydown:function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();cur.open[i]=!cur.open[i];draw()}}},[
+        el('span',{class:'pill',text:TYPES[b.t]||b.t}),el('b',{text:bsum(b)}),
+        el('button',{class:'btn ghost sm',type:'button',disabled:i===0,title:'Lên',onclick:function(e){e.stopPropagation();mv(i,-1)},text:'↑'}),
+        el('button',{class:'btn ghost sm',type:'button',disabled:i===D.blocks.length-1,title:'Xuống',onclick:function(e){e.stopPropagation();mv(i,1)},text:'↓'}),
+        el('button',{class:'btn ghost sm',type:'button',onclick:function(e){e.stopPropagation();D.blocks.splice(i+1,0,clone(b));dirty();cur.open={};draw()},text:'Nhân bản'}),
+        el('button',{class:'btn danger sm',type:'button',onclick:function(e){e.stopPropagation();warnShift();if(confirm('Xóa khối này?')){D.blocks.splice(i,1);dirty();cur.open={};draw()}},text:'Xóa'})]);
+      var card=el('div',{class:'bcard'},[head]);
+      if(open){
+        var kids=ED[b.t]?ED[b.t](b):jsonEd(b,function(o){D.blocks[i]=o;Object.keys(b).forEach(function(k){delete b[k]});Object.assign(b,o)});
+        if(['rule','speak','sounds','write','bookimg'].indexOf(b.t)>=0&&!ED[b.t]){kids=jsonEd(b,function(o){Object.keys(b).forEach(function(k){delete b[k]});Object.assign(b,o)})}
+        card.appendChild(el('div',{class:'bbody'},kids));
       }
-      return setTimeout(tick,250);
-    }
-    var head=d.querySelector('.secbar b'),ht=head?head.textContent:'';
-    if(target==='subs'&&/Bài nộp/.test(ht)){return busy('')}
-    if(target==='class'&&/Cả lớp/.test(ht)){return busy('')}
-    var ed=d.querySelector('[data-act="edit"]');
-    if(ed){click(ed);return setTimeout(tick,250)}
-    var back=d.querySelector('[data-act="back"]');
-    if(back){click(back)}
-    setTimeout(tick,250);
+      blocks.appendChild(card);
+    });
   }
-  tick();
+  function warnShift(){if(!S.warned){S.warned=true;toast('Lưu ý: đổi vị trí hoặc xóa khối sẽ làm lệch kết quả đã làm của học sinh ở các khối phía sau.','warn')}}
+  function mv(i,d){warnShift();var t=D.blocks[i];D.blocks[i]=D.blocks[i+d];D.blocks[i+d]=t;dirty();cur.open={};draw()}
+  draw();
+  var typeSel=el('select',{style:'width:auto'},Object.keys(TYPES).filter(function(k){return ['scene','pics','model','check'].indexOf(k)<0}).map(function(k){return el('option',{value:k,text:TYPES[k]})}));
+  var msg=el('span',{id:'savemsg',class:'muted',text:S.dirty?'Chưa lưu':(f.s._ovr?'Đang dùng bản đã sửa':'Đang dùng bản gốc')});
+  var appUrl=ls('dd-app','')||'index.html';
+  var save=el('button',{class:'btn',id:'savebtn',disabled:!S.dirty,onclick:function(){saveSec(save,msg)},text:'Lưu và đăng cho học sinh'});
+  var editor=el('div',{class:'stack'},[
+    el('section',{class:'card stack'},[el('div',{class:'row'},[el('h2',{text:'Ngày học: '+(D.tab||'')}),f.s._ovr?el('span',{class:'pill',text:'đã chỉnh sửa'}):el('span',{class:'pill ok',text:'bản gốc'})]),
+      el('div',{class:'grid2'},[fld('Tiêu đề ngày học',D.title,function(v){D.title=v}),fld('Số phút',D.mins,function(v){D.mins=parseInt(v,10)||D.mins},{type:'number'})]),
+      el('div',{class:'row'},[el('a',{class:'btn ghost sm',href:appUrl+'#w'+cur.w+'-'+cur.sid,target:'_blank',rel:'noopener',text:'Mở trên trang học sinh'}),
+        el('button',{class:'btn ghost sm',type:'button',onclick:function(){showHistory(cur,D,draw)},text:'Lịch sử bản lưu'}),
+        f.s._ovr?el('button',{class:'btn danger sm',type:'button',onclick:function(){
+          if(!confirm('Khôi phục về bản gốc? Các chỉnh sửa hiện tại của ngày học này sẽ không còn hiển thị cho học sinh (vẫn xem lại được trong Lịch sử).'))return;
+          api({action:'lr_content_del',key:'sec:w'+cur.w+'.'+cur.sid}).then(function(j){if(j.ok){delete S.content.sec['w'+cur.w+'.'+cur.sid];S.dirty=false;cur.draft=null;toast('Đã khôi phục bản gốc.');render()}else{toast(j.error||'Chưa khôi phục được','bad')}});
+        },text:'Khôi phục bản gốc'}):null])]),
+    blocks,
+    el('div',{class:'card row'},[el('span',{text:'Thêm khối mới:'}),typeSel,el('button',{class:'btn ghost sm',type:'button',onclick:function(){D.blocks.push(newBlock(typeSel.value));cur.open={};cur.open[D.blocks.length-1]=true;dirty();draw()},text:'Thêm vào cuối ngày học'})]),
+    el('div',{class:'savebar'},[save,msg])
+  ]);
+  body.appendChild(el('div',{class:'cwrap'},[tree,editor]));
+}
+function validate(D){
+  var errs=[];
+  D.blocks.forEach(function(b,i){
+    var n='Khối '+(i+1)+' ('+(TYPES[b.t]||b.t)+')';
+    if(b.t==='gap'){(b.qs||[]).forEach(function(q,k){if(!(q.ans&&q.ans.length)){errs.push(n+', câu '+(k+1)+': chưa có đáp án.')}})}
+    if(b.t==='mcq'){(b.qs||[]).forEach(function(q,k){if(!q.q){errs.push(n+', câu '+(k+1)+': chưa có câu hỏi.')}if((q.opts||[]).length<2){errs.push(n+', câu '+(k+1)+': cần ít nhất 2 lựa chọn.')}})}
+    if(b.t==='vocab'){(b.items||[]).forEach(function(it,k){if(!it.w||!it.vi){errs.push(n+', từ '+(k+1)+': thiếu từ hoặc nghĩa.')}})}
+    if(b.t==='shadow'){(b.items||[]).forEach(function(it,k){if(!strip(it.h)){errs.push(n+', câu '+(k+1)+': đang trống.')}})}
+    if(b.t==='story'){(b.lines||[]).forEach(function(l,k){if(!l[1]){errs.push(n+', câu thoại '+(k+1)+': đang trống.')}})}
+  });
+  return errs;
+}
+function saveSec(btn,msg){
+  var cur=S.cur,D=cur.draft,errs=validate(D);
+  if(errs.length){alert('Cô sửa các lỗi sau rồi lưu nhé:\n\n'+errs.slice(0,12).join('\n'));return}
+  var json=JSON.stringify({title:D.title,mins:D.mins,tab:D.tab,blocks:D.blocks});
+  btn.disabled=true;msg.textContent='Đang lưu...';
+  api({action:'lr_content_save',key:'sec:w'+cur.w+'.'+cur.sid,json:json}).then(function(j){
+    if(j.ok){S.content.sec['w'+cur.w+'.'+cur.sid]=JSON.parse(json);S.dirty=false;msg.textContent='Đã lưu. Học sinh thấy bài mới khi mở lại trang.';toast('Đã đăng bài cho học sinh.');
+      var p=$('.cwrap');if(p){render()}}
+    else{btn.disabled=false;msg.textContent=j.error||'Chưa lưu được'}
+  }).catch(function(){btn.disabled=false;msg.textContent='Chưa kết nối được Apps Script.'});
+}
+function showHistory(cur,D,draw){
+  var key='sec:w'+cur.w+'.'+cur.sid;
+  var list=el('div',{class:'stack'},[el('p',{class:'muted',text:'Đang tải...'})]);
+  var m=el('div',{class:'modal',onclick:function(e){if(e.target===m){m.remove()}}},[el('div',{class:'card stack',role:'dialog','aria-label':'Lịch sử bản lưu'},[el('div',{class:'row'},[el('h2',{text:'Lịch sử bản lưu'}),el('button',{class:'btn ghost sm',style:'margin-left:auto',onclick:function(){m.remove()},text:'Đóng'})]),list])]);
+  document.body.appendChild(m);
+  api({action:'lr_history',key:key}).then(function(j){
+    list.innerHTML='';
+    if(!j.ok||!j.items.length){list.appendChild(el('p',{class:'muted',text:j.ok?'Chưa có bản lưu nào cho ngày học này.':(j.error||'Không tải được lịch sử.')}));return}
+    j.items.forEach(function(it){
+      var o;try{o=JSON.parse(it.json)}catch(e){return}
+      list.appendChild(el('div',{class:'brow'},[el('span',{class:'n',text:it.at+' · '+it.by+' · '+((o.blocks||[]).length)+' khối'}),
+        el('button',{class:'btn ghost sm',onclick:function(){
+          cur.draft={title:o.title||D.title,mins:o.mins||D.mins,tab:o.tab||D.tab,blocks:o.blocks||[]};cur.open={};dirty();m.remove();render();toast('Đã nạp bản này. Bấm Lưu để đăng lại.');
+        },text:'Nạp bản này'})]));
+    });
+  }).catch(function(){list.innerHTML='';list.appendChild(el('p',{class:'muted',text:'Chưa kết nối được.'}))});
 }
 
-/* ---------- Luyện tập (xem thử) ---------- */
-var PRACTICE_I=0;
-function showPractice(i){
-  PRACTICE_I=i;
-  $('prbar').innerHTML=PRACTICE.map(function(p,k){return '<button type="button" class="chip'+(k===i?' on':'')+'" data-pi="'+k+'">'+p[0]+'</button>'}).join('');
-  var pr=$('pr'),src=PRACTICE[i][1];
-  if(pr.getAttribute('src')!==src){pr.src=src}
-}
-$('prbar').addEventListener('click',function(e){var b=e.target.closest('[data-pi]');if(b){showPractice(parseInt(b.getAttribute('data-pi'),10))}});
-
-/* ---------- Tổng quan ---------- */
-var KIND={speak:'Nói',write:'Viết',shadow:'Nghe và nhắc lại'};
-function parseVN(s){var m=/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+)/.exec(s||'');return m?new Date(+m[3],+m[2]-1,+m[1],+m[4],+m[5]):null}
-function ago(s){
-  var d=parseVN(s);if(!d){return{n:null,t:'Chưa học'}}
-  var n=Math.floor((Date.now()-d.getTime())/864e5);
-  return{n:n,t:n<=0?'Hôm nay':n+' ngày trước'};
-}
-function renderHome(){
-  var today=new Date().toLocaleDateString('vi-VN',{weekday:'long',day:'numeric',month:'numeric'});
-  $('native').innerHTML='<div class="pad"><h1>Xin chào, '+esc(U.name)+'!</h1><p class="mut">'+today+'</p>'
-   +'<div class="stats" id="stats"></div>'
-   +'<section class="card"><h2>Bài nộp chờ nhận xét</h2><div id="pend" class="mut">Đang tải...</div></section>'
-   +'<section class="card"><h2>Học sinh</h2><div id="stu" class="mut">Đang tải...</div></section></div>';
-  var D={};
-  function paint(){if(cur==='home'){paintHome(D)}}
-  paint();
-  if(!API_URL){D.demo=1;paint();return}
-  Promise.all([
-    api(cred({action:'lr_list'})).then(function(j){if(j.ok){D.students=j.students}else{D.errS=j.error||'Không tải được danh sách.'}}).catch(function(){D.errS='Chưa kết nối được.'}),
-    api(cred({action:'lr_subs'})).then(function(j){if(j.ok){D.subs=j.subs}else{D.errB=j.error||'Không tải được bài nộp.'}}).catch(function(){D.errB='Chưa kết nối được.'}),
-    api(cred({action:'lr_content'})).then(function(j){if(j.ok){D.ver=j.ver||0;D.weeks=Object.keys(j.weeks||{})}}).catch(function(){})
-  ]).then(paint);
-}
-function paintHome(D){
-  var pend=(D.subs||[]).filter(function(x){return !x.comment});
-  var st=D.students,ds='—';
-  var h='';
-  h+='<div class="stat"><small>Học sinh</small><b>'+(st?st.length:'—')+'</b><a class="btn g" href="#class">Xem cả lớp</a></div>';
-  h+='<div class="stat"><small>Bài nộp chưa nhận xét</small><b>'+(D.subs?pend.length:'—')+'</b><a class="btn g" href="#subs">Chấm bài</a></div>';
-  h+='<div class="stat"><small>Nội dung đã sửa</small><b>'+(D.ver==null?'—':(D.ver?'Bản '+D.ver:'Gốc'))+'</b><span class="mut">'+(D.weeks&&D.weeks.length?'Tuần đã sửa: '+esc(D.weeks.join(', ')):(D.ver==null?'':'Chưa sửa tuần nào'))+'</span><a class="btn" href="#edit">Soạn nội dung</a></div>';
-  $('stats').innerHTML=h;
-  var p=$('pend');
-  if(D.demo){p.innerHTML='<span class="mut">Chế độ thử: chưa kết nối Google Sheet nên chưa có bài nộp.</span>'}
-  else if(D.errB){p.innerHTML='<span style="color:var(--bad);font-weight:700">'+esc(D.errB)+'</span>'}
-  else if(!D.subs){p.textContent='Đang tải...'}
-  else if(!pend.length){p.innerHTML='<span class="pill ok">Đã nhận xét hết</span>'}
-  else{
-    p.className='';
-    p.innerHTML=pend.slice(0,6).map(function(x){
-      return '<div class="row"><span><b>'+esc(x.name)+'</b> · '+esc(x.title||x.key)+' <span class="pill">'+esc(KIND[x.kind]||x.kind||'Bài nộp')+'</span></span><span class="mut">'+esc(x.at)+'</span></div>';
-    }).join('')+(pend.length>6?'<p class="mut" style="margin:8px 0 0">và '+(pend.length-6)+' bài nữa.</p>':'')+'<p style="margin:10px 0 0"><a class="btn" href="#subs">Chấm bài</a></p>';
-  }
-  var s=$('stu');
-  if(D.demo){s.innerHTML='<span class="mut">Chế độ thử: chưa có danh sách học sinh.</span>'}
-  else if(D.errS){s.innerHTML='<span style="color:var(--bad);font-weight:700">'+esc(D.errS)+'</span>'}
-  else if(!st){s.textContent='Đang tải...'}
-  else if(!st.length){s.textContent='Chưa có học sinh nào trong Google Sheet.'}
-  else{
-    var rows=st.map(function(x){var a=ago(x.updatedAt);return{x:x,a:a,k:a.n==null?9999:a.n}}).sort(function(a,b){return b.k-a.k});
-    s.className='tw';
-    s.innerHTML='<table><thead><tr><th>Tên</th><th>Tuần đã mở</th><th>Ngày đã xong</th><th>Lần học gần nhất</th></tr></thead><tbody>'
-     +rows.map(function(r){
-       var late=r.k>=3;
-       return '<tr><td><b>'+esc(r.x.name)+'</b></td><td>'+esc(r.x.unlockWeek)+'</td><td>'+esc(r.x.doneCount)+'</td><td><span class="pill'+(late?' warn':'')+'">'+esc(r.a.t)+'</span></td></tr>';
-     }).join('')+'</tbody></table>';
-  }
-}
-
-/* ---------- khởi động ---------- */
-(function boot(){
-  var s=null;try{s=JSON.parse(lsGet(SESSION)||'null')}catch(e){}
-  if(s&&s.name&&s.code){
-    $('gate').hidden=false;setMsg('Đang kiểm tra...');
-    login(s.name,s.code,true);
-  }
-})();
+/* ---------------- khởi động ---------------- */
+var sess=null;try{sess=JSON.parse(sessionStorage.getItem('dd-sess'))}catch(e){}
+if(sess&&sess.name){S.user=sess;render();boot()}else{render()}
 })();
 </script>
-</body></html>
+</body>
+</html>
