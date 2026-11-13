@@ -1,0 +1,926 @@
+{
+ "v": 1,
+ "units": [
+  {
+   "id": "u0",
+   "t": "Tuần 1",
+   "sub": "Thói quen hằng ngày",
+   "words": [
+    {
+     "w": "get up",
+     "vi": "thức dậy",
+     "pos": "cụm động từ",
+     "def": "to leave your bed in the morning",
+     "ex": "I get up at six o'clock.",
+     "ex2": "She gets up early on Monday."
+    },
+    {
+     "w": "have breakfast",
+     "vi": "ăn sáng",
+     "pos": "cụm động từ",
+     "def": "to eat the first meal of the day",
+     "ex": "I have breakfast at home.",
+     "ex2": "He has breakfast with his family."
+    },
+    {
+     "w": "brush my teeth",
+     "vi": "đánh răng",
+     "pos": "cụm động từ",
+     "def": "to clean your teeth with a toothbrush",
+     "ex": "I brush my teeth every morning.",
+     "ex2": "She always brushes her teeth after dinner."
+    },
+    {
+     "w": "go to school",
+     "vi": "đi học",
+     "pos": "cụm động từ",
+     "def": "to travel to the place where you study",
+     "ex": "I go to school by bike.",
+     "ex2": "They go to school at seven."
+    },
+    {
+     "w": "have lunch",
+     "vi": "ăn trưa",
+     "pos": "cụm động từ",
+     "def": "to eat the meal in the middle of the day",
+     "ex": "We have lunch at school.",
+     "ex2": "He usually has lunch at noon."
+    },
+    {
+     "w": "do my homework",
+     "vi": "làm bài tập về nhà",
+     "pos": "cụm động từ",
+     "def": "to do the work your teacher gives you for home",
+     "ex": "I do my homework after school.",
+     "ex2": "She does her homework in her room."
+    },
+    {
+     "w": "play badminton",
+     "vi": "chơi cầu lông",
+     "pos": "cụm động từ",
+     "def": "to hit a shuttlecock over a net with a racket",
+     "ex": "He plays badminton on Sundays.",
+     "ex2": "We often play badminton in the park."
+    },
+    {
+     "w": "tidy my room",
+     "vi": "dọn phòng",
+     "pos": "cụm động từ",
+     "def": "to make your room clean and neat",
+     "ex": "I tidy my room on Saturdays.",
+     "ex2": "He tidies his room every day."
+    },
+    {
+     "w": "watch TV",
+     "vi": "xem ti vi",
+     "pos": "cụm động từ",
+     "def": "to look at programmes on a television",
+     "ex": "I watch TV in the evening.",
+     "ex2": "She sometimes watches TV after dinner."
+    },
+    {
+     "w": "have a shower",
+     "vi": "tắm vòi sen",
+     "pos": "cụm động từ",
+     "def": "to wash your body under running water",
+     "ex": "I have a shower before bed.",
+     "ex2": "He has a shower every evening."
+    },
+    {
+     "w": "read a comic",
+     "vi": "đọc truyện tranh",
+     "pos": "cụm động từ",
+     "def": "to read a book with pictures and short stories",
+     "ex": "I sometimes read a comic.",
+     "ex2": "She reads a comic at the weekend."
+    },
+    {
+     "w": "go to bed",
+     "vi": "đi ngủ",
+     "pos": "cụm động từ",
+     "def": "to get into your bed to sleep",
+     "ex": "I go to bed at nine o'clock.",
+     "ex2": "He never goes to bed late."
+    }
+   ],
+   "gram": [
+    {
+     "pre": "She ",
+     "ans": "gets",
+     "post": " up at seven o'clock.",
+     "opts": [
+      "gets",
+      "get",
+      "getting"
+     ]
+    },
+    {
+     "pre": "He ",
+     "ans": "plays",
+     "post": " badminton on Sundays.",
+     "opts": [
+      "plays",
+      "play",
+      "playing"
+     ]
+    },
+    {
+     "pre": "I ",
+     "ans": "always",
+     "post": " brush my teeth.",
+     "opts": [
+      "always",
+      "brush",
+      "teeth"
+     ]
+    },
+    {
+     "pre": "My brother ",
+     "ans": "watches",
+     "post": " TV in the evening.",
+     "opts": [
+      "watches",
+      "watch",
+      "watching"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u1",
+   "t": "Unit 1",
+   "sub": "Chào hỏi",
+   "words": [
+    {
+     "w": "Good morning",
+     "vi": "chào buổi sáng",
+     "pos": "câu chào",
+     "def": "what you say when you meet someone before twelve o'clock",
+     "ex": "Good morning, Miss Hoa.",
+     "ex2": "Good morning, class.",
+     "pic": "sunrise"
+    },
+    {
+     "w": "Good afternoon",
+     "vi": "chào buổi chiều",
+     "pos": "câu chào",
+     "def": "what you say when you meet someone after lunch",
+     "ex": "Good afternoon, class.",
+     "ex2": "Good afternoon, Mr Nam.",
+     "pic": "sun"
+    },
+    {
+     "w": "Good evening",
+     "vi": "chào buổi tối",
+     "pos": "câu chào",
+     "def": "what you say when you meet someone in the evening",
+     "ex": "Good evening, Dad.",
+     "ex2": "Good evening, everyone.",
+     "pic": "sunset"
+    },
+    {
+     "w": "Good night",
+     "vi": "chúc ngủ ngon",
+     "pos": "câu chào",
+     "def": "what you say before someone goes to bed",
+     "ex": "Good night, Mum.",
+     "ex2": "Good night. Sleep well.",
+     "pic": "moon"
+    },
+    {
+     "w": "Goodbye",
+     "vi": "tạm biệt",
+     "pos": "câu chào",
+     "def": "what you say when you leave someone",
+     "ex": "Goodbye, Tom.",
+     "ex2": "Goodbye, Miss Hoa.",
+     "pic": "wave"
+    },
+    {
+     "w": "See you tomorrow",
+     "vi": "hẹn mai gặp",
+     "pos": "câu chào",
+     "def": "what you say when you will meet again the next day",
+     "ex": "Goodbye. See you tomorrow.",
+     "ex2": "See you tomorrow, Lan.",
+     "pic": "cal:+1"
+    },
+    {
+     "w": "See you later",
+     "vi": "hẹn gặp lại sau",
+     "pos": "câu chào",
+     "def": "what you say when you will meet again soon today",
+     "ex": "See you later, Nam.",
+     "ex2": "Bye! See you later."
+    },
+    {
+     "w": "See you soon",
+     "vi": "hẹn sớm gặp lại",
+     "pos": "câu chào",
+     "def": "what you say when you will meet again in a short time",
+     "ex": "See you soon, Mai.",
+     "ex2": "Goodbye. See you soon!"
+    },
+    {
+     "w": "Nice to see you again",
+     "vi": "rất vui được gặp lại",
+     "pos": "câu chào",
+     "def": "what you say when you meet a friend after a long time",
+     "ex": "Nice to see you again, Linh.",
+     "ex2": "Hello, Tom. Nice to see you again."
+    },
+    {
+     "w": "How are you?",
+     "vi": "bạn khỏe không?",
+     "pos": "câu hỏi",
+     "def": "a question to ask about someone's health or feeling",
+     "ex": "Hello, Ben. How are you?",
+     "ex2": "Good morning, Miss Hoa. How are you?"
+    },
+    {
+     "w": "I'm fine, thank you",
+     "vi": "mình khỏe, cảm ơn",
+     "pos": "câu trả lời",
+     "def": "a polite answer when someone asks how you are",
+     "ex": "I'm fine, thank you. And you?",
+     "ex2": "I'm fine, thank you, Miss Hoa."
+    },
+    {
+     "w": "And you?",
+     "vi": "còn bạn thì sao?",
+     "pos": "câu hỏi",
+     "def": "a short question to ask the same thing back",
+     "ex": "I'm fine. And you?",
+     "ex2": "I'm great, thanks. And you?"
+    }
+   ],
+   "gram": [
+    {
+     "pre": "Good ",
+     "ans": "morning",
+     "post": ", Miss Hoa. (9 a.m.)",
+     "opts": [
+      "morning",
+      "afternoon",
+      "evening"
+     ]
+    },
+    {
+     "pre": "How are ",
+     "ans": "you",
+     "post": "?",
+     "opts": [
+      "you",
+      "your",
+      "I"
+     ]
+    },
+    {
+     "pre": "Goodbye. See you ",
+     "ans": "tomorrow",
+     "post": ".",
+     "opts": [
+      "tomorrow",
+      "morning",
+      "fine"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u2",
+   "t": "Unit 2",
+   "sub": "Quốc gia",
+   "words": [
+    {
+     "w": "Viet Nam",
+     "vi": "nước Việt Nam",
+     "pos": "danh từ",
+     "def": "the country where Hanoi and Ho Chi Minh City are",
+     "ex": "I'm from Viet Nam.",
+     "ex2": "Viet Nam is in Asia.",
+     "pic": "flag:vn"
+    },
+    {
+     "w": "Vietnamese",
+     "vi": "người Việt Nam",
+     "pos": "tính từ",
+     "def": "from Viet Nam",
+     "ex": "I'm Vietnamese.",
+     "ex2": "My teacher is Vietnamese.",
+     "pic": "flag:vn"
+    },
+    {
+     "w": "Japan",
+     "vi": "nước Nhật",
+     "pos": "danh từ",
+     "def": "the country where Tokyo is",
+     "ex": "He's from Japan.",
+     "ex2": "Japan is in Asia.",
+     "pic": "flag:jp"
+    },
+    {
+     "w": "Japanese",
+     "vi": "người Nhật",
+     "pos": "tính từ",
+     "def": "from Japan",
+     "ex": "He's Japanese.",
+     "ex2": "My friend is Japanese.",
+     "pic": "flag:jp"
+    },
+    {
+     "w": "America",
+     "vi": "nước Mỹ",
+     "pos": "danh từ",
+     "def": "the country with the city of New York",
+     "ex": "She's from America.",
+     "ex2": "My aunt lives in America.",
+     "pic": "flag:us"
+    },
+    {
+     "w": "American",
+     "vi": "người Mỹ",
+     "pos": "tính từ",
+     "def": "from America",
+     "ex": "She's American.",
+     "ex2": "The boy is American.",
+     "pic": "flag:us"
+    },
+    {
+     "w": "England",
+     "vi": "nước Anh",
+     "pos": "danh từ",
+     "def": "the country where London is",
+     "ex": "They're from England.",
+     "ex2": "England is in Europe.",
+     "pic": "flag:gb"
+    },
+    {
+     "w": "English",
+     "vi": "người Anh",
+     "pos": "tính từ",
+     "def": "from England",
+     "ex": "They're English.",
+     "ex2": "Our new teacher is English.",
+     "pic": "flag:gb"
+    },
+    {
+     "w": "Australia",
+     "vi": "nước Úc",
+     "pos": "danh từ",
+     "def": "the country with kangaroos",
+     "ex": "I'm from Australia.",
+     "ex2": "Australia is a big country.",
+     "pic": "flag:au"
+    },
+    {
+     "w": "Australian",
+     "vi": "người Úc",
+     "pos": "tính từ",
+     "def": "from Australia",
+     "ex": "I'm Australian.",
+     "ex2": "Her mum is Australian.",
+     "pic": "flag:au"
+    },
+    {
+     "w": "Malaysia",
+     "vi": "nước Ma-lai-xi-a",
+     "pos": "danh từ",
+     "def": "a country in Asia near Viet Nam",
+     "ex": "He's from Malaysia.",
+     "ex2": "Malaysia is a hot country.",
+     "pic": "flag:my"
+    },
+    {
+     "w": "Malaysian",
+     "vi": "người Ma-lai-xi-a",
+     "pos": "tính từ",
+     "def": "from Malaysia",
+     "ex": "He's Malaysian.",
+     "ex2": "My friend Aziz is Malaysian.",
+     "pic": "flag:my"
+    }
+   ],
+   "gram": [
+    {
+     "pre": "I'm ",
+     "ans": "from",
+     "post": " Viet Nam.",
+     "opts": [
+      "from",
+      "is",
+      "at"
+     ]
+    },
+    {
+     "pre": "Where are you ",
+     "ans": "from",
+     "post": "?",
+     "opts": [
+      "from",
+      "to",
+      "in"
+     ]
+    },
+    {
+     "pre": "He is from Japan. He is ",
+     "ans": "Japanese",
+     "post": ".",
+     "opts": [
+      "Japan",
+      "Japanese",
+      "Japaneses"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u3",
+   "t": "Unit 3",
+   "sub": "Thứ trong tuần",
+   "words": [
+    {
+     "w": "Monday",
+     "vi": "thứ Hai",
+     "pos": "danh từ",
+     "def": "the first day of the school week",
+     "ex": "It's Monday today.",
+     "ex2": "I study at school on Mondays.",
+     "pic": "cal:Mon"
+    },
+    {
+     "w": "Tuesday",
+     "vi": "thứ Ba",
+     "pos": "danh từ",
+     "def": "the day after Monday",
+     "ex": "We have English on Tuesday.",
+     "ex2": "Tuesday is my art day.",
+     "pic": "cal:Tue"
+    },
+    {
+     "w": "Wednesday",
+     "vi": "thứ Tư",
+     "pos": "danh từ",
+     "def": "the day in the middle of the school week",
+     "ex": "I play badminton on Wednesday.",
+     "ex2": "Wednesday comes after Tuesday.",
+     "pic": "cal:Wed"
+    },
+    {
+     "w": "Thursday",
+     "vi": "thứ Năm",
+     "pos": "danh từ",
+     "def": "the day after Wednesday",
+     "ex": "It's Thursday today.",
+     "ex2": "We have a test on Thursday.",
+     "pic": "cal:Thu"
+    },
+    {
+     "w": "Friday",
+     "vi": "thứ Sáu",
+     "pos": "danh từ",
+     "def": "the last school day of the week",
+     "ex": "Friday is my favourite day.",
+     "ex2": "We have PE on Friday.",
+     "pic": "cal:Fri"
+    },
+    {
+     "w": "Saturday",
+     "vi": "thứ Bảy",
+     "pos": "danh từ",
+     "def": "the first day of the weekend",
+     "ex": "I do housework on Saturdays.",
+     "ex2": "We visit my grandparents on Saturday.",
+     "pic": "cal:Sat"
+    },
+    {
+     "w": "Sunday",
+     "vi": "Chủ nhật",
+     "pos": "danh từ",
+     "def": "the last day of the week",
+     "ex": "I listen to music on Sundays.",
+     "ex2": "We stay at home on Sunday.",
+     "pic": "cal:Sun"
+    },
+    {
+     "w": "study at school",
+     "vi": "học ở trường",
+     "pos": "cụm động từ",
+     "def": "to learn lessons in a classroom",
+     "ex": "I study at school on Mondays.",
+     "ex2": "They study at school from Monday to Friday."
+    },
+    {
+     "w": "do housework",
+     "vi": "làm việc nhà",
+     "pos": "cụm động từ",
+     "def": "to clean and tidy the house",
+     "ex": "I do housework on Saturdays.",
+     "ex2": "She does housework with her mum."
+    },
+    {
+     "w": "listen to music",
+     "vi": "nghe nhạc",
+     "pos": "cụm động từ",
+     "def": "to hear songs or tunes",
+     "ex": "I listen to music on Sundays.",
+     "ex2": "He listens to music in his room."
+    },
+    {
+     "w": "visit my grandparents",
+     "vi": "thăm ông bà",
+     "pos": "cụm động từ",
+     "def": "to go and see your grandmother and grandfather",
+     "ex": "I visit my grandparents on Sundays.",
+     "ex2": "We visit our grandparents in the countryside."
+    },
+    {
+     "w": "watch TV",
+     "vi": "xem ti vi",
+     "pos": "cụm động từ",
+     "def": "to look at programmes on a television",
+     "ex": "I watch TV in the evening.",
+     "ex2": "He watches TV on Saturday."
+    }
+   ],
+   "gram": [
+    {
+     "pre": "What day is it ",
+     "ans": "today",
+     "post": "?",
+     "opts": [
+      "today",
+      "tomorrow",
+      "Monday"
+     ]
+    },
+    {
+     "pre": "I study at school ",
+     "ans": "on",
+     "post": " Mondays.",
+     "opts": [
+      "on",
+      "in",
+      "at"
+     ]
+    },
+    {
+     "pre": "She ",
+     "ans": "listens",
+     "post": " to music on Sundays.",
+     "opts": [
+      "listens",
+      "listen",
+      "listening"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u4",
+   "t": "Unit 4",
+   "sub": "Tháng và sinh nhật",
+   "words": [
+    {
+     "w": "January",
+     "vi": "tháng Một",
+     "pos": "danh từ",
+     "def": "the first month of the year",
+     "ex": "My birthday is in January.",
+     "ex2": "It is cold in January.",
+     "pic": "cal:Jan"
+    },
+    {
+     "w": "February",
+     "vi": "tháng Hai",
+     "pos": "danh từ",
+     "def": "the month after January",
+     "ex": "My birthday is in February.",
+     "ex2": "Tet is often in February.",
+     "pic": "cal:Feb"
+    },
+    {
+     "w": "March",
+     "vi": "tháng Ba",
+     "pos": "danh từ",
+     "def": "the month after February",
+     "ex": "My birthday is in March.",
+     "ex2": "It is warm in March.",
+     "pic": "cal:Mar"
+    },
+    {
+     "w": "April",
+     "vi": "tháng Tư",
+     "pos": "danh từ",
+     "def": "the month after March",
+     "ex": "My birthday is in April.",
+     "ex2": "April comes before May.",
+     "pic": "cal:Apr"
+    },
+    {
+     "w": "May",
+     "vi": "tháng Năm",
+     "pos": "danh từ",
+     "def": "the month after April",
+     "ex": "My birthday is in May.",
+     "ex2": "We have a holiday in May.",
+     "pic": "cal:May"
+    },
+    {
+     "w": "June",
+     "vi": "tháng Sáu",
+     "pos": "danh từ",
+     "def": "the month before July",
+     "ex": "My birthday is in June.",
+     "ex2": "School finishes in June.",
+     "pic": "cal:Jun"
+    },
+    {
+     "w": "July",
+     "vi": "tháng Bảy",
+     "pos": "danh từ",
+     "def": "the month after June",
+     "ex": "My birthday is in July.",
+     "ex2": "It is hot in July.",
+     "pic": "cal:Jul"
+    },
+    {
+     "w": "August",
+     "vi": "tháng Tám",
+     "pos": "danh từ",
+     "def": "the month after July",
+     "ex": "My birthday is in August.",
+     "ex2": "We go to the beach in August.",
+     "pic": "cal:Aug"
+    },
+    {
+     "w": "September",
+     "vi": "tháng Chín",
+     "pos": "danh từ",
+     "def": "the month when the new school year starts",
+     "ex": "My birthday is in September.",
+     "ex2": "School starts in September.",
+     "pic": "cal:Sep"
+    },
+    {
+     "w": "October",
+     "vi": "tháng Mười",
+     "pos": "danh từ",
+     "def": "the month after September",
+     "ex": "My birthday is in October.",
+     "ex2": "October comes before November.",
+     "pic": "cal:Oct"
+    },
+    {
+     "w": "November",
+     "vi": "tháng Mười một",
+     "pos": "danh từ",
+     "def": "the month before December",
+     "ex": "My birthday is in November.",
+     "ex2": "Teachers' Day is in November.",
+     "pic": "cal:Nov"
+    },
+    {
+     "w": "December",
+     "vi": "tháng Mười hai",
+     "pos": "danh từ",
+     "def": "the last month of the year",
+     "ex": "My birthday is in December.",
+     "ex2": "It is cold in December.",
+     "pic": "cal:Dec"
+    },
+    {
+     "w": "birthday party",
+     "vi": "tiệc sinh nhật",
+     "pos": "danh từ",
+     "def": "a party for the day you were born",
+     "ex": "I have a birthday party in May.",
+     "ex2": "Her birthday party is on Saturday."
+    },
+    {
+     "w": "chips",
+     "vi": "khoai tây chiên",
+     "pos": "danh từ",
+     "def": "fried potato sticks that you can eat",
+     "ex": "I want some chips.",
+     "ex2": "We have chips at the party."
+    },
+    {
+     "w": "grapes",
+     "vi": "nho",
+     "pos": "danh từ",
+     "def": "small round fruit that grows in bunches",
+     "ex": "I want some grapes.",
+     "ex2": "The grapes are sweet."
+    },
+    {
+     "w": "jam",
+     "vi": "mứt",
+     "pos": "danh từ",
+     "def": "sweet food made from fruit, put on bread",
+     "ex": "I like jam on my bread.",
+     "ex2": "The jam is red."
+    },
+    {
+     "w": "lemonade",
+     "vi": "nước chanh",
+     "pos": "danh từ",
+     "def": "a sweet cold drink made from lemons",
+     "ex": "I want some lemonade.",
+     "ex2": "Would you like some lemonade?"
+    },
+    {
+     "w": "cake",
+     "vi": "bánh gato",
+     "pos": "danh từ",
+     "def": "a sweet food you eat on your birthday",
+     "ex": "The cake is big.",
+     "ex2": "Mum makes a cake for me."
+    },
+    {
+     "w": "juice",
+     "vi": "nước ép",
+     "pos": "danh từ",
+     "def": "a drink made from fruit",
+     "ex": "I drink orange juice.",
+     "ex2": "Would you like some juice?"
+    },
+    {
+     "w": "water",
+     "vi": "nước lọc",
+     "pos": "danh từ",
+     "def": "the clear drink we need every day",
+     "ex": "I want some water.",
+     "ex2": "Drink water after sport."
+    }
+   ],
+   "gram": [
+    {
+     "pre": "My birthday is ",
+     "ans": "in",
+     "post": " March.",
+     "opts": [
+      "in",
+      "on",
+      "at"
+     ]
+    },
+    {
+     "pre": "The party is ",
+     "ans": "on",
+     "post": " Saturday.",
+     "opts": [
+      "in",
+      "on",
+      "at"
+     ]
+    },
+    {
+     "pre": "The party starts ",
+     "ans": "at",
+     "post": " six o'clock.",
+     "opts": [
+      "in",
+      "on",
+      "at"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u5",
+   "t": "Movers",
+   "sub": "Con vật (Animals)",
+   "words": [
+    {
+     "w": "kangaroo",
+     "vi": "chuột túi",
+     "pos": "danh từ",
+     "def": "an Australian animal that jumps and carries a baby in a pocket",
+     "ex": "A kangaroo can jump.",
+     "ex2": "The kangaroo lives in Australia."
+    },
+    {
+     "w": "parrot",
+     "vi": "con vẹt",
+     "pos": "danh từ",
+     "def": "a colourful bird that can talk",
+     "ex": "A parrot can talk.",
+     "ex2": "The parrot is green and red."
+    },
+    {
+     "w": "crocodile",
+     "vi": "cá sấu",
+     "pos": "danh từ",
+     "def": "a big animal with a long mouth and sharp teeth that lives in rivers",
+     "ex": "A crocodile can swim.",
+     "ex2": "The crocodile is dangerous."
+    },
+    {
+     "w": "monkey",
+     "vi": "con khỉ",
+     "pos": "danh từ",
+     "def": "a brown animal that climbs trees and likes bananas",
+     "ex": "A monkey can climb trees.",
+     "ex2": "The monkey eats a banana."
+    },
+    {
+     "w": "elephant",
+     "vi": "con voi",
+     "pos": "danh từ",
+     "def": "a very big grey animal with a long nose",
+     "ex": "An elephant is very big.",
+     "ex2": "The elephant is bigger than the tiger."
+    },
+    {
+     "w": "giraffe",
+     "vi": "hươu cao cổ",
+     "pos": "danh từ",
+     "def": "a tall animal with a very long neck",
+     "ex": "A giraffe is taller than a tiger.",
+     "ex2": "The giraffe eats leaves from tall trees."
+    },
+    {
+     "w": "penguin",
+     "vi": "chim cánh cụt",
+     "pos": "danh từ",
+     "def": "a black and white bird that cannot fly but can swim",
+     "ex": "A penguin can't fly.",
+     "ex2": "The penguin lives in a cold place."
+    },
+    {
+     "w": "dolphin",
+     "vi": "cá heo",
+     "pos": "danh từ",
+     "def": "a clever sea animal that jumps out of the water",
+     "ex": "A dolphin can swim fast.",
+     "ex2": "The dolphin is very clever."
+    },
+    {
+     "w": "tiger",
+     "vi": "con hổ",
+     "pos": "danh từ",
+     "def": "a big wild cat with orange and black stripes",
+     "ex": "A tiger is strong.",
+     "ex2": "The tiger is smaller than the elephant."
+    },
+    {
+     "w": "snake",
+     "vi": "con rắn",
+     "pos": "danh từ",
+     "def": "a long animal with no legs",
+     "ex": "A snake has no legs.",
+     "ex2": "The snake is long."
+    },
+    {
+     "w": "spider",
+     "vi": "con nhện",
+     "pos": "danh từ",
+     "def": "a small animal with eight legs that makes a web",
+     "ex": "A spider has eight legs.",
+     "ex2": "The spider is on the wall."
+    },
+    {
+     "w": "bee",
+     "vi": "con ong",
+     "pos": "danh từ",
+     "def": "a small flying insect that makes honey",
+     "ex": "A bee can fly.",
+     "ex2": "The bee likes flowers."
+    }
+   ],
+   "gram": [
+    {
+     "pre": "A kangaroo ",
+     "ans": "can",
+     "post": " jump.",
+     "opts": [
+      "can",
+      "can't",
+      "is"
+     ]
+    },
+    {
+     "pre": "A penguin ",
+     "ans": "can't",
+     "post": " fly.",
+     "opts": [
+      "can",
+      "can't",
+      "is"
+     ]
+    },
+    {
+     "pre": "A giraffe is ",
+     "ans": "taller",
+     "post": " than a tiger.",
+     "opts": [
+      "taller",
+      "tall",
+      "tallest"
+     ]
+    }
+   ]
+  }
+ ]
+}
